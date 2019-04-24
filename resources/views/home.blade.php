@@ -1,23 +1,66 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Dashboard</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
+<!-- STATISTIC-->
+<section class="statistic">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6 col-lg-3">
+                    <div class="statistic__item">
+                        <h2 class="number">10,368</h2>
+                        <span class="desc">members online</span>
+                        <div class="icon">
+                            <i class="zmdi zmdi-account-o"></i>
                         </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="statistic__item">
+                        <h2 class="number">388,688</h2>
+                        <span class="desc">items sold</span>
+                        <div class="icon">
+                            <i class="zmdi zmdi-shopping-cart"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="statistic__item">
+                        <h2 class="number">1,086</h2>
+                        <span class="desc">this week</span>
+                        <div class="icon">
+                            <i class="zmdi zmdi-calendar-note"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="statistic__item">
+                        <h2 class="number">$1,060,386</h2>
+                        <span class="desc">total earnings</span>
+                        <div class="icon">
+                            <i class="zmdi zmdi-money"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-sm-12">
+
+                    @if (session('status'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
                     @endif
 
                     You are logged in!
                 </div>
             </div>
+
+
         </div>
     </div>
-</div>
+</section>
+<!-- END STATISTIC-->
 @endsection

@@ -1,6 +1,6 @@
 
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+//@import url('https://fonts.googleapis.com/css?family=Nunito');
 
 // Variables
 @import 'variables';
@@ -8,7 +8,133 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+[v-cloak] { display: none; }
+
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
+
+.card .card-header{
+    background-color: rgba(52,144,220,.25);
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.table-data2.table{
+    .th-date-stat, .td-date-stat{
+        width: 50px;
+        padding: 5px!important;
+        font-size: 12px;
+        text-align: center!important;
+    }
+}
+
+.je_dostopav, .prodano, .mail_poslan{
+    .fa-check{
+        color: white;
+        padding: 5px;
+        border-radius: 0.25rem;
+    }
+}
+.mail_poslan .fa-check{  background-color: #3490dc;  }
+.je_dostopav .fa-check{  color: black; background-color: #ffed4a;  }
+.prodano .fa-check{  background-color: #38c172;  }
+
+.overview-item{
+    min-height: 215px;
+}
+
+.dot--orange{
+    background: orange;
+}
+
+.au-btn.au-btn--gray{
+    background: #808080;
+    &:hover{ background: #767676; }
+}
+
+.phone-box{
+    background-color: #d4d4d4;
+    padding: 10px 20px;
+    border-radius: 3px;
+
+    .phone-title{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        h4{
+            font-weight: 500;
+            padding-bottom: 0!important;
+            &:hover, &:focus{ text-decoration: underline; }
+        }
+    }
+    .phone-header{ cursor: pointer; }
+    .phone-stat .badge{ font-size: 90%; }
+    .phone-body{
+        -webkit-transition: height 0.35s ease;
+        transition: height 0.35s ease;
+    }
+}
+
+
+.btn-datepicker{
+    min-width: 145px;
+    padding: 0 15px!important;
+
+    input{
+        width: 115px;
+        color: white;
+        cursor: pointer;
+        text-align: center;
+        background-color: transparent;
+        &::placeholder{
+            color: darken(white, 20%);
+        }
+    }
+    input, .vdp-datepicker{ display: inline-block; }
+
+    .vdp-datepicker__calendar{ right: 0!important; }
+
+    .vdp-datepicker__calendar header span,
+    .vdp-datepicker__calendar .cell{
+        color: black!important;
+    }
+}
+
+.toolbar-box{
+    display: block;
+    margin: 25px 0;
+    @include clearfix();
+
+    .toolbar-box-wrapper{
+        @include float-right();
+    }
+    .status-picker-box,
+    .datepicker-box{
+        margin-right: 20px;
+    }
+    .vdp-datepicker__calendar{
+        .cell.selected{
+            color: #FFF!important;
+            background: #4272d7!important;
+        }
+        .cell:not(.blank):not(.disabled).day:hover{
+            border-color: #4272d7!important;
+        }
+    }
+    .btn-refresh{
+        font-size: 22px;
+        text-align: center;
+        padding: 0 20px;
+    }
+    .select-order-status{
+        font-size: 16px;
+        min-width: 145px;
+        height: 45px;
+        color: #FFF;
+        background-color: #808080;
+        @include border-radius(4px);
+    }
+}
+
