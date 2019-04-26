@@ -47,7 +47,7 @@
                         <img src="images/icon/avatar-big-01.jpg" alt="{{ Auth::user()->name }}" />
                     </div>
                     <h4 class="name">{{ Auth::user()->name }}</h4>
-                    <a class="dropdown-item" href="{{ route('logout') }}"
+                    <a class="text-center" href="{{ route('logout') }}"
                        onclick="event.preventDefault();
                        document.getElementById('logout-form').submit();">
                         {{ __('Logout') }}
@@ -61,138 +61,42 @@
                     <ul class="list-unstyled navbar__list">
                         <li class="active has-sub">
                             <a class="js-arrow" href="#">
-                                <i class="fas fa-tachometer-alt"></i>Dashboard
-                                <span class="arrow">
-                                    <i class="fas fa-angle-down"></i>
-                                </span>
+                                <i class="fas fa-tachometer-alt"></i>Data Entry
                             </a>
-                            <ul class="list-unstyled navbar__sub-list js-sub-list">
-                                <li>
-                                    <a href="index.html">
-                                        <i class="fas fa-tachometer-alt"></i>Dashboard 1</a>
-                                </li>
-                                <li>
-                                    <a href="index2.html">
-                                        <i class="fas fa-tachometer-alt"></i>Dashboard 2</a>
-                                </li>
-                                <li>
-                                    <a href="index3.html">
-                                        <i class="fas fa-tachometer-alt"></i>Dashboard 3</a>
-                                </li>
-                                <li>
-                                    <a href="index4.html">
-                                        <i class="fas fa-tachometer-alt"></i>Dashboard 4</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="inbox.html">
-                                <i class="fas fa-chart-bar"></i>Inbox</a>
-                            <span class="inbox-num">3</span>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-shopping-basket"></i>eCommerce</a>
                         </li>
                         <li class="has-sub">
                             <a class="js-arrow" href="#">
-                                <i class="fas fa-trophy"></i>Features
+                                <i class="fas fa-chart-bar"></i>Display and analysis
                                 <span class="arrow">
                                     <i class="fas fa-angle-down"></i>
                                 </span>
                             </a>
                             <ul class="list-unstyled navbar__sub-list js-sub-list">
                                 <li>
-                                    <a href="table.html">
-                                        <i class="fas fa-table"></i>Tables</a>
+                                    <a href="#">
+                                        <i class="zmdi zmdi-notifications"></i>Notifications
+                                    </a>
                                 </li>
+                            </ul>
+                        </li>
+                        <li class="has-sub">
+                            <a class="js-arrow" href="#">
+                                <i class="zmdi zmdi-settings"></i>Settings
+                                <span class="arrow">
+                                    <i class="fas fa-angle-down"></i>
+                                </span>
+                            </a>
+                            <ul class="list-unstyled navbar__sub-list js-sub-list">
                                 <li>
-                                    <a href="form.html">
-                                        <i class="far fa-check-square"></i>Forms</a>
+                                    <a href="#">
+                                        <i class="fab fa-flickr"></i>Products</a>
                                 </li>
                                 <li>
                                     <a href="#">
-                                        <i class="fas fa-calendar-alt"></i>Calendar</a>
+                                        <i class="fas fa-map-marker-alt"></i>Locations</a>
                                 </li>
-                                <li>
-                                    <a href="map.html">
-                                        <i class="fas fa-map-marker-alt"></i>Maps</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="has-sub">
-                            <a class="js-arrow" href="#">
-                                <i class="fas fa-copy"></i>Pages
-                                <span class="arrow">
-                                    <i class="fas fa-angle-down"></i>
-                                </span>
-                            </a>
-                            <ul class="list-unstyled navbar__sub-list js-sub-list">
-                                <li>
-                                    <a href="login.html">
-                                        <i class="fas fa-sign-in-alt"></i>Login</a>
-                                </li>
-                                <li>
-                                    <a href="register.html">
-                                        <i class="fas fa-user"></i>Register</a>
-                                </li>
-                                <li>
-                                    <a href="forget-pass.html">
-                                        <i class="fas fa-unlock-alt"></i>Forget Password</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="has-sub">
-                            <a class="js-arrow" href="#">
-                                <i class="fas fa-desktop"></i>UI Elements
-                                <span class="arrow">
-                                    <i class="fas fa-angle-down"></i>
-                                </span>
-                            </a>
-                            <ul class="list-unstyled navbar__sub-list js-sub-list">
-                                <li>
-                                    <a href="button.html">
-                                        <i class="fab fa-flickr"></i>Button</a>
-                                </li>
-                                <li>
-                                    <a href="badge.html">
-                                        <i class="fas fa-comment-alt"></i>Badges</a>
-                                </li>
-                                <li>
-                                    <a href="tab.html">
-                                        <i class="far fa-window-maximize"></i>Tabs</a>
-                                </li>
-                                <li>
-                                    <a href="card.html">
-                                        <i class="far fa-id-card"></i>Cards</a>
-                                </li>
-                                <li>
-                                    <a href="alert.html">
-                                        <i class="far fa-bell"></i>Alerts</a>
-                                </li>
-                                <li>
-                                    <a href="progress-bar.html">
-                                        <i class="fas fa-tasks"></i>Progress Bars</a>
-                                </li>
-                                <li>
-                                    <a href="modal.html">
-                                        <i class="far fa-window-restore"></i>Modals</a>
-                                </li>
-                                <li>
-                                    <a href="switch.html">
-                                        <i class="fas fa-toggle-on"></i>Switchs</a>
-                                </li>
-                                <li>
-                                    <a href="grid.html">
-                                        <i class="fas fa-th-large"></i>Grids</a>
-                                </li>
-                                <li>
-                                    <a href="fontawesome.html">
-                                        <i class="fab fa-font-awesome"></i>FontAwesome</a>
-                                </li>
-                                <li>
-                                    <a href="typo.html">
-                                        <i class="fas fa-font"></i>Typography</a>
+                                <li><a href="#">
+                                        <i class="zmdi zmdi-account"></i>Account</a>
                                 </li>
                             </ul>
                         </li>
@@ -259,43 +163,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="header-button-item mr-0 js-sidebar-btn">
-                                    <i class="zmdi zmdi-menu"></i>
-                                </div>
-                                <div class="setting-menu js-right-sidebar d-none d-lg-block">
-                                    <div class="account-dropdown__body">
-                                        <div class="account-dropdown__item">
-                                            <a href="#">
-                                                <i class="zmdi zmdi-account"></i>Account</a>
-                                        </div>
-                                        <div class="account-dropdown__item">
-                                            <a href="#">
-                                                <i class="zmdi zmdi-settings"></i>Setting</a>
-                                        </div>
-                                        <div class="account-dropdown__item">
-                                            <a href="#">
-                                                <i class="zmdi zmdi-money-box"></i>Billing</a>
-                                        </div>
-                                    </div>
-                                    <div class="account-dropdown__body">
-                                        <div class="account-dropdown__item">
-                                            <a href="#">
-                                                <i class="zmdi zmdi-globe"></i>Language</a>
-                                        </div>
-                                        <div class="account-dropdown__item">
-                                            <a href="#">
-                                                <i class="zmdi zmdi-pin"></i>Location</a>
-                                        </div>
-                                        <div class="account-dropdown__item">
-                                            <a href="#">
-                                                <i class="zmdi zmdi-email"></i>Email</a>
-                                        </div>
-                                        <div class="account-dropdown__item">
-                                            <a href="#">
-                                                <i class="zmdi zmdi-notifications"></i>Notifications</a>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -341,7 +208,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="copyright">
-                                <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
+                                <p>Copyright &#9400; 2019 Andraz Hostnik</p>
                             </div>
                         </div>
                     </div>

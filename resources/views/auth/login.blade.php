@@ -6,7 +6,7 @@
         <div class="login-content">
             <div class="login-logo">
                 <a href="#">
-                    <img src="{{ asset('images/icon/logo.png') }}" alt="{{ config('app.name') }}">
+                    <img src="{{ asset('images/icon/logo-blue.png') }}" alt="{{ config('app.name') }}">
                 </a>
             </div>
             <div class="login-form">
