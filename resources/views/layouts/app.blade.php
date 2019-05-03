@@ -59,9 +59,14 @@
                 @endguest
                 <nav class="navbar-sidebar2">
                     <ul class="list-unstyled navbar__list">
-                        <li class="active has-sub">
+                        <li class="active">
                             <a class="js-arrow" href="#">
-                                <i class="fas fa-tachometer-alt"></i>Data Entry
+                                <i class="fas fa-copy"></i>Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a class="js-arrow" href="/import">
+                                <i class="fas fa-tachometer-alt"></i>Import data
                             </a>
                         </li>
                         <li class="has-sub">
