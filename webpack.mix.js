@@ -30,6 +30,7 @@ mix.styles([
      'resources/js/vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css',
      //'resources/js/vendor/wow/animate.css',
      'resources/js/vendor/css-hamburgers/hamburgers.min.css',
+     //'resources/js/vendor/dropzone/min/dropzone.min.css',
      //'resources/js/vendor/slick/slick.css',
      'resources/js/vendor/select2/select2.min.css',
      'resources/js/vendor/perfect-scrollbar/perfect-scrollbar.css'
@@ -48,6 +49,7 @@ mix.styles([
      'resources/js/vendor/counter-up/jquery.counterup.min.js',
      'resources/js/vendor/circle-progress/circle-progress.min.js',
      'resources/js/vendor/perfect-scrollbar/perfect-scrollbar.js',
+     //'resources/js/vendor/dropzone/min/dropzone.min.js',
      //'resources/js/vendor/chartjs/Chart.bundle.min.js',
      'resources/js/vendor/select2/select2.min.js',
      //'resources/js/vendor/countdown/moment.min.js'

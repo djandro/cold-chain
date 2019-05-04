@@ -16,7 +16,23 @@ class ImportController extends Controller
     {
         $path = $request->file('csv_file')->getRealPath();
         $data = array_map('str_getcsv', file($path));
-        $csv_data = array_slice($data, 0, 2);
-        return view('import_fields', compact('csv_data'));
+
+        dump($data);
+
+        $rows = 0; $nr_rows = 0; $colums = null;
+
+        foreach($data as $key => $row){
+            if($row[0] != '#'){
+                $nr_rows = $key;
+                break;
+            }
+        }
+
+        $csv_data = array_slice($data, $nr_rows, 3);
+
+        //return view('import_fields', compact('csv_data'));
+        return response()->json(
+            compact('csv_data')
+        );
     }
 }

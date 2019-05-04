@@ -59,18 +59,18 @@
                 @endguest
                 <nav class="navbar-sidebar2">
                     <ul class="list-unstyled navbar__list">
-                        <li class="active">
-                            <a class="js-arrow" href="#">
+                        <li class="{{ setActive('/', 'active') }}">
+                            <a href="{{ url('/') }}">
                                 <i class="fas fa-copy"></i>Dashboard
                             </a>
                         </li>
-                        <li>
-                            <a class="js-arrow" href="/import">
+                        <li class="{{ setActive('import', 'active') }}">
+                            <a href="{{ url('import') }}">
                                 <i class="fas fa-tachometer-alt"></i>Import data
                             </a>
                         </li>
-                        <li class="has-sub">
-                            <a class="js-arrow" href="#">
+                        <li class="{{ setActive('records', 'active') }} has-sub">
+                            <a class="js-arrow" href="{{ url('records') }}">
                                 <i class="fas fa-chart-bar"></i>Display and analysis
                                 <span class="arrow">
                                     <i class="fas fa-angle-down"></i>
@@ -84,8 +84,8 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="has-sub">
-                            <a class="js-arrow" href="#">
+                        <li class="{{ setActive('settings', 'active') }} has-sub">
+                            <a class="js-arrow" href="{{ url('settings') }}">
                                 <i class="zmdi zmdi-settings"></i>Settings
                                 <span class="arrow">
                                     <i class="fas fa-angle-down"></i>
@@ -184,13 +184,15 @@
                                     <div class="au-breadcrumb-left">
                                         <span class="au-breadcrumb-span">You are here:</span>
                                         <ul class="list-unstyled list-inline au-breadcrumb__list">
-                                            <li class="list-inline-item active">
-                                                <a href="#">Home</a>
+                                            <li class="list-inline-item {{ setActive('', 'active') }}">
+                                                <a href="{{ url('/') }}">Home</a>
                                             </li>
+                                            @empty(!getCurrentPage())
                                             <li class="list-inline-item seprate">
                                                 <span>/</span>
                                             </li>
-                                            <li class="list-inline-item">Dashboard</li>
+                                            <li class="list-inline-item">{{ getCurrentPage() }}</li>
+                                            @endempty
                                         </ul>
                                     </div>
                                     <button class="au-btn au-btn-icon au-btn--green">
@@ -224,9 +226,11 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/vendor.js') }}" defer></script>
     <script src="{{ asset('js/main.js') }}" defer></script>
+    @yield('scripts')
 
 </body>
 </html>

@@ -1274,7 +1274,6 @@
 
 })(jQuery);
 
-
 /*
 (function ($) {
     // USE STRICT

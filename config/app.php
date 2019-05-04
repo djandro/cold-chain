@@ -228,4 +228,15 @@ return [
 
     ],
 
+
+    // DB fields for import csv files to record_data table in db
+
+    'records_data' => [
+        'date',
+        'time',
+        'timestamp',
+        'temperature',
+        'light',
+        'humidity'
+    ]
 ];

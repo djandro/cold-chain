@@ -7,9 +7,9 @@
     <div class="section__content section__content--p30">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-12 importBox1">
 
-                    <form class="form-horizontal" method="POST" action="{{ route('import_parse') }}" enctype="multipart/form-data">
+                    <form class="form-horizontal" method="post" id="parseRecordForm" action="{{ route('import_parse') }}" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="card">
                             <div class="card-header"><strong>Import</strong> record data</div>
@@ -22,8 +22,8 @@
 
                                         @if ($errors->has('csv_file'))
                                         <span class="help-block">
-                                        <strong>{{ $errors->first('csv_file') }}</strong>
-                                    </span>
+                                            <strong>{{ $errors->first('csv_file') }}</strong>
+                                        </span>
                                         @endif
                                     </div>
                                 </div>
@@ -39,17 +39,28 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary" id="parseRecordBtn">
                                     <i class="fa fa-dot-circle-o"></i>
                                     Parse CSV
-                                </button>
-                                <button type="reset" class="btn btn-danger btn-sm">
-                                    <i class="fa fa-ban"></i> Reset
                                 </button>
                             </div>
                         </div>
                     </form>
                 </div>
+
+
+                <div class="col-sm-12 importBox2 d-none">
+                    <form class="form-horizontal" method="POST" id="submitRecordForm" action="{{ route('import_process') }}">
+                        {{ csrf_field() }}
+
+                        <importrecord-component></importrecord-component>
+
+                        <button type="submit" class="btn btn-primary" id="submitRecordBtn">
+                            Import Data
+                        </button>
+                    </form>
+                </div>
+
             </div>
 
         </div>
@@ -57,3 +68,36 @@
 </section>
 
 @endsection
+
+@section('scripts')
+<script type="application/javascript" defer>
+    jQuery( document ).ready( function( jQuery ) {
+
+        jQuery('#parseRecordForm').on('submit', function(e) {
+            e.preventDefault();
+
+            jQuery.ajax({
+                type: "POST",
+                url: '{{ route('import_parse') }}',
+                contentType: false,
+                processData: false,
+                data: new FormData(this),
+                success: function( data ) {
+                    if (data.fail) {
+                        jQuery('#parseRecordForm span.help-block').text('Something goes wrong.');
+                    }
+                    else {
+                        jQuery('.importBox2').removeClass('d-none');
+                        jQuery('.importBox2 .form-horizontal').append(data.csv_data);
+                    }
+                },
+                error: function( xhr, status, error ){
+                    jQuery('#parseRecordForm span.help-block').text(xhr.responseText);
+                }
+            });
+        });
+
+    });
+</script>
+@endsection
+
