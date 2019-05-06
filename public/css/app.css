@@ -10854,7 +10854,11 @@ a.text-dark:focus {
 }
 
 .disableBox {
-  opacity: 0.7;
+  opacity: 0.5;
   pointer-events: none;
+}
+
+.no-opacity {
+  opacity: 0;
 }
 

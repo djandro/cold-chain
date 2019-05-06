@@ -26,7 +26,7 @@ class ImportController extends Controller
         // table body
         foreach($csv_data[0] as $key => $row){
             $html .= "<td>" . "<select name='fields[" . $key  .  "]'>";
-            foreach(config('app.records_data') as $db_field){
+            foreach(config('app.record_data') as $db_field){
                 $html .= "<option value='" . $db_field . "'>" . $db_field . "</option>";
             }
             $html .= "</select>" . "</td>";

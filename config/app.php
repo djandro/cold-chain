@@ -231,12 +231,20 @@ return [
 
     // DB fields for import csv files to record_data table in db
 
-    'records_data' => [
+    'record_data' => [
         'date',
         'time',
         'timestamp',
         'temperature',
         'light',
         'humidity'
+    ],
+
+    // support mimes type for import
+
+    'record_mimes' => [
+        'csv',
+        'txt'
     ]
+
 ];

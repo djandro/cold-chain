@@ -9,22 +9,18 @@
             <div class="row">
                 <div class="col-sm-12 importBox1">
 
-                    <form class="form-horizontal" method="post" id="parseRecordForm" action="{{ route('import_parse') }}" enctype="multipart/form-data">
+                    <form class="form-horizontal" method="post" id="parseRecordForm" action="{{ route('import_parse') }}" enctype="multipart/form-data" accept-charset="UTF-8">
                         {{ csrf_field() }}
                         <div class="card">
                             <div class="card-header"><strong>Import</strong> record data</div>
                             <div class="card-body">
                                 <div class="form-group{{ $errors->has('csv_file') ? ' has-error' : '' }}">
-                                    <label for="csv_file" class="col-md-4 control-label">CSV file to import</label>
+                                    <label for="csv_file" class="col-md-4 control-label"><i>Support CSV files</i></label>
 
                                     <div class="col-md-6">
-                                        <input id="csv_file" type="file" class="form-control" name="csv_file" required>
+                                        <input id="csv_file" type="file" class="form-control-file m-t-10 m-b-10" name="csv_file" required>
 
-                                        @if ($errors->has('csv_file'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('csv_file') }}</strong>
-                                        </span>
-                                        @endif
+                                        <div class="alert alert-danger m-t-20 d-none" role="alert"></div>
                                     </div>
                                 </div>
 
@@ -49,7 +45,7 @@
                 </div>
 
 
-                <div class="col-sm-12 importBox2 m-t-20 d-none">
+                <div class="col-sm-12 importBox2 m-t-20 d-none no-opacity">
                     <form class="form-horizontal" method="POST" id="submitRecordForm" action="{{ route('import_process') }}">
                         {{ csrf_field() }}
                         
@@ -96,18 +92,29 @@
                 data: new FormData(this),
                 success: function( data ) {
                     if (data.fail) {
-                        jQuery('#parseRecordForm span.help-block').text('Something goes wrong.');
+                        jQuery('#parseRecordForm div.alert-danger').removeClass('d-none').text('Something goes wrong.');
                     }
                     else {
                         jQuery('.importBox1').addClass('disableBox');
-                        jQuery('.importBox2').removeClass('d-none');
+                        jQuery('.importBox2').removeClass('d-none').removeClass('no-opacity');
                         jQuery('.importBox2 .csvDataBox').html(data.html);
+                        jQuery('#parseRecordForm div.alert-danger').addClass('d-none');
                     }
                 },
                 error: function( xhr, status, error ){
-                    jQuery('#parseRecordForm span.help-block').text(xhr.responseText);
+                    jQuery('#parseRecordForm div.alert-danger').removeClass('d-none').text(xhr.responseText);
                 }
             });
+        });
+
+        jQuery('#submitRecordForm').on('reset', function(e) {
+            e.preventDefault();
+            jQuery('#parseRecordForm').trigger("reset");
+            jQuery('.importBox1').removeClass('disableBox');
+            jQuery('.importBox2').addClass('no-opacity');
+            setTimeout(function(){
+                jQuery('.importBox2').addClass('d-none');
+            }, 600);
         });
 
     });
