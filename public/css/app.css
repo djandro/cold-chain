@@ -10841,3 +10841,20 @@ a.text-dark:focus {
   border-radius: 4px;
 }
 
+.importBox1,
+.importBox2 {
+  transition: opacity 1s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .importBox1,
+  .importBox2 {
+    transition: none;
+  }
+}
+
+.disableBox {
+  opacity: 0.7;
+  pointer-events: none;
+}
+

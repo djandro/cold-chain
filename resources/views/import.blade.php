@@ -49,15 +49,27 @@
                 </div>
 
 
-                <div class="col-sm-12 importBox2 d-none">
+                <div class="col-sm-12 importBox2 m-t-20 d-none">
                     <form class="form-horizontal" method="POST" id="submitRecordForm" action="{{ route('import_process') }}">
                         {{ csrf_field() }}
-
-                        <importrecord-component></importrecord-component>
-
-                        <button type="submit" class="btn btn-primary" id="submitRecordBtn">
-                            Import Data
-                        </button>
+                        
+                        <div class="card border border-secondary">
+                            <div class="card-header"><strong>Complete</strong> record data</div>
+                            <div class="card-body">
+                                <div class="csvDataBox m-b-10"></div>
+                                <div class="otherDataBox m-b-10">
+                                    <span>to be defined data...</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary" id="submitRecordBtn">
+                                    <i class="fa fa-plus-circle"></i> Import Data
+                                </button>
+                                <button type="reset" class="btn btn-danger">
+                                    <i class="fa fa-ban"></i> Reset
+                                </button>
+                            </div>
+                        </div>
                     </form>
                 </div>
 
@@ -87,8 +99,9 @@
                         jQuery('#parseRecordForm span.help-block').text('Something goes wrong.');
                     }
                     else {
+                        jQuery('.importBox1').addClass('disableBox');
                         jQuery('.importBox2').removeClass('d-none');
-                        jQuery('.importBox2 .form-horizontal').append(data.csv_data);
+                        jQuery('.importBox2 .csvDataBox').html(data.html);
                     }
                 },
                 error: function( xhr, status, error ){
