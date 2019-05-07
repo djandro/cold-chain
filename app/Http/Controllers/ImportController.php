@@ -26,8 +26,11 @@ class ImportController extends Controller
         // table body
         foreach($csv_data[0] as $key => $row){
             $html .= "<td>" . "<select name='fields[" . $key  .  "]'>";
+            if(!in_array($row, config('app.record_data'))) $row = '--ignore--';
+
             foreach(config('app.record_data') as $db_field){
-                $html .= "<option value='" . $db_field . "'>" . $db_field . "</option>";
+                $selected = ($row == $db_field) ? 'selected' : '';
+                $html .= "<option value='" . $db_field . "' " .$selected. ">" . $db_field . "</option>";
             }
             $html .= "</select>" . "</td>";
         }
@@ -55,7 +58,7 @@ class ImportController extends Controller
         $csv_data = array_slice($data, $nr_rows, 3);
         $html_data = $this->getHtmlForCsvData($csv_data);
 
-        dump($html_data);
+        dump($csv_data[0]);
 
         return response()->json(
             array('html' => $html_data)

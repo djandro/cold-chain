@@ -237,7 +237,10 @@ return [
         'timestamp',
         'temperature',
         'light',
-        'humidity'
+        'humidity',
+        'dew_points',
+        'battery_voltage',
+        '--ignore--'
     ],
 
     // support mimes type for import

@@ -15,7 +15,7 @@
                             <div class="card-header"><strong>Import</strong> record data</div>
                             <div class="card-body">
                                 <div class="form-group{{ $errors->has('csv_file') ? ' has-error' : '' }}">
-                                    <label for="csv_file" class="col-md-4 control-label"><i>Support CSV files</i></label>
+                                    <label for="csv_file" class="col-md-4 control-label"><i>{{ 'Support ' . implode(', ', config('app.record_mimes')) . ' files' }}</i></label>
 
                                     <div class="col-md-6">
                                         <input id="csv_file" type="file" class="form-control-file m-t-10 m-b-10" name="csv_file" required>
