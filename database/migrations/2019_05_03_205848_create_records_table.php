@@ -16,19 +16,19 @@ class CreateRecordsTable extends Migration
         if (!Schema::hasTable('records')) {
             Schema::create('records', function (Blueprint $table) {
                 $table->bigIncrements('id');
-                $table->integer("device_id")->unsigned();
+                $table->integer("device_id")->unsigned()->nullable();
                 $table->integer("product_id")->unsigned();
-                $table->integer("location_id")->unsigned();
+                $table->integer("location_id")->unsigned()->nullable();
                 $table->timestamps();
                 $table->integer("samples");
                 $table->integer("delay_time");
                 $table->integer("intervals");
                 $table->string('slr', 100);
-                $table->json('limits');
-                $table->json('errors');
-                $table->json('alarms');
-                $table->text('comments');
-                $table->string('status', 100);
+                $table->longText('limits')->nullable();
+                $table->longText('errors')->nullable();
+                $table->longText('alarms')->nullable();
+                $table->text('comments')->nullable();
+                $table->boolean('status')->default(true);
             });
         }
     }

@@ -10862,3 +10862,11 @@ a.text-dark:focus {
   opacity: 0;
 }
 
+.display-5 {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  color: #63c76a;
+  margin: 20px 0 15px 0;
+}
+

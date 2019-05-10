@@ -52,9 +52,37 @@
                         <div class="card border border-secondary">
                             <div class="card-header"><strong>Complete</strong> record data</div>
                             <div class="card-body">
+
+                                <h4 class="display-5">Define headers data:</h4>
                                 <div class="csvDataBox m-b-10"></div>
-                                <div class="otherDataBox m-b-10">
-                                    <span>to be defined data...</span>
+
+                                <h4 class="display-5">File report:</h4>
+                                <div class="otherDataBox row m-b-10">
+                                    <div class="col-sm-6">
+
+                                        <div class="row form-group">
+                                            <div class="col col-md-3">
+                                                <label class="form-control-label">Product</label>
+                                            </div>
+                                            <div class="col-12 col-md-9">
+                                                <p id="product-data" class="form-control-static"></p>
+                                            </div>
+                                        </div>
+
+                                        <p>Location TBD</p>
+                                        <p>ID TBD</p>
+                                        <p>No.Samples TBD</p>
+                                        <p>Start/End date TBD</p>
+                                        <p>Delay time TBD</p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <input type="text" id="title-input" name="title-input" placeholder="Title" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea name="comment-input" id="comment-input" rows="5" placeholder="Comment..." class="form-control"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -97,7 +125,10 @@
                     else {
                         jQuery('.importBox1').addClass('disableBox');
                         jQuery('.importBox2').removeClass('d-none').removeClass('no-opacity');
-                        jQuery('.importBox2 .csvDataBox').html(data.html);
+                        jQuery('.importBox2 .csvDataBox').html(data.headers_data);
+                        jQuery('#title-input').val(data.title);
+                        jQuery('#comment-input').val(data.comment);
+                        jQuery('#product-data').html(data.product);
                         jQuery('#parseRecordForm div.alert-danger').addClass('d-none');
                     }
                 },
