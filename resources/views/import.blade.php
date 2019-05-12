@@ -54,35 +54,84 @@
                             <div class="card-body">
 
                                 <h4 class="display-5">Define headers data:</h4>
-                                <div class="csvDataBox m-b-10"></div>
+                                <div class="csvDataBox m-b-20"></div>
 
-                                <h4 class="display-5">File report:</h4>
                                 <div class="otherDataBox row m-b-10">
                                     <div class="col-sm-6">
-
-                                        <div class="row form-group">
-                                            <div class="col col-md-3">
-                                                <label class="form-control-label">Product</label>
-                                            </div>
-                                            <div class="col-12 col-md-9">
-                                                <p id="product-data" class="form-control-static"></p>
-                                            </div>
-                                        </div>
-
-                                        <p>Location TBD</p>
-                                        <p>ID TBD</p>
-                                        <p>No.Samples TBD</p>
-                                        <p>Start/End date TBD</p>
-                                        <p>Delay time TBD</p>
-                                    </div>
-                                    <div class="col-sm-6">
+                                        <h4 class="display-5">Title:</h4>
                                         <div class="form-group">
                                             <input type="text" id="title-input" name="title-input" placeholder="Title" class="form-control">
                                         </div>
+                                        <h4 class="display-5">Comment:</h4>
                                         <div class="form-group">
                                             <textarea name="comment-input" id="comment-input" rows="5" placeholder="Comment..." class="form-control"></textarea>
                                         </div>
                                     </div>
+                                    <div class="col-sm-6">
+                                        <h4 class="display-5">File report:</h4>
+                                        <div class="row form-group">
+                                            <div class="col col-md-3">
+                                                <input type="hidden" id="temporary-table-id" name="temporary-table-id" />
+                                                <label class="form-control-label">Product:</label>
+                                            </div>
+                                            <div class="col-12 col-md-9">
+                                                <p id="product-data" class="form-control-static badge badge-light"></p>
+                                            </div>
+
+                                            <div class="col col-md-3">
+                                                <label class="form-control-label">Location:</label>
+                                            </div>
+                                            <div class="col-12 col-md-9">
+                                                <p id="location-data" class="form-control-static badge badge-light"></p>
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <hr/>
+                                            </div>
+
+                                            <div class="col col-md-3">
+                                                <label class="form-control-label">Start Date:</label>
+                                            </div>
+                                            <div class="col-12 col-md-9">
+                                                <p id="start-date-data" class="form-control-static badge badge-light"></p>
+                                            </div>
+
+                                            <div class="col col-md-3">
+                                                <label class="form-control-label">End Date:</label>
+                                            </div>
+                                            <div class="col-12 col-md-9">
+                                                <p id="end-date-data" class="form-control-static badge badge-light"></p>
+                                            </div>
+
+                                            <div class="col-sm-12">
+                                                <hr/>
+                                            </div>
+
+                                            <div class="col col-md-3">
+                                                <label class="form-control-label">No.Samples:</label>
+                                            </div>
+                                            <div class="col-12 col-md-9">
+                                                <p id="samples-data" class="form-control-static badge badge-light"></p>
+                                            </div>
+
+                                            <div class="col col-md-3">
+                                                <label class="form-control-label">Delay time:</label>
+                                            </div>
+                                            <div class="col-12 col-md-9">
+                                                <p id="delay-data" class="form-control-static badge badge-light"></p>
+                                            </div>
+
+                                            <div class="col col-md-3">
+                                                <label class="form-control-label">Interval:</label>
+                                            </div>
+                                            <div class="col-12 col-md-9">
+                                                <p id="interval-data" class="form-control-static badge badge-light"></p>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -126,9 +175,20 @@
                         jQuery('.importBox1').addClass('disableBox');
                         jQuery('.importBox2').removeClass('d-none').removeClass('no-opacity');
                         jQuery('.importBox2 .csvDataBox').html(data.headers_data);
+
                         jQuery('#title-input').val(data.title);
                         jQuery('#comment-input').val(data.comment);
+
                         jQuery('#product-data').html(data.product);
+                        jQuery('#location-data').html(data.location);
+
+                        jQuery('#temporary-table-id').html(data.temporary_table_id);
+                        jQuery('#samples-data').html(data.samples);
+                        jQuery('#start-date-data').html(data.start_date);
+                        jQuery('#end-date-data').html(data.end_date);
+                        jQuery('#delay-data').html(data.delay);
+                        jQuery('#interval-data').html(data.interval);
+
                         jQuery('#parseRecordForm div.alert-danger').addClass('d-none');
                     }
                 },
