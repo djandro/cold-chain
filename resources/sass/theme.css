@@ -4816,8 +4816,8 @@ section {
 }
 
 .au-breadcrumb-span {
-    font-size: 14px;
-    color: #999;
+    font-size: 12px;
+    color: #cacaca;
     display: inline-block;
 }
 
@@ -4827,20 +4827,16 @@ section {
 }
 
 .au-breadcrumb__list li {
-    font-size: 14px;
-    color: #999;
+    font-size: 12px;
+    color: #cacaca;
 }
 
 .au-breadcrumb__list .list-inline-item:not(:last-child) {
     margin-right: 5px;
 }
 
-.au-breadcrumb__list .active a {
-    color: #999;
-}
-
-.au-breadcrumb__list .active a:hover {
-    color: #333;
+.au-breadcrumb__list a{
+    color: #cacaca;
 }
 
 .au-breadcrumb2 {

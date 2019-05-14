@@ -122,6 +122,10 @@ class ImportController extends Controller
     }
 
     public function saveImport(Request $request){
+        dump($request->all());
 
+        return response()->json(
+            $request->all()
+        );
     }
 }

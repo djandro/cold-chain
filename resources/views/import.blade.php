@@ -3,7 +3,7 @@
 @section('content')
 
 
-<section class="import">
+<section class="import m-t-30">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
             <div class="row">
@@ -46,7 +46,7 @@
 
 
                 <div class="col-sm-12 importBox2 m-t-20 d-none no-opacity">
-                    <form class="form-horizontal" method="POST" id="submitRecordForm" action="{{ route('import_process') }}" enctype="multipart/form-data" accept-charset="UTF-8">
+                    <form class="form-horizontal" method="POST" id="submitRecordForm" action="{{ route('save_import') }}" enctype="multipart/form-data" accept-charset="UTF-8">
 
                         <div class="card border border-secondary">
                             <div class="card-header"><strong>Complete</strong> record data</div>
@@ -159,83 +159,180 @@
 
 @section('scripts')
 <script type="application/javascript" defer>
+
+    var doAjax_params_default = {
+        'url': null,
+        'requestType': "POST",
+        'contentType': 'application/json',
+        'headers': { 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content') },
+        'dataType': 'json',
+        'data': {},
+        'beforeSendCallbackFunction': null,
+        'successCallbackFunction': null,
+        'completeCallbackFunction': null,
+        'errorCallBackFunction': null
+    };
+
+    function doAjax(doAjax_params) {
+
+        var url = doAjax_params['url'];
+        var requestType = doAjax_params['requestType'];
+        var contentType = doAjax_params['contentType'];
+        var headers = doAjax_params['headers'];
+        var dataType = doAjax_params['dataType'];
+        var data = doAjax_params['data'];
+        var beforeSendCallbackFunction = doAjax_params['beforeSendCallbackFunction'];
+        var successCallbackFunction = doAjax_params['successCallbackFunction'];
+        var completeCallbackFunction = doAjax_params['completeCallbackFunction'];
+        var errorCallBackFunction = doAjax_params['errorCallBackFunction'];
+
+        jQuery.ajax({
+            url: url,
+            type: requestType,
+            contentType: contentType,
+            processData: false,
+            headers: headers,
+            dataType: dataType,
+            data: data,
+            xhr: function(){
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        jQuery('.progress.header-progress .progress-bar').css({
+                            width: percentComplete * 100 + '%'
+                        });
+                        if (percentComplete === 1) {
+                            jQuery('.progress.header-progress .progress-bar').addClass('hide');
+                        }
+                    }
+                }, false);
+                xhr.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        jQuery('.progress.header-progress .progress-bar').css({
+                            width: percentComplete * 100 + '%'
+                        });
+                    }
+                }, false);
+                return xhr;
+            },
+            beforeSend: function(jqXHR, settings) {
+                if (typeof beforeSendCallbackFunction === "function") {
+                    beforeSendCallbackFunction();
+                }
+            },
+            success: function(data, textStatus, jqXHR) {
+                if (typeof successCallbackFunction === "function") {
+                    successCallbackFunction(data);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                if (typeof errorCallBackFunction === "function") {
+                    errorCallBackFunction(jqXHR);
+                }
+
+            },
+            complete: function(jqXHR, textStatus) {
+                if (typeof completeCallbackFunction === "function") {
+                    completeCallbackFunction();
+                }
+            }
+        });
+    }
+
+    function getProductSelectList(id, data){
+        $select = '<select name="'+ id + '" id="' + id + '" class="form-control">';
+        $.each(data,function(key, value)
+        {
+            $select += ('<option value=' + key + '>' + value + '</option>');
+        });
+        $select += '</select>';
+
+        return $select;
+    }
+
     jQuery( document ).ready( function( jQuery ) {
 
         jQuery('#parseRecordForm').on('submit', function(e) {
             e.preventDefault();
 
-            jQuery.ajax({
-                type: "POST",
-                url: '{{ route('import_parse') }}',
-                contentType: false,
-                processData: false,
-                data: new FormData(this),
-                headers: {
-                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                },
-
-                xhr: function () {
-                    var xhr = new window.XMLHttpRequest();
-                    xhr.upload.addEventListener("progress", function (evt) {
-                        if (evt.lengthComputable) {
-                            var percentComplete = evt.loaded / evt.total;
-                            console.log(percentComplete);
-                            jQuery('.progress.header-progress .progress-bar').css({
-                                width: percentComplete * 100 + '%'
-                            });
-                            if (percentComplete === 1) {
-                                jQuery('.progress.header-progress .progress-bar').addClass('hide');
-                            }
-                        }
-                    }, false);
-                    xhr.addEventListener("progress", function (evt) {
-                        if (evt.lengthComputable) {
-                            var percentComplete = evt.loaded / evt.total;
-                            console.log(percentComplete);
-                            jQuery('.progress.header-progress .progress-bar').css({
-                                width: percentComplete * 100 + '%'
-                            });
-                        }
-                    }, false);
-                    return xhr;
-                },
-
-                success: function( data ) {
-                    if (data.fail) {
-                        jQuery('#parseRecordForm div.alert-danger').removeClass('d-none').text('Something goes wrong.');
-                    }
-                    else {
-                        jQuery('.importBox1').addClass('disableBox');
-                        jQuery('.importBox2').removeClass('d-none').removeClass('no-opacity');
-                        jQuery('.importBox2 .csvDataBox').html(data.headers_data);
-
-                        jQuery('#title-input').val(data.title);
-                        jQuery('#comment-input').val(data.comment);
-
-                        jQuery('#file-name-data').html(data.file_name);
-                        jQuery('#product-data').html(getProductSelectList('product-select', data.product.original));
-                        jQuery('#location-data').html(getProductSelectList('location-select', data.location.original));
-
-                        jQuery('#temporary-table-id').html(data.temporary_table_id);
-                        jQuery('#samples-data').html(data.samples);
-                        jQuery('#start-date-data').html(data.start_date);
-                        jQuery('#end-date-data').html(data.end_date);
-                        jQuery('#delay-data').html(data.delay);
-                        jQuery('#interval-data').html(data.interval);
-
-                        jQuery('#parseRecordForm div.alert-danger').addClass('d-none');
-                    }
-                },
-                error: function( xhr, status, error ){
-                    jQuery('#parseRecordForm div.alert-danger').removeClass('d-none').text(xhr.responseText);
+            var params = jQuery.extend({}, doAjax_params_default);
+            params['url'] = '{{ route('import_parse') }}';
+            params['contentType'] = false;
+            params['data'] = new FormData(this);
+            params['successCallbackFunction'] = function( data ) {
+                if (data.fail) {
+                    jQuery('#parseRecordForm div.alert-danger').removeClass('d-none').text('Something goes wrong.');
                 }
-            });
+                else {
+                    jQuery('.importBox1').addClass('disableBox');
+                    jQuery('.importBox2').removeClass('d-none').removeClass('no-opacity');
+                    jQuery('.importBox2 .csvDataBox').html(data.headers_data);
+
+                    jQuery('#title-input').val(data.title);
+                    jQuery('#comment-input').val(data.comment);
+
+                    jQuery('#file-name-data').html(data.file_name);
+                    jQuery('#product-data').html(getProductSelectList('product-select', data.product.original));
+                    jQuery('#location-data').html(getProductSelectList('location-select', data.location.original));
+
+                    jQuery('#temporary-table-id').val(data.temporary_table_id);
+                    jQuery('#samples-data').html(data.samples);
+                    jQuery('#start-date-data').html(data.start_date);
+                    jQuery('#end-date-data').html(data.end_date);
+                    jQuery('#delay-data').html(data.delay);
+                    jQuery('#interval-data').html(data.interval);
+
+                    jQuery('#parseRecordForm div.alert-danger').addClass('d-none');
+                }
+            };
+            params['errorCallBackFunction'] = function( jqXHR ){
+                jQuery('#parseRecordForm div.alert-danger').removeClass('d-none').text(jqXHR.responseText);
+            };
+            doAjax(params);
         });
 
 
         jQuery('#submitRecordForm').on('submit', function(e) {
             e.preventDefault();
-            // todo submitRecordForm
+
+            jQuery('.progress.header-progress .progress-bar').removeAttr('style');
+            var params = jQuery.extend({}, doAjax_params_default);
+            params['url'] = '{{ route('save_import') }}';
+            params['data'] = JSON.stringify({
+                headers_data: null,
+
+                title: jQuery('#title-input').val(),
+                comment: jQuery('#comment-input').val(),
+                file_name: jQuery('#file-name-data').text(),
+
+                product: jQuery('#product-select').val(),
+                location: jQuery('#location-select').val(),
+
+                temporary_table_id: jQuery('#temporary-table-id').val(),
+                samples: jQuery('#samples-data').text(),
+                start_date: jQuery('#start-date-data').text(),
+                end_date: jQuery('#end-date-data').text(),
+                delay: jQuery('#delay-data').text(),
+                interval: jQuery('#interval-data').text()
+            });
+            params['successCallbackFunction'] = function( data ) {
+                if (data.fail) {
+                    // todo prit failed data
+                    console.log(data.fail);
+                }
+                else {
+                    // todo print success
+                   console.log(data);
+                }
+            };
+            params['errorCallBackFunction'] = function( jqXHR ){
+                // todo error print
+                console.log(jqXHR);
+            };
+            doAjax(params);
+
         });
 
         jQuery('#submitRecordForm').on('reset', function(e) {
@@ -250,17 +347,6 @@
         });
 
     });
-
-    function getProductSelectList(id, data){
-        $select = '<select name="'+ id + '" id="' + id + '" class="form-control">';
-        $.each(data,function(key, value)
-        {
-            $select += ('<option value=' + key + '>' + value + '</option>');
-        });
-        $select += '</select>';
-
-        return $select;
-    }
 </script>
 @endsection
 
