@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CsvImportRequest;
+use App\TemporaryData;
 use Illuminate\Http\Request;
 
 class ImportController extends Controller
@@ -39,8 +40,32 @@ class ImportController extends Controller
         return $html;
     }
 
+    public function getProducts($selected = null){
+        // todo read from database getProducts
+        return response()->json(
+            array(
+                1 => 'Tuna',
+                2 => 'Orchards',
+                3 => 'Squid',
+            )
+        );
+    }
+
+    public function getLocations($selected = null){
+        // todo read from database getLocations
+        return response()->json(
+            array(
+                1 => 'Cold storage',
+                2 => 'LeM',
+                3 => 'Transport 1',
+                4 => 'Transport 2',
+            )
+        );
+    }
+
     public function parseImport(CsvImportRequest $request) {
         $path = $request->file('csv_file')->getRealPath();
+        $file_name = $request->file('csv_file')->getClientOriginalName();
         $data = array_map('str_getcsv', file($path));
 
         //dump($data);
@@ -57,7 +82,7 @@ class ImportController extends Controller
                 if($row[1] == 'StartDate') $start_date = $row[2] . ', ' . $row[3];
                 if($row[1] == 'EndDate') $end_date = $row[2] . ', ' . $row[3];
                 if($row[1] == 'LogInterval(s)') $interval = $row[2];
-                if($row[1] == 'Measurements"') $samples = $row[2];
+                if($row[1] == 'Measurements') $samples = $row[2];
             }
             if($row[0] != '#'){
                 $nr_rows = $key;
@@ -71,24 +96,26 @@ class ImportController extends Controller
 
         //dump($csv_data[0]);
 
-        // todo get product and location
-
-        // todo save data to temporary table
+        // save data to temporary table
+        $temp_data = TemporaryData::create([
+            'data' => json_encode($data)
+        ]);
 
         // todo get file stats - samples, start times, interval, delay
 
         return response()->json(
             array(
                 'headers_data' => $headers_data,
-                'product' => 'Fish', // todo put select element
-                'location' => $location, // todo put select element
-                'temporary_table_id' => null,
+                'product' => $this->getProducts(),
+                'location' => $this->getLocations( $location ),
+                'temporary_table_id' => $temp_data->id,
                 'samples' => $samples,
                 'start_date' => $start_date,
                 'end_date' => $end_date,
                 'delay' => 0,
                 'interval' => $interval,
                 'title' => $title,
+                'file_name' => $file_name,
                 'comment' => $description
             )
         );

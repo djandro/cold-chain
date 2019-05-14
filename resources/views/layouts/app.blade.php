@@ -174,6 +174,10 @@
                 </div>
             </header>
 
+            <div class="progress header-progress">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+
             <!-- BREADCRUMB-->
             <section class="au-breadcrumb m-t-75">
                 <div class="section__content section__content--p30">

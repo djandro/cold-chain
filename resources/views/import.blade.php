@@ -10,7 +10,7 @@
                 <div class="col-sm-12 importBox1">
 
                     <form class="form-horizontal" method="post" id="parseRecordForm" action="{{ route('import_parse') }}" enctype="multipart/form-data" accept-charset="UTF-8">
-                        {{ csrf_field() }}
+
                         <div class="card">
                             <div class="card-header"><strong>Import</strong> record data</div>
                             <div class="card-body">
@@ -46,9 +46,8 @@
 
 
                 <div class="col-sm-12 importBox2 m-t-20 d-none no-opacity">
-                    <form class="form-horizontal" method="POST" id="submitRecordForm" action="{{ route('import_process') }}">
-                        {{ csrf_field() }}
-                        
+                    <form class="form-horizontal" method="POST" id="submitRecordForm" action="{{ route('import_process') }}" enctype="multipart/form-data" accept-charset="UTF-8">
+
                         <div class="card border border-secondary">
                             <div class="card-header"><strong>Complete</strong> record data</div>
                             <div class="card-body">
@@ -70,19 +69,23 @@
                                     <div class="col-sm-6">
                                         <h4 class="display-5">File report:</h4>
                                         <div class="row form-group">
-                                            <div class="col col-md-3">
+                                            <div class="col col-md-3 m-b-10">
                                                 <input type="hidden" id="temporary-table-id" name="temporary-table-id" />
+                                                <label class="form-control-label">File name:</label>
+                                            </div>
+                                            <div class="col-12 col-md-9 m-b-10">
+                                                <p id="file-name-data" class="form-control-static badge badge-light"></p>
+                                            </div>
+                                            <div class="col col-md-3 m-b-10">
                                                 <label class="form-control-label">Product:</label>
                                             </div>
-                                            <div class="col-12 col-md-9">
-                                                <p id="product-data" class="form-control-static badge badge-light"></p>
+                                            <div class="col-12 col-md-9 m-b-10" id="product-data">
                                             </div>
 
-                                            <div class="col col-md-3">
+                                            <div class="col col-md-3 m-b-10">
                                                 <label class="form-control-label">Location:</label>
                                             </div>
-                                            <div class="col-12 col-md-9">
-                                                <p id="location-data" class="form-control-static badge badge-light"></p>
+                                            <div class="col-12 col-md-9 m-b-10" id="location-data">
                                             </div>
 
                                             <div class="col-sm-12">
@@ -167,6 +170,36 @@
                 contentType: false,
                 processData: false,
                 data: new FormData(this),
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                },
+
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total;
+                            console.log(percentComplete);
+                            jQuery('.progress.header-progress .progress-bar').css({
+                                width: percentComplete * 100 + '%'
+                            });
+                            if (percentComplete === 1) {
+                                jQuery('.progress.header-progress .progress-bar').addClass('hide');
+                            }
+                        }
+                    }, false);
+                    xhr.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total;
+                            console.log(percentComplete);
+                            jQuery('.progress.header-progress .progress-bar').css({
+                                width: percentComplete * 100 + '%'
+                            });
+                        }
+                    }, false);
+                    return xhr;
+                },
+
                 success: function( data ) {
                     if (data.fail) {
                         jQuery('#parseRecordForm div.alert-danger').removeClass('d-none').text('Something goes wrong.');
@@ -179,8 +212,9 @@
                         jQuery('#title-input').val(data.title);
                         jQuery('#comment-input').val(data.comment);
 
-                        jQuery('#product-data').html(data.product);
-                        jQuery('#location-data').html(data.location);
+                        jQuery('#file-name-data').html(data.file_name);
+                        jQuery('#product-data').html(getProductSelectList('product-select', data.product.original));
+                        jQuery('#location-data').html(getProductSelectList('location-select', data.location.original));
 
                         jQuery('#temporary-table-id').html(data.temporary_table_id);
                         jQuery('#samples-data').html(data.samples);
@@ -198,17 +232,35 @@
             });
         });
 
+
+        jQuery('#submitRecordForm').on('submit', function(e) {
+            e.preventDefault();
+            // todo submitRecordForm
+        });
+
         jQuery('#submitRecordForm').on('reset', function(e) {
             e.preventDefault();
             jQuery('#parseRecordForm').trigger("reset");
             jQuery('.importBox1').removeClass('disableBox');
             jQuery('.importBox2').addClass('no-opacity');
+            jQuery('.progress.header-progress .progress-bar').removeAttr('style');
             setTimeout(function(){
                 jQuery('.importBox2').addClass('d-none');
             }, 600);
         });
 
     });
+
+    function getProductSelectList(id, data){
+        $select = '<select name="'+ id + '" id="' + id + '" class="form-control">';
+        $.each(data,function(key, value)
+        {
+            $select += ('<option value=' + key + '>' + value + '</option>');
+        });
+        $select += '</select>';
+
+        return $select;
+    }
 </script>
 @endsection
 
