@@ -252,6 +252,30 @@
         return $select;
     }
 
+    function checkHeaderSelectedData(element) {
+        var $element = element;
+        var value = $element.val();
+        var $headersSelect = jQuery('#csvDataTable tr:last-child select');
+
+        jQuery.each($headersSelect.not($element), function() { //loop all remaining select elements
+            var subValue = jQuery(this).val();
+            if ((subValue === value) && (value != '--ignore--')) { // if value is same reset
+                alert(value + " header column already selected.");
+                console.log('resetting ' + $(this).attr('id')); // demo purpose
+            }
+        });
+    }
+
+    function getHeaderSelectedData(){
+        var tempArr = [], $headersSelect = jQuery('#csvDataTable tr:last-child select');
+
+        jQuery.each($headersSelect, function(key, value){
+            tempArr.push({id: value.name, value: value.value});
+        });
+
+        return tempArr;
+    }
+
     jQuery( document ).ready( function( jQuery ) {
 
         jQuery('#parseRecordForm').on('submit', function(e) {
@@ -285,6 +309,10 @@
                     jQuery('#interval-data').html(data.interval);
 
                     jQuery('#parseRecordForm div.alert-danger').addClass('d-none');
+
+                    jQuery('#csvDataTable tr:last-child select').on('change', function (e) {
+                        checkHeaderSelectedData(jQuery(this));
+                    });
                 }
             };
             params['errorCallBackFunction'] = function( jqXHR ){
@@ -301,7 +329,7 @@
             var params = jQuery.extend({}, doAjax_params_default);
             params['url'] = '{{ route('save_import') }}';
             params['data'] = JSON.stringify({
-                headers_data: null,
+                headers_data: getHeaderSelectedData(),
 
                 title: jQuery('#title-input').val(),
                 comment: jQuery('#comment-input').val(),

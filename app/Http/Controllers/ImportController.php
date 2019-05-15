@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CsvImportRequest;
+use App\Records;
 use App\TemporaryData;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class ImportController extends Controller
@@ -26,7 +29,7 @@ class ImportController extends Controller
         $html .= "<tr>";
         // table body
         foreach($csv_data[0] as $key => $row){
-            $html .= "<td>" . "<select name='fields[" . $key  .  "]' class='form-control'>";
+            $html .= "<td>" . "<select name='fields-" . $key  .  "' class='form-control'>";
             if(!in_array($row, config('app.record_data'))) $row = '--ignore--';
 
             foreach(config('app.record_data') as $db_field){
@@ -124,8 +127,39 @@ class ImportController extends Controller
     public function saveImport(Request $request){
         dump($request->all());
 
+        // save record in db
+        $record = Records::create([
+            'device_id' => 0,
+            'product_id' => $request->input('product'),
+            'location_id' => $request->input('location'),
+            'samples' => $request->input('samples'),
+            'delay_time' => $request->input('delay'),
+            'intervals' => $request->input('interval'),
+            'slr' => 0,
+            'limits' => '',
+            'errors' => '',
+            'alarms' => '',
+            'comments' => $request->input('comment'),
+            'user_id' => Auth::id() != NULL ? Auth::id() : 999, // todo check why null from facades
+            'start_date' => Carbon::parse($request->input('start_date')),
+            'end_date' => Carbon::parse($request->input('end_date')),
+            'file_name' => $request->input('file_name')
+        ]);
+
+        //get from database all data
+        $temporary_table_id = $request->input('temporary_table_id');
+
+
+
+        // headers data
+        $headersData = $request->input('headers_data');
+        foreach($headersData as $key => $row){
+            $columnId = explode("-", $row['id'])[1];
+            dump($columnId . ' : ' . $row['value']);
+        };
+
         return response()->json(
-            $request->all()
+            [$record->id]
         );
     }
 }
