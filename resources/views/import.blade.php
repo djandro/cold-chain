@@ -11,6 +11,14 @@
 
                     <form class="form-horizontal" method="post" id="parseRecordForm" action="{{ route('import_parse') }}" enctype="multipart/form-data" accept-charset="UTF-8">
 
+                        <div class="sufee-alert alert with-close alert-success alert-dismissible fade d-none" id="successBoxAlert">
+                            <span class="badge badge-pill badge-success">Success</span>
+                            You successfully save record data with ID {ID}. <a href="/records/{ID}" class="alert-link">See details on this link.</a>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">x</span>
+                            </button>
+                        </div>
+
                         <div class="card">
                             <div class="card-header"><strong>Import</strong> record data</div>
                             <div class="card-body">
@@ -71,6 +79,7 @@
                                         <div class="row form-group">
                                             <div class="col col-md-3 m-b-10">
                                                 <input type="hidden" id="temporary-table-id" name="temporary-table-id" />
+                                                <input type="hidden" id="user-id" name="user-id" value="{{ Auth::user()->id }}" />
                                                 <label class="form-control-label">File name:</label>
                                             </div>
                                             <div class="col-12 col-md-9 m-b-10">
@@ -135,6 +144,9 @@
 
                                     </div>
 
+                                    <div class="col-sm-12">
+                                        <div class="alert alert-danger m-b-0 d-none" role="alert"></div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -281,6 +293,8 @@
         jQuery('#parseRecordForm').on('submit', function(e) {
             e.preventDefault();
 
+            jQuery("#successBoxAlert").addClass('d-none');
+
             var params = jQuery.extend({}, doAjax_params_default);
             params['url'] = '{{ route('import_parse') }}';
             params['contentType'] = false;
@@ -339,6 +353,7 @@
                 location: jQuery('#location-select').val(),
 
                 temporary_table_id: jQuery('#temporary-table-id').val(),
+                user_id: jQuery('#user-id').val(),
                 samples: jQuery('#samples-data').text(),
                 start_date: jQuery('#start-date-data').text(),
                 end_date: jQuery('#end-date-data').text(),
@@ -347,16 +362,21 @@
             });
             params['successCallbackFunction'] = function( data ) {
                 if (data.fail) {
-                    // todo prit failed data
+                    // todo print failed data
                     console.log(data.fail);
                 }
-                else {
-                    // todo print success
-                   console.log(data);
+                else if(data.status == '200'){
+                    // print success
+                    jQuery('#successBoxAlert').html(jQuery('#successBoxAlert').html().replace(/{ID}/g, data.details.id));
+                    jQuery("#successBoxAlert").removeClass('d-none').addClass('show');
+                    jQuery("#submitRecordForm").trigger('reset');
+                    console.log(data);
                 }
             };
             params['errorCallBackFunction'] = function( jqXHR ){
                 // todo error print
+                jQuery('#submitRecordForm .alert').text(jqXHR.responseText);
+                jQuery('#submitRecordForm .alert').removeClass('d-none');
                 console.log(jqXHR);
             };
             doAjax(params);
@@ -369,6 +389,7 @@
             jQuery('.importBox1').removeClass('disableBox');
             jQuery('.importBox2').addClass('no-opacity');
             jQuery('.progress.header-progress .progress-bar').removeAttr('style');
+            jQuery('#submitRecordForm .alert').addClass('d-none');
             setTimeout(function(){
                 jQuery('.importBox2').addClass('d-none');
             }, 600);

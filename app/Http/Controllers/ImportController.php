@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CsvImportRequest;
 use App\Records;
+use App\RecordsData;
 use App\TemporaryData;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class ImportController extends Controller
 {
+
     public function getImport()
     {
         return view('import');
@@ -140,26 +142,49 @@ class ImportController extends Controller
             'errors' => '',
             'alarms' => '',
             'comments' => $request->input('comment'),
-            'user_id' => Auth::id() != NULL ? Auth::id() : 999, // todo check why null from facades
+            'user_id' => $request->input('user_id'), // todo change to read user-id from backend
             'start_date' => Carbon::parse($request->input('start_date')),
             'end_date' => Carbon::parse($request->input('end_date')),
             'file_name' => $request->input('file_name')
         ]);
 
         //get from database all data
-        $temporary_table_id = $request->input('temporary_table_id');
-
-
-
-        // headers data
+        $csv_data = TemporaryData::find($request->input('temporary_table_id'));
+        $temp_data = json_decode($csv_data->data, true);
         $headersData = $request->input('headers_data');
-        foreach($headersData as $key => $row){
-            $columnId = explode("-", $row['id'])[1];
-            dump($columnId . ' : ' . $row['value']);
+
+        foreach($temp_data as $nrRow => $row){
+
+            // skip first static headers rows
+            if($row[0] === '#') continue;
+            if(in_array($row[0], config('app.record_data'))) continue;
+
+            $recordData = new RecordsData();
+
+            foreach($headersData as $nrCol => $column){
+                $columnId = intval(explode("-", $column['id'])[1]);
+                $columnValue = $column['value'];
+
+                if($columnValue === '--ignore--') continue;
+
+                $recordData[$column['value']] = $row[$columnId];
+            };
+
+            // prepare required timestamp fileds
+            if(is_null($recordData->timestamp)){
+                $recordData->timestamp = Carbon::parse( $recordData->date . ' ' . $recordData->time );
+            }
+
+            //save recordsData to database
+            $recordData->records_id = $record->id;
+            $recordData->save();
+
+            //dump($recordData);
         };
 
-        return response()->json(
-            [$record->id]
-        );
+        return response()->json([
+            'status' => '200',
+            'details' => $record
+        ]);
     }
 }

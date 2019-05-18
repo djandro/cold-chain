@@ -18,11 +18,11 @@ class CreateRecordsData extends Migration
                 $table->bigIncrements('id');
                 $table->foreign('records_id')->references('id')->on('records')->onDelete('cascade');;
                 $table->timestamp('timestamp');
-                $table->float('temperature', 8, 2);
-                $table->float('humidity', 8, 2);
-                $table->float('dew_points', 8, 2);
-                $table->float('battery_voltage', 8, 2);
-                $table->boolean('is_calculated')->defalut(false);
+                $table->float('temperature', 8, 2)->nullable();
+                $table->float('humidity', 8, 2)->nullable();
+                $table->float('dew_points', 8, 2)->nullable();
+                $table->float('battery_voltage', 8, 2)->nullable();
+                $table->boolean('is_calculated')->defalut('0');
             });
         }
     }
