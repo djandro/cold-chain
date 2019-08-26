@@ -33,7 +33,8 @@ mix.styles([
      //'resources/js/vendor/dropzone/min/dropzone.min.css',
      //'resources/js/vendor/slick/slick.css',
      'resources/js/vendor/select2/select2.min.css',
-     'resources/js/vendor/perfect-scrollbar/perfect-scrollbar.css'
+     'resources/js/vendor/perfect-scrollbar/perfect-scrollbar.css',
+     'node_modules/bootstrap-table/dist/bootstrap-table.css'
     ], 'public/css/vendor.css')
     .styles([
      'resources/sass/theme.css'
@@ -52,6 +53,7 @@ mix.styles([
      //'resources/js/vendor/dropzone/min/dropzone.min.js',
      //'resources/js/vendor/chartjs/Chart.bundle.min.js',
      'resources/js/vendor/select2/select2.min.js',
+     'node_modules/bootstrap-table/dist/bootstrap-table.js'
      //'resources/js/vendor/countdown/moment.min.js'
     ], 'public/js/vendor.js')
     .js('resources/js/app.js', 'public/js')

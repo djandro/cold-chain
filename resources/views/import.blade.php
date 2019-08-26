@@ -47,6 +47,13 @@
                                     <i class="fa fa-dot-circle-o"></i>
                                     Parse CSV
                                 </button>
+
+                                <span class="text-small m-l-10 m-r-10">or</span>
+
+                                <button type="button" class="btn btn-secondary" id="generateRecordBtn">
+                                    <i class="fa fa-circle"></i>
+                                    Generate data
+                                </button>
                             </div>
                         </div>
                     </form>

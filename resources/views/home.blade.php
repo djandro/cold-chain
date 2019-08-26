@@ -8,37 +8,37 @@
             <div class="row">
                 <div class="col-md-6 col-lg-3">
                     <div class="statistic__item">
-                        <h2 class="number">10,368</h2>
-                        <span class="desc">members online</span>
+                        <h2 class="number">56</h2>
+                        <span class="desc">records in database</span>
                         <div class="icon">
-                            <i class="zmdi zmdi-account-o"></i>
+                            <i class="zmdi zmdi-chart"></i>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="statistic__item">
-                        <h2 class="number">388,688</h2>
-                        <span class="desc">items sold</span>
+                        <h2 class="number">6</h2>
+                        <span class="desc">products</span>
                         <div class="icon">
-                            <i class="zmdi zmdi-shopping-cart"></i>
+                            <i class="zmdi zmdi-collection-text"></i>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="statistic__item">
-                        <h2 class="number">1,086</h2>
-                        <span class="desc">this week</span>
+                        <h2 class="number">8</h2>
+                        <span class="desc">locations</span>
                         <div class="icon">
-                            <i class="zmdi zmdi-calendar-note"></i>
+                            <i class="zmdi zmdi-pin"></i>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="statistic__item">
-                        <h2 class="number">$1,060,386</h2>
-                        <span class="desc">total earnings</span>
+                        <h2 class="number">3</h2>
+                        <span class="desc">devices</span>
                         <div class="icon">
-                            <i class="zmdi zmdi-money"></i>
+                            <i class="zmdi zmdi-smartphone"></i>
                         </div>
                     </div>
                 </div>

@@ -8,11 +8,14 @@
 
 function setActive(string $path, string $class_name = "active")
 {
-    return Request::path() === $path ? $class_name : "";
+    $paramUrl1 = explode("/", Request::path())[0];
+    $returnUrl = $paramUrl1 != '' ? $paramUrl1 : '/';
+    return $returnUrl === $path ? $class_name : "";
 }
 
 function getCurrentPage()
 {
-    $url = Request::path() === '/' ? '':Request::path();
-    return $url;
+    $url = Request::path() === '/' ? '' : Request::path();
+
+    return explode('/', $url);
 }
