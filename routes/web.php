@@ -19,6 +19,5 @@ Route::get('import', 'ImportController@getImport')->name('import');
 Route::get('records', 'RecordsController@getRecords')->name('records');
 Route::get('/records/{id}', 'RecordController@getRecord')->name('record');
 
-
 //Route::post('import_parse', 'ImportController@parseImport')->name('import_parse');
 //Route::post('save_import', 'ImportController@saveImport')->name('save_import');

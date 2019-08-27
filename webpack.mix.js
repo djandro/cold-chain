@@ -54,6 +54,7 @@ mix.styles([
      //'resources/js/vendor/chartjs/Chart.bundle.min.js',
      'resources/js/vendor/select2/select2.min.js',
      'node_modules/bootstrap-table/dist/bootstrap-table.js'
+     //'node_modules/highcharts/highcharts.js'
      //'resources/js/vendor/countdown/moment.min.js'
     ], 'public/js/vendor.js')
     .js('resources/js/app.js', 'public/js')

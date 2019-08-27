@@ -17,4 +17,7 @@ class RecordsData extends Model
     public function record(){
         return $this->hasOne(Records::class);
     }
+
+
+
 }
