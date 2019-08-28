@@ -14,4 +14,12 @@ class Records extends Model
     public function record_data(){
         return $this->hasMany(RecordsData::class);
     }
+
+    public function product(){
+        return $this->hasOne(Product::class);
+    }
+
+    public function location(){
+        return $this->hasMany(Location::class);
+    }
 }

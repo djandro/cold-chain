@@ -40,7 +40,12 @@
                                 <td data-field="start_date">{{ $record->start_date }}</td>
                                 <td data-field="location">{{ $record->location_id }}</td>
                                 <td data-field="product">{{ $record->product_id }}</td>
-                                <td><a href="/records/{{ $record->id }}">Details</a> / <a href="#">Delete</a></td>
+                                <td>
+                                    <a class="btn btn-sm btn-outline-primary" href="/records/{{ $record->id }}" role="button"><b>Details</b></a>
+                                    <button type="button" class="btn btn-sm btn-outline-link text-secondary">
+                                        Delete
+                                    </button>
+                                </td>
                             </tr>
 
                         @endforeach

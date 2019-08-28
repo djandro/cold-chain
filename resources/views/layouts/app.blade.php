@@ -57,61 +57,9 @@
                     </form>
                 </div>
                 @endguest
-                <nav class="navbar-sidebar2">
-                    <ul class="list-unstyled navbar__list">
-                        <li class="{{ setActive('/', 'active') }}">
-                            <a href="{{ url('/') }}">
-                                <i class="fas fa-copy"></i>Dashboard
-                            </a>
-                        </li>
-                        <li class="{{ setActive('import', 'active') }}">
-                            <a href="{{ url('import') }}">
-                                <i class="fas fa-tachometer-alt"></i>Import data
-                            </a>
-                        </li>
-                        <li class="{{ setActive('records', 'active') }} has-sub">
-                            <a class="js-arrow" href="{{ url('records') }}">
-                                <i class="fas fa-chart-bar"></i>Display and analysis
-                                <span class="arrow">
-                                    <i class="fas fa-angle-down"></i>
-                                </span>
-                            </a>
-                            <ul class="list-unstyled navbar__sub-list js-sub-list">
-                                <li>
-                                    <a href="/records">
-                                        <i class="zmdi zmdi-format-list-bulleted"></i>Records
-                                    </a>
-                                </li>
-                                <!--<li>
-                                    <a href="#">
-                                        <i class="zmdi zmdi-notifications"></i>Notifications
-                                    </a>
-                                </li>-->
-                            </ul>
-                        </li>
-                        <li class="{{ setActive('settings', 'active') }} has-sub">
-                            <a class="js-arrow" href="{{ url('settings') }}">
-                                <i class="zmdi zmdi-settings"></i>Settings
-                                <span class="arrow">
-                                    <i class="fas fa-angle-down"></i>
-                                </span>
-                            </a>
-                            <ul class="list-unstyled navbar__sub-list js-sub-list">
-                                <li>
-                                    <a href="#">
-                                        <i class="fab fa-flickr"></i>Products</a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="fas fa-map-marker-alt"></i>Locations</a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="zmdi zmdi-account"></i>Account</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </nav>
+
+                @include('partials.menu')
+
             </div>
         </aside>
         <!-- END MENU SIDEBAR-->
@@ -124,10 +72,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-sm-6">
-
                                 {{ Breadcrumbs::render() }}
-
-                                <!-- END BREADCRUMB-->
                             </div>
                         </div>
                     </div>

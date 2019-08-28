@@ -14,7 +14,7 @@ class RecordsController extends Controller
 
     public function getRecords()
     {
-        $records = Records::paginate(10);
+        $records = Records::orderBy('id', 'desc')->paginate(10);
 
         return view('records', [
             'records' => $records

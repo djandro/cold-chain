@@ -18,6 +18,4 @@ class RecordsData extends Model
         return $this->hasOne(Records::class);
     }
 
-
-
 }

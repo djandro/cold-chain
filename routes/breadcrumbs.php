@@ -18,3 +18,8 @@ Breadcrumbs::for('record', function ($trail, $recordId) {
     $trail->parent('records');
     $trail->push('Record ' . $recordId, route('record', $recordId));
 });
+
+Breadcrumbs::for('settings', function ($trail) {
+    $trail->parent('home');
+    $trail->push('Settings', route('settings'));
+});
