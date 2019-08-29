@@ -18,39 +18,43 @@
             <div class="row">
                 <div class="col-sm-12">
 
-                    <table data-toggle="table" data-sortable="true" data-sort-class="table-active" data-pagination="true" data-search="true">
+                    <div class="table-responsive">
 
-                        <thead>
-                        <tr>
-                            <th data-field="id" data-sortable="true">ID</th>
-                            <th data-field="type" data-sortable="true">Type</th>
-                            <th data-field="start_date" data-sortable="true">Start Date</th>
-                            <th data-field="location">Location</th>
-                            <th data-field="product">Product</th>
-                            <th></th>
-                        </tr>
-                        </thead>
+                        <table data-classes="table table-borderless table-striped table-earning" data-toggle="table" data-sortable="true" data-sort-class="table-active" data-pagination="true" data-search="true">
 
-                        <tbody>
-                        @foreach ($records as $record)
-
+                            <thead>
                             <tr>
-                                <td data-field="id">{{ $record->id }}</td>
-                                <td data-field="type">{{ $record->device_id }}</td>
-                                <td data-field="start_date">{{ $record->start_date }}</td>
-                                <td data-field="location">{{ $record->location_id }}</td>
-                                <td data-field="product">{{ $record->product_id }}</td>
-                                <td>
-                                    <a class="btn btn-sm btn-outline-primary" href="/records/{{ $record->id }}" role="button"><b>Details</b></a>
-                                    <button type="button" class="btn btn-sm btn-outline-link text-secondary">
-                                        Delete
-                                    </button>
-                                </td>
+                                <th data-field="id" data-sortable="true">ID</th>
+                                <th data-field="type" data-sortable="true">Type</th>
+                                <th data-field="start_date" data-sortable="true">Start Date</th>
+                                <th data-field="location">Location</th>
+                                <th data-field="product">Product</th>
+                                <th></th>
                             </tr>
+                            </thead>
 
-                        @endforeach
-                        </tbody>
-                    </table>
+                            <tbody>
+                            @foreach ($records as $record)
+
+                                <tr>
+                                    <td data-field="id">{{ $record->id }}</td>
+                                    <td data-field="type">{{ $record->device_id }}</td>
+                                    <td data-field="start_date">{{ $record->start_date }}</td>
+                                    <td data-field="location">{{ $record->location_id }}</td>
+                                    <td data-field="product">{{ $record->product_id }}</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-primary" href="/records/{{ $record->id }}" role="button"><b>Details</b></a>
+                                        <button type="button" class="btn btn-sm btn-outline-link text-secondary">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
             </div>
 

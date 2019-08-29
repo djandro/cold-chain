@@ -21,6 +21,5 @@ Route::get('/records/{id}', 'RecordController@getRecord')->name('record');
 
 Route::get('settings', 'SettingsController@index')->name('settings');
 
-
 //Route::post('import_parse', 'ImportController@parseImport')->name('import_parse');
 //Route::post('save_import', 'ImportController@saveImport')->name('save_import');

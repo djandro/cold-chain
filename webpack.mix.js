@@ -41,7 +41,8 @@ mix.styles([
     ], 'public/css/theme.css')
 //    .js('resources/js/vendor/jquery-3.2.1.min.js', 'public/js/jquery.js')
     .js([
-     //'resources/js/vendor/bootstrap-4.1/popper.min.js',
+     'resources/js/vendor/bootstrap-4.1/popper.min.js',
+     'resources/js/vendor/bootstrap-4.1/bootstrap.min.js',
      //'resources/js/vendor/slick/slick.min.js',
      //'resources/js/vendor/wow/wow.min.js',
      //'resources/js/vendor/animsition/animsition.min.js',
@@ -53,7 +54,7 @@ mix.styles([
      //'resources/js/vendor/dropzone/min/dropzone.min.js',
      //'resources/js/vendor/chartjs/Chart.bundle.min.js',
      'resources/js/vendor/select2/select2.min.js',
-     'node_modules/bootstrap-table/dist/bootstrap-table.js'
+     //'node_modules/bootstrap-table/dist/bootstrap-table.js'
      //'node_modules/highcharts/highcharts.js'
      //'resources/js/vendor/countdown/moment.min.js'
     ], 'public/js/vendor.js')

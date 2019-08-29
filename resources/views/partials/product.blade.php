@@ -10,89 +10,42 @@
                 </button>
             </h3>
             <div class="table-responsive table-data">
-                <table class="table table-hover">
+                <table id="products-table" data-classes="table table-hover" data-toggle="table" data-sortable="true" data-sort-class="table-active" data-pagination="true" data-url="{{ route('products') }}">
                     <thead>
                     <tr>
-                        <td>name</td>
-                        <td>SLT</td>
-                        <td>Storage T (interval)</td>
-                        <td>Microbiological data</td>
-                        <td>SL</td>
-                        <td>Description</td>
-                        <td></td>
+                        <th data-field="name" data-sortable="true">Name</th>
+                        <th data-field="slt" data-sortable="true">SLT</th>
+                        <th data-field="storage_t" data-sortable="true">Storage T (interval)</th>
+                        <th data-field="description" data-sortable="true">Description</th>
+                        <th data-field="id" data-formatter="btnFormatter"></th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>
-                            <div class="table-data__info">
-                                <h6>fish Orada</h6>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="role user">4</span>
-                        </td>
-                        <td>
-                            <span>2; 4; 5; 6</span>
-                        </td>
-                        <td>
-                            k = 12.3
-                        </td>
-                        <td>
-                            ST_min = 0 <br/>
-                            ST_max = 4
-                        </td>
-                        <td>
-                            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span>
-                        </td>
-                        <td>
-                            <div class="table-data-feature">
-                                <button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit">
-                                    <i class="zmdi zmdi-edit"></i>
-                                </button>
-                                <button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
-                                    <i class="zmdi zmdi-delete"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <div class="table-data__info">
-                                <h6>fish Orada</h6>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="role user">4</span>
-                        </td>
-                        <td>
-                            <span>2; 4; 5; 6</span>
-                        </td>
-                        <td>
-                            k = 12.3
-                        </td>
-                        <td>
-                            ST_min = 0 <br/>
-                            ST_max = 4
-                        </td>
-                        <td>
-                            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span>
-                        </td>
-                        <td>
-                            <div class="table-data-feature">
-                                <button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit">
-                                    <i class="zmdi zmdi-edit"></i>
-                                </button>
-                                <button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
-                                    <i class="zmdi zmdi-delete"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+@section('scripts')
+<script type="application/javascript" defer>
+
+    function btnFormatter(value) {
+        $html = '<div class="table-data-feature">';
+            $html += '<button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit" data-product-id="' + value + '">';
+                $html += '<i class="zmdi zmdi-edit"></i>';
+            $html += '</button>';
+            $html += '<button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete" data-product-id="' + value + '">';
+                $html += '<i class="zmdi zmdi-delete"></i>';
+            $html += '</button>';
+        $html += '</div>';
+
+        return $html;
+    }
+
+    jQuery( document ).ready( function( jQuery ) {
+        jQuery('#products-table').bootstrapTable({
+            //todo
+        });
+    });
+</script>
+@endsection

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
@@ -14,6 +16,11 @@ class ProductController extends Controller
      */
     public function index()
     {
+        $products = Product::orderBy('id', 'desc')->get();
+
+        //$html = View::make('partials.product', compact('settings'))->render();
+
+        return Response::json($products);
     }
 
     /**

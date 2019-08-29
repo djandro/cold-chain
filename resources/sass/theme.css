@@ -1645,8 +1645,9 @@ section {
 .header-mobile {
     position: absolute;
     top: 0;
-    left: 0;
-    right: 0;
+    left: 0; right: 0;
+    background: #365cad;
+    z-index: 9999;
 }
 
 .header-mobile .header-mobile__bar {
@@ -2300,8 +2301,9 @@ section {
 
 @media (max-width: 991px) {
     .header-desktop2 {
-        left: 0;
+        left: 0; top: 75px;
         position: relative;
+        background: #808080;
     }
 }
 

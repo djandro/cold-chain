@@ -19,3 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('import_parse', 'ImportController@parseImport')->name('import_parse'); /* ->middleware('auth'); */
 Route::post('save_import', 'ImportController@saveImport')->name('save_import');
+
+Route::get('products', 'ProductController@index')->name('products');
