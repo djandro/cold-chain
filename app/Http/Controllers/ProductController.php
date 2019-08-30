@@ -17,9 +17,6 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::orderBy('id', 'desc')->get();
-
-        //$html = View::make('partials.product', compact('settings'))->render();
-
         return Response::json($products);
     }
 
@@ -38,9 +35,30 @@ class ProductController extends Controller
      *
      * @return Response
      */
-    public function store()
+    public function store(Request $request)
     {
-        //
+        dump($request->all());
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|unique:recipes|max:125',
+            'slt' => 'required|number'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('recipes/create')
+            ->withErrors($validator)
+            ->withInput();
+        }
+
+        // save record in db
+        $product = Product::create([
+            //'product_id' => $request->input('product'),
+        ]);
+
+        return response()->json([
+            'status' => '200',
+            'details' => $product
+        ]);
     }
 
     /**

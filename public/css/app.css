@@ -10885,3 +10885,7 @@ a.text-dark:focus {
   margin-top: 80px !important;
 }
 
+.modal_on_page .section__content {
+  z-index: auto;
+}
+

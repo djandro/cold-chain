@@ -21,3 +21,7 @@ Route::post('import_parse', 'ImportController@parseImport')->name('import_parse'
 Route::post('save_import', 'ImportController@saveImport')->name('save_import');
 
 Route::get('products', 'ProductController@index')->name('products');
+
+Route::post('products/store', 'ProductController@store');
+
+//Route::resource('products', 'ProductController');

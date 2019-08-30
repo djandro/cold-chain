@@ -240,83 +240,85 @@
 
 })(jQuery);
 
-var doAjax_params_default = {
-  'url': null,
-  'requestType': "POST",
-  'contentType': 'application/json',
-  'headers': { 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content') },
-  'dataType': 'json',
-  'data': {},
-  'beforeSendCallbackFunction': null,
-  'successCallbackFunction': null,
-  'completeCallbackFunction': null,
-  'errorCallBackFunction': null
-};
+function AjaxSettings(){
+  var doAjax_params_default = {
+    'url': null,
+    'requestType': "POST",
+    'contentType': 'application/json',
+    'headers': { 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content') },
+    'dataType': 'json',
+    'data': {},
+    'beforeSendCallbackFunction': null,
+    'successCallbackFunction': null,
+    'completeCallbackFunction': null,
+    'errorCallBackFunction': null
+  };
 
-function doAjax(doAjax_params) {
+  function doAjax(doAjax_params) {
 
-  var url = doAjax_params['url'];
-  var requestType = doAjax_params['requestType'];
-  var contentType = doAjax_params['contentType'];
-  var headers = doAjax_params['headers'];
-  var dataType = doAjax_params['dataType'];
-  var data = doAjax_params['data'];
-  var beforeSendCallbackFunction = doAjax_params['beforeSendCallbackFunction'];
-  var successCallbackFunction = doAjax_params['successCallbackFunction'];
-  var completeCallbackFunction = doAjax_params['completeCallbackFunction'];
-  var errorCallBackFunction = doAjax_params['errorCallBackFunction'];
+    var url = doAjax_params['url'];
+    var requestType = doAjax_params['requestType'];
+    var contentType = doAjax_params['contentType'];
+    var headers = doAjax_params['headers'];
+    var dataType = doAjax_params['dataType'];
+    var data = doAjax_params['data'];
+    var beforeSendCallbackFunction = doAjax_params['beforeSendCallbackFunction'];
+    var successCallbackFunction = doAjax_params['successCallbackFunction'];
+    var completeCallbackFunction = doAjax_params['completeCallbackFunction'];
+    var errorCallBackFunction = doAjax_params['errorCallBackFunction'];
 
-  jQuery.ajax({
-    url: url,
-    type: requestType,
-    contentType: contentType,
-    processData: false,
-    headers: headers,
-    dataType: dataType,
-    data: data,
-    xhr: function(){
-      var xhr = new window.XMLHttpRequest();
-      xhr.upload.addEventListener("progress", function (evt) {
-        if (evt.lengthComputable) {
-          var percentComplete = evt.loaded / evt.total;
-          jQuery('.progress.header-progress .progress-bar').css({
-            width: percentComplete * 100 + '%'
-          });
-          if (percentComplete === 1) {
-            jQuery('.progress.header-progress .progress-bar').addClass('hide');
+    jQuery.ajax({
+      url: url,
+      type: requestType,
+      contentType: contentType,
+      processData: false,
+      headers: headers,
+      dataType: dataType,
+      data: data,
+      xhr: function(){
+        var xhr = new window.XMLHttpRequest();
+        xhr.upload.addEventListener("progress", function (evt) {
+          if (evt.lengthComputable) {
+            var percentComplete = evt.loaded / evt.total;
+            jQuery('.progress.header-progress .progress-bar').css({
+              width: percentComplete * 100 + '%'
+            });
+            if (percentComplete === 1) {
+              jQuery('.progress.header-progress .progress-bar').addClass('hide');
+            }
           }
+        }, false);
+        xhr.addEventListener("progress", function (evt) {
+          if (evt.lengthComputable) {
+            var percentComplete = evt.loaded / evt.total;
+            jQuery('.progress.header-progress .progress-bar').css({
+              width: percentComplete * 100 + '%'
+            });
+          }
+        }, false);
+        return xhr;
+      },
+      beforeSend: function(jqXHR, settings) {
+        if (typeof beforeSendCallbackFunction === "function") {
+          beforeSendCallbackFunction();
         }
-      }, false);
-      xhr.addEventListener("progress", function (evt) {
-        if (evt.lengthComputable) {
-          var percentComplete = evt.loaded / evt.total;
-          jQuery('.progress.header-progress .progress-bar').css({
-            width: percentComplete * 100 + '%'
-          });
+      },
+      success: function(data, textStatus, jqXHR) {
+        if (typeof successCallbackFunction === "function") {
+          successCallbackFunction(data);
         }
-      }, false);
-      return xhr;
-    },
-    beforeSend: function(jqXHR, settings) {
-      if (typeof beforeSendCallbackFunction === "function") {
-        beforeSendCallbackFunction();
-      }
-    },
-    success: function(data, textStatus, jqXHR) {
-      if (typeof successCallbackFunction === "function") {
-        successCallbackFunction(data);
-      }
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      if (typeof errorCallBackFunction === "function") {
-        errorCallBackFunction(jqXHR);
-      }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        if (typeof errorCallBackFunction === "function") {
+          errorCallBackFunction(jqXHR);
+        }
 
-    },
-    complete: function(jqXHR, textStatus) {
-      if (typeof completeCallbackFunction === "function") {
-        completeCallbackFunction();
+      },
+      complete: function(jqXHR, textStatus) {
+        if (typeof completeCallbackFunction === "function") {
+          completeCallbackFunction();
+        }
       }
-    }
-  });
+    });
+  }
 }
