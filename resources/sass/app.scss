@@ -166,3 +166,15 @@
 .modal_on_page{
     .section__content{z-index: auto; }
 }
+
+.fixed-table-pagination{
+    margin: 0 12px;
+    font-size: 12px;
+    color: #666;
+
+    .page-link{ color: #aaa; }
+    .page-item.active .page-link{
+        background-color: #aaa;
+        border-color: #aaa;
+    }
+}

@@ -21,7 +21,9 @@ Route::post('import_parse', 'ImportController@parseImport')->name('import_parse'
 Route::post('save_import', 'ImportController@saveImport')->name('save_import');
 
 Route::get('products', 'ProductController@index')->name('products');
+Route::get('products/edit/{id}', 'ProductController@edit')->name('products.edit');
+Route::post('products/store', 'ProductController@store')->name('products.store');
+Route::delete('products/delete/{id}', 'ProductController@destroy')->name('products.destroy');
 
-Route::post('products/store', 'ProductController@store');
 
 //Route::resource('products', 'ProductController');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -21,38 +22,34 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @return Response
      */
     public function store(Request $request)
     {
-        dump($request->all());
+        //dump($request->all());
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:recipes|max:125',
-            'slt' => 'required|number'
+            'name' => 'required|max:125',
+            'slt' => 'required|numeric',
+            'storage_t' => 'required'
         ]);
 
         if ($validator->fails()) {
-            return redirect('recipes/create')
+            return redirect('settings')
             ->withErrors($validator)
             ->withInput();
         }
 
         // save record in db
-        $product = Product::create([
-            //'product_id' => $request->input('product'),
+        $product = Product::updateOrCreate([
+            'id' => $request->input('id')
+        ],[
+            'name' => $request->input('name'),
+            'slt' => $request->input('slt'),
+            'storage_t' => $request->input('storage_t'),
+            'description' => $request->input('description')
         ]);
 
         return response()->json([
@@ -81,18 +78,13 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
-    }
+        $where = array('id' => $id);
+        $product  = Product::where($where)->first();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function update($id)
-    {
-        //
+        return response()->json([
+            'status' => '200',
+            'details' => $product
+        ]);
     }
 
     /**
@@ -103,6 +95,11 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Product::find($id)->delete($id);
+
+        return response()->json([
+            'status' => '200',
+            'id' => $id
+        ]);
     }
 }

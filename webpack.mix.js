@@ -41,8 +41,8 @@ mix.styles([
     ], 'public/css/theme.css')
 //    .js('resources/js/vendor/jquery-3.2.1.min.js', 'public/js/jquery.js')
     .js([
-     'resources/js/vendor/bootstrap-4.1/popper.min.js',
-     'resources/js/vendor/bootstrap-4.1/bootstrap.min.js',
+     //'resources/js/vendor/bootstrap-4.1/popper.min.js',
+     //'resources/js/vendor/bootstrap-4.1/bootstrap.min.js',
      //'resources/js/vendor/slick/slick.min.js',
      //'resources/js/vendor/wow/wow.min.js',
      //'resources/js/vendor/animsition/animsition.min.js',

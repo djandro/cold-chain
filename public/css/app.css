@@ -10889,3 +10889,18 @@ a.text-dark:focus {
   z-index: auto;
 }
 
+.fixed-table-pagination {
+  margin: 0 12px;
+  font-size: 12px;
+  color: #666;
+}
+
+.fixed-table-pagination .page-link {
+  color: #aaa;
+}
+
+.fixed-table-pagination .page-item.active .page-link {
+  background-color: #aaa;
+  border-color: #aaa;
+}
+
