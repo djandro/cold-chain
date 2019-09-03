@@ -321,3 +321,24 @@ function doAjax(doAjax_params) {
     }
   });
 }
+
+function nameFormatter(value) {
+  return '<span class="role user">' + value + '</span>';
+}
+function colorFormatter(value) {
+  return '<span class="badge badge-warning">' + value + '</span>';
+}
+
+
+function btnFormatter(value) {
+  $html = '<div class="table-data-feature">';
+  $html += '<button class="item btnItemEdit" data-toggle="tooltip" data-placement="top" title="Edit" data-original-title="Edit" data-product-id="' + value + '">';
+  $html += '<i class="zmdi zmdi-edit"></i>';
+  $html += '</button>';
+  $html += '<button class="item btnItemDelete" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" data-product-id="' + value + '">';
+  $html += '<i class="zmdi zmdi-delete"></i>';
+  $html += '</button>';
+  $html += '</div>';
+
+  return $html;
+}

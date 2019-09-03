@@ -33,7 +33,8 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:125',
             'slt' => 'required|numeric',
-            'storage_t' => 'required'
+            'storage_t_min' => 'required|numeric',
+            'storage_t_max' => 'required|numeric'
         ]);
 
         if ($validator->fails()) {
@@ -48,7 +49,7 @@ class ProductController extends Controller
         ],[
             'name' => $request->input('name'),
             'slt' => $request->input('slt'),
-            'storage_t' => $request->input('storage_t'),
+            'storage_t' => $request->input('storage_t_min') . ";" . $request->input('storage_t_max'),
             'description' => $request->input('description')
         ]);
 

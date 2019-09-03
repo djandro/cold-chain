@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class LocationController extends Controller
 {
@@ -13,16 +17,8 @@ class LocationController extends Controller
      */
     public function index()
     {
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
+        $locations = Location::orderBy('id', 'desc')->get();
+        return Response::json($locations);
     }
 
     /**
@@ -30,9 +26,36 @@ class LocationController extends Controller
      *
      * @return Response
      */
-    public function store()
+    public function store(Request $request)
     {
-        //
+        //dump($request->all());
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:125',
+            't_alert_min' => 'required|numeric',
+            't_alert_max' => 'required|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('settings')
+            ->withErrors($validator)
+            ->withInput();
+        }
+
+        // save record in db
+        $location = Location::updateOrCreate([
+            'id' => $request->input('id')
+        ],[
+            'name' => $request->input('name'),
+            'storage_t' => $request->input('t_alert_min') . ';' . $request->input('t_alert_max'),
+            'description' => $request->input('description'),
+            'color' => $request->input('color')
+        ]);
+
+        return response()->json([
+            'status' => '200',
+            'details' => $location
+        ]);
     }
 
     /**
@@ -43,8 +66,8 @@ class LocationController extends Controller
      */
     public function show($id)
     {
-        $product = Product::find($id);
-        return view('product.show', array('product' => $product));
+        $location = Location::find($id);
+        return view('location.show', array('location' => $location));
     }
 
     /**
@@ -55,18 +78,13 @@ class LocationController extends Controller
      */
     public function edit($id)
     {
-        //
-    }
+        $where = array('id' => $id);
+        $location = Location::where($where)->first();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function update($id)
-    {
-        //
+        return response()->json([
+            'status' => '200',
+            'details' => $location
+        ]);
     }
 
     /**
@@ -77,6 +95,11 @@ class LocationController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Location::find($id)->delete($id);
+
+        return response()->json([
+            'status' => '200',
+            'id' => $id
+        ]);
     }
 }

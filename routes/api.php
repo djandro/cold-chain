@@ -25,5 +25,8 @@ Route::get('products/edit/{id}', 'ProductController@edit')->name('products.edit'
 Route::post('products/store', 'ProductController@store')->name('products.store');
 Route::delete('products/delete/{id}', 'ProductController@destroy')->name('products.destroy');
 
+Route::get('locations', 'LocationController@index')->name('locations');
+Route::get('locations/edit/{id}', 'LocationController@edit')->name('locations.edit');
+Route::post('locations/store', 'LocationController@store')->name('locations.store');
+Route::delete('locations/delete/{id}', 'LocationController@destroy')->name('locations.destroy');
 
-//Route::resource('products', 'ProductController');

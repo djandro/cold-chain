@@ -15,7 +15,7 @@
                     <thead>
                     <tr>
                         <th data-field="name" data-sortable="true">Name</th>
-                        <th data-field="slt" data-sortable="true">SLT</th>
+                        <th data-field="slt" data-sortable="true" data-formatter="nameFormatter">SLT</th>
                         <th data-field="storage_t" data-sortable="true">Storage T (interval)</th>
                         <th data-field="description" data-sortable="true">Description</th>
                         <th data-field="id" data-formatter="btnFormatter"></th>
@@ -62,10 +62,15 @@
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3 text-right">
-                            <label for="product-input-storage" class="form-control-label">Storage T *</label>
+                            <label for="product-input-storage-min" class="form-control-label">Storage T *</label>
                         </div>
-                        <div class="col-12 col-md-9">
-                            <input type="text" id="product-input-storage" name="product-input-storage" placeholder="4-5" class="form-control" required>
+                        <div class="col-12 col-sm-2">
+                            <input type="number" step="0.1" id="product-input-storage-min" name="product-input-storage-min" placeholder="min" class="form-control" required>
+                        </div>
+                        <div class="col-12 col-sm-2">
+                            <input type="number" step="0.1" id="product-input-storage-max" name="product-input-storage-max" placeholder="max" class="form-control" required>
+                        </div>
+                        <div class="col-12 offset-sm-3 col-sm-12">
                             <small class="form-text text-muted">Insert a interval of storage temparature in Celzium - min, max.</small>
                         </div>
                     </div>
@@ -98,19 +103,6 @@
 @section('scripts')
 <script type="application/javascript" defer>
 
-    function btnFormatter(value) {
-        $html = '<div class="table-data-feature">';
-            $html += '<button class="item btnItemEdit" data-toggle="tooltip" data-placement="top" title="Edit" data-original-title="Edit" data-product-id="' + value + '">';
-                $html += '<i class="zmdi zmdi-edit"></i>';
-            $html += '</button>';
-            $html += '<button class="item btnItemDelete" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" data-product-id="' + value + '">';
-                $html += '<i class="zmdi zmdi-delete"></i>';
-            $html += '</button>';
-        $html += '</div>';
-
-        return $html;
-    }
-
     jQuery( document ).ready( function( jQuery ) {
 
         jQuery('#addProductModal').on('hidden.bs.modal', function (e) {
@@ -130,7 +122,8 @@
                 name: jQuery('#product-input-name').val(),
                 slt: jQuery('#product-input-slt').val(),
                 description: jQuery('#product-input-desc').val(),
-                storage_t: jQuery('#product-input-storage').val()
+                storage_t_min: jQuery('#product-input-storage-min').val(),
+                storage_t_max: jQuery('#product-input-storage-max').val()
             };
 
             if(id != '') tempData.id = id;
@@ -214,11 +207,13 @@
                 }
                 else if(data.status == '200'){
                     // print success
+                    var storage_t = data.details.storage_t.split(';');
                     jQuery('#product-input-id').val(id);
                     jQuery('#product-input-name').val(data.details.name);
                     jQuery('#product-input-slt').val(data.details.slt);
                     jQuery('#product-input-desc').val(data.details.description);
-                    jQuery('#product-input-storage').val(data.details.storage_t);
+                    jQuery('#product-input-storage-min').val(storage_t[0]);
+                    jQuery('#product-input-storage-max').val(storage_t[1]);
                 }
             };
             params['errorCallBackFunction'] = function( jqXHR ){

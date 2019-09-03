@@ -178,3 +178,28 @@
         border-color: #aaa;
     }
 }
+
+.bootstrap-table .fixed-table-container{
+    .fixed-table-body .fixed-table-loading .loading-wrap .loading-text{
+        font-size: 22px!important;
+        margin-top: 30px!important;
+    }
+    .table {
+        thead{
+            th{
+                color: #808080;
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                border: none!important;
+            }
+            th div{
+                border-top: none!important;
+                border-bottom: 1px solid #f2f2f2!important;
+            }
+            th .sortable,
+            th .th-inner{ padding: 23px 10px 33px 40px!important; }
+        }
+        tbody td.desc{ color: #4272d7; }
+    }
+}
