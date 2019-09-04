@@ -1,7 +1,7 @@
 <!-- ROW ACCOUNT -->
 <div class="row">
     <div class="col-md-12">
-        <div class="user-data m-b-30">
+        <div id="accountsBox" class="user-data m-b-30">
             <h3 class="title-3 m-b-30">
                 <i class="zmdi zmdi-account-calendar"></i>user data
             </h3>

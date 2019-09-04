@@ -49,3 +49,7 @@
 </section>
 <!-- END SETTINGS-->
 @endsection
+
+@section('scripts')
+<script src="{{ asset('js/settings.js') }}" type="application/javascript" defer></script>
+@endsection

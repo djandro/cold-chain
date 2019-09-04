@@ -6,6 +6,7 @@ use App\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class LocationController extends Controller
@@ -15,10 +16,12 @@ class LocationController extends Controller
      *
      * @return Response
      */
+
     public function index()
     {
         $locations = Location::orderBy('id', 'desc')->get();
-        return Response::json($locations);
+
+        return Response::json( $locations );
     }
 
     /**

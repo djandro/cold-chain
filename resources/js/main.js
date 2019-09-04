@@ -326,16 +326,18 @@ function nameFormatter(value) {
   return '<span class="role user">' + value + '</span>';
 }
 function colorFormatter(value) {
-  return '<span class="badge badge-warning">' + value + '</span>';
+  if(value == 'yellow') return '<span class="badge badge-warning">' + value + '</span>';
+  if(value == 'red') return '<span class="badge badge-danger">' + value + '</span>';
+  if(value == 'blue') return '<span class="badge badge-primary">' + value + '</span>';
+  if(value == 'green') return '<span class="badge badge-success">' + value + '</span>';
 }
-
 
 function btnFormatter(value) {
   $html = '<div class="table-data-feature">';
-  $html += '<button class="item btnItemEdit" data-toggle="tooltip" data-placement="top" title="Edit" data-original-title="Edit" data-product-id="' + value + '">';
+  $html += '<button class="item btnItemEdit" data-toggle="tooltip" data-placement="top" title="Edit" data-original-title="Edit" data-item-id="' + value + '">';
   $html += '<i class="zmdi zmdi-edit"></i>';
   $html += '</button>';
-  $html += '<button class="item btnItemDelete" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" data-product-id="' + value + '">';
+  $html += '<button class="item btnItemDelete" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" data-item-id="' + value + '">';
   $html += '<i class="zmdi zmdi-delete"></i>';
   $html += '</button>';
   $html += '</div>';

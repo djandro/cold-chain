@@ -1,7 +1,7 @@
 <!-- ROW LOCATIONS -->
 <div class="row">
     <div class="col-sm-12">
-        <div class="user-data m-b-30">
+        <div id="locationsBox" class="user-data m-b-30">
             <h3 class="title-3 m-b-30">
                 <i class="fas fa-map-marker-alt"></i>Locations
 
@@ -15,8 +15,7 @@
                     <thead>
                     <tr>
                         <th data-field="name" data-sortable="true">Name</th>
-                        <th data-field="t_alert_min" data-sortable="true" data-formatter="nameFormatter">T_alert_Min</th>
-                        <th data-field="t_alert_max" data-sortable="true" data-formatter="nameFormatter">T_alert_Max</th>
+                        <th data-field="storage_t" data-formatter="nameFormatter">Storage T</th>
                         <th data-field="description">Description</th>
                         <th data-field="color" data-formatter="colorFormatter">Color</th>
                         <th data-field="id" data-formatter="btnFormatter"></th>
@@ -76,7 +75,7 @@
                                 <option value="yellow">Yellow</option>
                                 <option value="red">Red</option>
                                 <option value="blue">Blue</option>
-                                <option value="orange">Orange</option>
+                                <option value="green">Green</option>
                             </select>
                         </div>
                     </div>
@@ -104,133 +103,3 @@
     </form>
 </div>
 <!-- end modal add location -->
-
-@section('scripts')
-<script type="application/javascript" defer>
-
-    jQuery( document ).ready( function( jQuery ) {
-
-        jQuery('#addLocationModal').on('hidden.bs.modal', function (e) {
-            jQuery('#addProductModal .modal-title').text('Add new location');
-            jQuery("#addLocationForm").trigger('reset');
-            jQuery('#location-input-id').val('');
-        });
-
-        // ADD Location
-        jQuery('#addLocationForm').on('submit', function(e) {
-            e.preventDefault();
-            jQuery('.progress.header-progress .progress-bar').removeAttr('style');
-            var id = jQuery('#location-input-id').val();
-            var params = jQuery.extend({}, doAjax_params_default);
-
-            var tempData = {
-                name: jQuery('#location-input-name').val(),
-                color: jQuery('#location-input-color').val(),
-                description: jQuery('#location-input-desc').val(),
-                t_alert_min: jQuery('#location-input-t_alert_min').val(),
-                t_alert_max: jQuery('#location-input-t_alert_max').val()
-            };
-
-            if(id != '') tempData.id = id;
-
-            params['url'] = "{{ route('locations.store') }}";
-            params['data'] = JSON.stringify(tempData);
-
-            params['successCallbackFunction'] = function( data ) {
-                if (data.fail) {
-                    // todo print failed data
-                    console.log(data.fail);
-                }
-                else if(data.status == '200'){
-                    // print success
-                    jQuery("#btnCancelLocationFrom").trigger('click');
-                    jQuery("#addLocationForm").trigger('reset');
-                    jQuery('#location-input-id').val('');
-                    jQuery('#successBoxAlert .successText').text("You successfully save data with ID " + data.details.id);
-                    jQuery("#successBoxAlert").removeClass('d-none').addClass('show');
-                    jQuery("body").animate({ scrollTop: 0 }, "slow");
-                    jQuery('#locations-table').bootstrapTable('refresh');
-                    console.log(data);
-                }
-            };
-            params['errorCallBackFunction'] = function( jqXHR ){
-                // todo error print
-                jQuery('#addLocationForm .alert').text(jqXHR.responseText);
-                jQuery('#addLocationForm .alert').removeClass('d-none');
-                console.log(jqXHR);
-            };
-            doAjax(params);
-        });
-
-        // DELETE PRODUCT
-        jQuery("#addLocationForm").on('click', "button.btnItemDelete", function(){
-            var id = jQuery(this).data("location-id");
-            console.log(jQuery(this));
-            var params = jQuery.extend({}, doAjax_params_default);
-            params['url'] = "/api/locations/delete/"+id;
-            params['requestType'] = 'DELETE';
-            params['data'] = JSON.stringify({
-                "id": id
-            });
-            params['successCallbackFunction'] = function( data ) {
-                if (data.fail) {
-                    // todo print failed data
-                    console.log(data.fail);
-                }
-                else if(data.status == '200'){
-                    // print success
-                    jQuery('#successBoxAlert .successText').text("You successfully delete data with ID " + data.id);
-                    jQuery("#successBoxAlert").removeClass('d-none').addClass('show');
-                    jQuery("body").animate({ scrollTop: 0 }, "slow");
-                    jQuery('#locations-table').bootstrapTable('refresh');
-                    console.log(data);
-                }
-            };
-            params['errorCallBackFunction'] = function( jqXHR ){
-                // todo error print
-                jQuery('#settingsAlertBox .alert').text(jqXHR.responseText);
-                jQuery('#settingsAlertBox .alert').removeClass('d-none');
-                console.log(jqXHR);
-            };
-            doAjax(params);
-        });
-
-        // EDIT LOCATION
-        jQuery("#addLocationForm").on('click', "button.btnItemEdit", function(){
-            jQuery('#addLocationModal').modal('toggle');
-            jQuery('#addLocationModal .modal-title').text('Edit location');
-
-            var id = jQuery(this).data("location-id");
-            var params = jQuery.extend({}, doAjax_params_default);
-
-            params['url'] = "/api/locations/edit/"+id;
-            params['requestType'] = "GET";
-            params['successCallbackFunction'] = function( data ) {
-                if (data.fail) {
-                    // todo print failed data
-                    console.log(data.fail);
-                }
-                else if(data.status == '200'){
-                    // print success
-                    var storage_t = data.details.storage_t.split(';');
-                    jQuery('#location-input-id').val(id);
-                    jQuery('#location-input-name').val(data.details.name);
-                    jQuery('#location-input-desc').val(data.details.description);
-                    jQuery('#location-input-color').val(data.details.color);
-                    jQuery('#location-input-t_alert_min').val(storage_t[0]);
-                    jQuery('#location-input-t_alert_max').val(storage_t[1]);
-                }
-            };
-            params['errorCallBackFunction'] = function( jqXHR ){
-                // todo error print
-                jQuery('#settingsAlertBox .alert').text(jqXHR.responseText);
-                jQuery('#settingsAlertBox .alert').removeClass('d-none');
-                console.log(jqXHR);
-            };
-            doAjax(params);
-        });
-
-
-    });
-</script>
-@endsection

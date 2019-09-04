@@ -59,4 +59,5 @@ mix.styles([
      //'resources/js/vendor/countdown/moment.min.js'
     ], 'public/js/vendor.js')
     .js('resources/js/app.js', 'public/js')
-    .copy('resources/js/main.js', 'public/js');
+    .copy('resources/js/main.js', 'public/js')
+    .copy('resources/js/settings.js', 'public/js');
