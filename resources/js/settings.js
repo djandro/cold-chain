@@ -245,6 +245,4 @@ jQuery( document ).ready( function( jQuery ) {
         };
         doAjax(params);
     });
-
-
 });

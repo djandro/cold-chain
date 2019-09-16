@@ -344,3 +344,19 @@ function btnFormatter(value) {
 
   return $html;
 }
+
+function settingsUserName(index, row){
+  $html = '<h6>' + row.name + '</h6>';
+  $html += '<span><a href="#">' + row.email + '</a></span>';
+  return $html;
+}
+
+function settingsUserRoles(index, value, row){
+  $html = '';
+  jQuery.each(value.roles, function (key, role) {
+    console.log(role.name);
+    if(role.name == 'admin') $html += '<span class="role admin">' + role.name + '</span> ';
+    if(role.name == 'manager') $html += '<span class="role member">' + role.name + '</span> ';
+  });
+  return $html;
+}

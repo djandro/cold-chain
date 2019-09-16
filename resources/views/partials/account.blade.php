@@ -5,39 +5,20 @@
             <h3 class="title-3 m-b-30">
                 <i class="zmdi zmdi-account-calendar"></i>user data
             </h3>
+
+
             <div class="table-responsive table-data">
-                <table class="table">
+                <table id="account-table" data-classes="table table-hover" data-toggle="table" data-url="{{ route('settings.users') }}">
                     <thead>
                     <tr>
-                        <td>name</td>
-                        <td>role</td>
-                        <td></td>
+                        <th class="table-data__info" data-field="name" data-formatter="settingsUserName">Name</th>
+                        <th data-field="roles" data-formatter="settingsUserRoles">Role</th>
+                        <th></th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>
-                            <div class="table-data__info">
-                                <h6>lori lynch</h6>
-                                            <span>
-                                                <a href="#">johndoe@gmail.com</a>
-                                            </span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="role admin">admin</span>
-                        </td>
-                        <td>
-                            <div class="table-data-feature">
-                                <button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Change password">
-                                    <i class="zmdi zmdi-mail-send"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
                 </table>
             </div>
+
         </div>
     </div>
 </div>

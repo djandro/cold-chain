@@ -30,3 +30,7 @@ Route::get('locations/edit/{id}', 'LocationController@edit')->name('locations.ed
 Route::post('locations/store', 'LocationController@store')->name('locations.store');
 Route::delete('locations/delete/{id}', 'LocationController@destroy')->name('locations.destroy');
 
+
+Route::get('settings/users', 'SettingsController@getUsers')->name('settings.users');
+
+
