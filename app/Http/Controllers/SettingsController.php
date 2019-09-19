@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Device;
 use App\User;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
@@ -11,11 +12,6 @@ use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
-    public function __construct()
-    {
-        //$this->middleware('auth'); // todo fix this
-    }
-
     public function index(Request $request)
     {
         $request->user()->authorizeRoles(['manager', 'admin']);
@@ -31,5 +27,10 @@ class SettingsController extends Controller
         }
 
         return Response::json( $users );
+    }
+
+    public function getDevices(){
+        $devices = Device::orderBy('id', 'asc')->get();
+        return Response::json( $devices );
     }
 }

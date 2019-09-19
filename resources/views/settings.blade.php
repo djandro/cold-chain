@@ -42,6 +42,8 @@
 
             @include('partials.location')
 
+            @include('partials.device')
+
             @include('partials.account')
 
         </div>

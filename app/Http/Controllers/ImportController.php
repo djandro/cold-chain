@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Device;
 use App\Http\Requests\CsvImportRequest;
+use App\Location;
+use App\Product;
 use App\Records;
 use App\RecordsData;
 use App\TemporaryData;
@@ -46,25 +49,14 @@ class ImportController extends Controller
     }
 
     public function getProducts($selected = null){
-        // todo read from database getProducts
         return response()->json(
-            array(
-                1 => 'Tuna',
-                2 => 'Orchards',
-                3 => 'Squid',
-            )
+            Product::get(['id', 'name'])->toArray()
         );
     }
 
     public function getLocations($selected = null){
-        // todo read from database getLocations
         return response()->json(
-            array(
-                1 => 'Cold storage',
-                2 => 'LeM',
-                3 => 'Transport 1',
-                4 => 'Transport 2',
-            )
+            Location::get(['id', 'name'])->toArray()
         );
     }
 
@@ -113,6 +105,7 @@ class ImportController extends Controller
                 'headers_data' => $headers_data,
                 'product' => $this->getProducts(),
                 'location' => $this->getLocations( $location ),
+                'device' => 'TIDA',
                 'temporary_table_id' => $temp_data->id,
                 'samples' => $samples,
                 'start_date' => $start_date,
@@ -131,7 +124,7 @@ class ImportController extends Controller
 
         // save record in db
         $record = Records::create([
-            'device_id' => 0,
+            'device_id' => 1, // manual added ID of TIDA
             'product_id' => $request->input('product'),
             'location_id' => $request->input('location'),
             'samples' => $request->input('samples'),

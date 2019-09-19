@@ -6,7 +6,7 @@
     <meta name="description" content="Cold-chain web application">
     <meta name="author" content="Andraz Hostnik">
 
-    <!-- CSRF Token -->
+    <!-- Tokens -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="api-token" content="{{ (Auth::user()) ? Auth::user()->api_token : '' }}">
 

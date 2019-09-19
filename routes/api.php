@@ -32,5 +32,6 @@ Route::delete('locations/delete/{id}', 'LocationController@destroy')->name('loca
 
 
 Route::get('settings/users', 'SettingsController@getUsers')->name('settings.users');
+Route::get('settings/devices', 'SettingsController@getDevices')->name('settings.devices');
 
 

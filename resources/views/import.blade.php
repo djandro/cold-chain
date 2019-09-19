@@ -92,6 +92,14 @@
                                             <div class="col-12 col-md-9 m-b-10">
                                                 <p id="file-name-data" class="form-control-static badge badge-light"></p>
                                             </div>
+
+                                            <div class="col col-md-3 m-b-10">
+                                                <label class="form-control-label">Device:</label>
+                                            </div>
+                                            <div class="col-12 col-md-9 m-b-10">
+                                                <p id="device-data" class="form-control-static badge badge-light"></p>
+                                            </div>
+
                                             <div class="col col-md-3 m-b-10">
                                                 <label class="form-control-label">Product:</label>
                                             </div>
@@ -183,7 +191,7 @@
         $select = '<select name="'+ id + '" id="' + id + '" class="form-control">';
         $.each(data,function(key, value)
         {
-            $select += ('<option value=' + key + '>' + value + '</option>');
+            $select += ('<option value=' + value.id + '>' + value.name + '</option>');
         });
         $select += '</select>';
 
@@ -238,6 +246,7 @@
                     jQuery('#comment-input').val(data.comment);
 
                     jQuery('#file-name-data').html(data.file_name);
+                    jQuery('#device-data').html(data.device);
                     jQuery('#product-data').html(getProductSelectList('product-select', data.product.original));
                     jQuery('#location-data').html(getProductSelectList('location-select', data.location.original));
 
