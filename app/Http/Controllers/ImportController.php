@@ -12,10 +12,6 @@ use Illuminate\Http\Request;
 
 class ImportController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth'); // todo fix this
-    }
 
     public function getImport()
     {

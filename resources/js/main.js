@@ -245,7 +245,7 @@ var doAjax_params_default = {
   'url': null,
   'requestType': "POST",
   'contentType': 'application/json',
-  'headers': { 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content') },
+  'headers': { 'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content'), 'Authorization': 'Bearer ' + jQuery('meta[name="api-token"]').attr('content') },
   'dataType': 'json',
   'data': {},
   'beforeSendCallbackFunction': null,

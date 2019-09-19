@@ -15,11 +15,11 @@ Route::get('/', 'HomeController@index')->name('home');
 
 Auth::routes();
 
-Route::get('import', 'ImportController@getImport')->name('import');
-Route::get('records', 'RecordsController@getRecords')->name('records');
-Route::get('/records/{id}', 'RecordController@getRecord')->name('record');
+Route::get('import', 'ImportController@getImport')->name('import')->middleware('auth');
+Route::get('records', 'RecordsController@getRecords')->name('records')->middleware('auth');
+Route::get('/records/{id}', 'RecordController@getRecord')->name('record')->middleware('auth');
 
-Route::get('settings', 'SettingsController@index')->name('settings');
+Route::get('settings', 'SettingsController@index')->name('settings')->middleware('auth');
 
 //Route::post('import_parse', 'ImportController@parseImport')->name('import_parse');
 //Route::post('save_import', 'ImportController@saveImport')->name('save_import');

@@ -13,7 +13,7 @@ class SettingsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth'); // todo fix this
+        //$this->middleware('auth'); // todo fix this
     }
 
     public function index(Request $request)

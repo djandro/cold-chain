@@ -26,7 +26,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'api_token'
     ];
 
     /**
@@ -37,6 +37,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function boot(){
+        parent::boot();
+        self::creating(function($users) {
+            $users->api_token = \Hash::make(\Carbon\Carbon::now()->toRfc2822String());
+        });
+    }
 
     public function roles()
     {
