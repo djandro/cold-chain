@@ -14,7 +14,7 @@ class ImportController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth'); // todo fix this
     }
 
     public function getImport()
