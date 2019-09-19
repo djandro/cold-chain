@@ -10700,6 +10700,10 @@ a.text-dark:focus {
   background-color: #38c172;
 }
 
+.project-color-1 {
+  color: #4272d7 !important;
+}
+
 .overview-item {
   min-height: 215px;
 }
@@ -10929,5 +10933,38 @@ a.text-dark:focus {
 
 .bootstrap-table .fixed-table-container .table tbody td.desc {
   color: #4272d7;
+}
+
+.btn-records-box {
+  margin-top: -5px;
+}
+
+.btn-records-box i {
+  font-size: 24px;
+}
+
+.record-details-box .form-group {
+  margin-bottom: 3px;
+}
+
+.record-details-box hr {
+  margin-top: 7px;
+  margin-bottom: 12px;
+}
+
+.record-details-box .table-top-campaign thead th {
+  font-size: 16px;
+  font-weight: normal;
+  padding-top: 0;
+  padding-left: 0;
+  border: none;
+}
+
+.record-details-box .table-top-campaign tr td:last-child {
+  text-align: left !important;
+}
+
+.record .record-alert-box {
+  margin-bottom: 2em !important;
 }
 
