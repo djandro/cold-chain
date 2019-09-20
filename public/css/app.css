@@ -10893,6 +10893,10 @@ a.text-dark:focus {
   z-index: auto;
 }
 
+.modal {
+  margin-top: 95px;
+}
+
 .fixed-table-pagination {
   margin: 0 12px;
   font-size: 12px;

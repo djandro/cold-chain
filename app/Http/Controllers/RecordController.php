@@ -9,11 +9,7 @@ use Carbon\Carbon;
 
 class RecordController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
+    
     public function getRecord($id) {
 
         $record = Records::find( $id );
@@ -40,6 +36,28 @@ class RecordController extends Controller
             'recordDataHumidity' => json_encode($recordDataHumidity),
             'recordDataDewPoints' => json_encode($recordDataDewPoints),
             'recordDataBatteryVoltage' => json_encode($recordDataBatteryVoltage)
+        ]);
+    }
+
+    public function edit($id)
+    {
+        $where = array('id' => $id);
+        $record = Records::where($where)->first();
+
+        return response()->json([
+            'status' => '200',
+            'details' => $record
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        RecordsData::where('records_id', $id)->delete();
+        Records::find($id)->delete($id);
+
+        return response()->json([
+            'status' => '200',
+            'id' => $id
         ]);
     }
 

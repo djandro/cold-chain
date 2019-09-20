@@ -83,8 +83,8 @@ jQuery( document ).ready( function( jQuery ) {
         };
         params['errorCallBackFunction'] = function( jqXHR ){
             // todo error print
-            jQuery('#settingsAlertBox .alert').text(jqXHR.responseText);
-            jQuery('#settingsAlertBox .alert').removeClass('d-none');
+            jQuery('#errorAlertBox').text(jqXHR.responseText);
+            jQuery('#errorAlertBox').removeClass('d-none');
             console.log(jqXHR);
         };
         doAjax(params);
@@ -118,8 +118,8 @@ jQuery( document ).ready( function( jQuery ) {
         };
         params['errorCallBackFunction'] = function( jqXHR ){
             // todo error print
-            jQuery('#settingsAlertBox .alert').text(jqXHR.responseText);
-            jQuery('#settingsAlertBox .alert').removeClass('d-none');
+            jQuery('#errorAlertBox').text(jqXHR.responseText);
+            jQuery('#errorAlertBox').removeClass('d-none');
             console.log(jqXHR);
         };
         doAjax(params);
@@ -204,8 +204,8 @@ jQuery( document ).ready( function( jQuery ) {
         };
         params['errorCallBackFunction'] = function( jqXHR ){
             // todo error print
-            jQuery('#settingsAlertBox .alert').text(jqXHR.responseText);
-            jQuery('#settingsAlertBox .alert').removeClass('d-none');
+            jQuery('#errorAlertBox').text(jqXHR.responseText);
+            jQuery('#errorAlertBox').removeClass('d-none');
             console.log(jqXHR);
         };
         doAjax(params);
@@ -239,8 +239,8 @@ jQuery( document ).ready( function( jQuery ) {
         };
         params['errorCallBackFunction'] = function( jqXHR ){
             // todo error print
-            jQuery('#settingsAlertBox .alert').text(jqXHR.responseText);
-            jQuery('#settingsAlertBox .alert').removeClass('d-none');
+            jQuery('#errorAlertBox').text(jqXHR.responseText);
+            jQuery('#errorAlertBox').removeClass('d-none');
             console.log(jqXHR);
         };
         doAjax(params);
