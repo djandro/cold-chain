@@ -8,7 +8,7 @@ class Location extends Model
 {
     public $fillable = ['name', 'description', 'storage_t', 'color'];
 
-    public function record_data(){
+    public function records(){
         return $this->hasMany(Records::class);
     }
 

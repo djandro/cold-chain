@@ -10972,3 +10972,11 @@ a.text-dark:focus {
   margin-bottom: 2em !important;
 }
 
+.filter-box {
+  padding: 1em !important;
+}
+
+.filter-box .nav-pills > .nav-item + .nav-item {
+  margin-left: 7px;
+}
+

@@ -8,7 +8,7 @@ class Product extends Model
 {
     public $fillable = ['name', 'description', 'slt', 'storage_t'];
 
-    public function record_data(){
-        return $this->hasOne(Records::class);
+    public function records(){
+        return $this->hasMany(Records::class);
     }
 }

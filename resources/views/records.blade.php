@@ -5,11 +5,60 @@
 <section class="records">
     <div class="section__content section__content--p30">
         <div class="container-fluid">
+            <h3 class="mb-3">Records</h3>
             <div class="row">
-                <div class="col-sm-12">
-                    <h3 class="mb-3">Records</h3>
-                    <div class="jumbotron">
-                        todo records search filter
+                <div class="col-sm-10">
+
+                    <h5 class="mt-4 mb-2">Filters:</h5>
+                    <div class="jumbotron filter-box">
+                        <div class="row">
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <label for="recordSearch" class=" form-control-label">Keywords</label>
+                                    <input type="text" id="recordSearch" placeholder="Insert search keyword" class="form-control">
+                                </div>
+
+                                <p class="form-control-label">Devices</p>
+                                <ul class="nav nav-pills" id="filter-device-tab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link btn btn-sm btn-outline-secondary active show" id="device-all-tab" data-toggle="pill" href="#device-all-tab" role="tab" aria-controls="device-all-tab" aria-selected="true">All</a>
+                                    </li>
+                                    @foreach ($devices as $device)
+                                    <li class="nav-item">
+                                        <a class="nav-link btn btn-sm btn-outline-secondary" id="device-{{$device->id}}-tab" data-toggle="pill" href="#device-{{$device->id}}-tab" role="tab" aria-controls="device-{{$device->id}}-tab" aria-selected="false">{{ $device->name }}</a>
+                                    </li>
+                                    @endforeach
+                                </ul>
+
+                            </div>
+                            <div class="col-sm-3 offset-sm-1">
+                                <div class="form-group">
+                                    <label for="productFilterSelect" class="form-control-label">Product</label>
+                                    <select name="productFilterSelect" id="productFilterSelect" class="form-control-sm form-control">
+                                        <option value="0">Please select</option>
+                                        @foreach ($products as $product)
+                                        <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="locationFilterSelect" class="form-control-label">Location</label>
+                                    <select name="locationFilterSelect" id="locationFilterSelect" class="form-control-sm form-control">
+                                        <option value="0">Please select</option>
+                                        @foreach ($locations as $location)
+                                        <option value="{{ $location->id }}">{{ $location->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <button type="button" class="btn btn-outline-link btn-sm text-secondary float-right">
+                                    <i class="zmdi zmdi-delete"></i> Clear filters
+                                </button>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -21,7 +70,9 @@
 
                     <div class="table-responsive">
 
-                        <table id="recordListTable" data-classes="table table-borderless table-striped table-earning" data-toggle="table" data-sortable="true" data-sort-class="table-active" data-pagination="true" data-search="true">
+                        <table id="recordListTable" data-classes="table table-borderless table-striped table-earning"
+                               data-toggle="table" data-sortable="true" data-sort-class="table-active" data-pagination="true" data-search="true"
+                               data-filter-control="true" data-show-search-clear-button="true">
 
                             <thead>
                             <tr>
@@ -39,10 +90,10 @@
 
                                 <tr id="recordRow-{{ $record->id }}">
                                     <td data-field="id">{{ $record->id }}</td>
-                                    <td data-field="type">{{ $record->device_id }}</td>
+                                    <td data-field="type">{{ $record->device['name'] }}</td>
                                     <td data-field="start_date">{{ $record->start_date }}</td>
-                                    <td data-field="location">{{ $record->location_id }}</td>
-                                    <td data-field="product">{{ $record->product_id }}</td>
+                                    <td data-field="location">{{ $record->location['name'] }}</td>
+                                    <td data-field="product">{{ $record->product['name'] }}</td>
                                     <td>
                                         <a class="btn btn-sm btn-outline-primary" href="/records/{{ $record->id }}" role="button"><b>Details</b></a>
                                         <button type="button" class="btn btn-sm btn-outline-link text-secondary" data-toggle="modal" data-target="#deleteRecordModal" data-backdrop="false" data-recordid="{{ $record->id }}">
@@ -84,6 +135,7 @@
 @endsection
 
 @section('scripts')
+<script src="https://unpkg.com/bootstrap-table@1.15.4/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
 <script>
     jQuery( document ).ready( function( jQuery ) {
         jQuery('#deleteRecordModal').on('show.bs.modal', function (event) {

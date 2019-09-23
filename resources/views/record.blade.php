@@ -22,25 +22,28 @@
                 <div class="col-sm-6">
 
                     <div class="jumbotron record-comment-box">
-                        <p><small><i>Uploaded userid {{$record->user_id}} at {{$record->created_at}}.</i></small></p>
+                        <p><small><i>Uploaded {{$record->user['name']}} at {{$record->created_at}}.</i></small></p>
                         <p>Comments: {{$record->comments}}</p>
                     </div>
 
                     <div class="alert alert-success record-alert-box" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                         <h4 class="alert-heading">Well done!</h4>
-                        <p class="card-text">
-                            {{ $record }}
-                        </p>
+                        <p class="card-text"></p>
                         <hr>
                         <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
                     </div>
 
                     <div class="alert alert-danger" role="alert">
-                        <h4 class="alert-heading">Well done!</h4>
-                        <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so
-                            that you can see how spacing within an alert works with this kind of content.</p>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="alert-heading">Warnings!</h4>
+                        <p>Alarms: {{ $record->alarms }}</p>
                         <hr>
-                        <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+                        <p class="mb-0">Errors: {{ $record->errors }}</p>
                     </div>
 
                 </div>
@@ -61,7 +64,7 @@
                                     <label class="form-control-label">Product:</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <p id="product-data" class="form-control-static badge badge-light">{{$record->product_id}}</p>
+                                    <p id="product-data" class="form-control-static badge badge-light">{{$record->product['name']}}</p>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -69,7 +72,7 @@
                                     <label class="form-control-label">Location:</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <p id="location-data" class="form-control-static badge badge-light">{{$record->location_id}}</p>
+                                    <p id="location-data" class="form-control-static badge badge-light">{{$record->location['name']}}</p>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -77,7 +80,7 @@
                                     <label class="form-control-label">Device:</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <p id="device-data" class="form-control-static badge badge-light">{{$record->device_id}}</p>
+                                    <p id="device-data" class="form-control-static badge badge-light">{{$record->device['name']}}</p>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -123,6 +126,7 @@
                                 </div>
                             </div>
                             <hr/>
+
                             <div class="table-responsive">
                                 <table class="table table-top-campaign">
                                     <thead>
@@ -135,23 +139,23 @@
                                     <tbody>
                                     <tr>
                                         <td>Low T</td>
-                                        <td class="project-color-1">$70,2</td>
-                                        <td>$70,2</td>
+                                        <td class="project-color-1">{{ $recordLimits['min_t_value'] }}</td>
+                                        <td>{{ $recordLimits['min_t_count'] }}</td>
                                     </tr>
                                     <tr>
                                         <td>Hight T</td>
-                                        <td class="project-color-1">$46,3</td>
-                                        <td>$46,3</td>
+                                        <td class="project-color-1">{{ $recordLimits['max_t_value'] }}</td>
+                                        <td>{{ $recordLimits['max_t_count'] }}</td>
                                     </tr>
                                     <tr>
                                         <td>Low H</td>
-                                        <td class="project-color-1">$35,3</td>
-                                        <td>$35,3</td>
+                                        <td class="project-color-1">{{ $recordLimits['min_h_value'] }}</td>
+                                        <td>{{ $recordLimits['min_h_count'] }}</td>
                                     </tr>
                                     <tr>
                                         <td>Hight H</td>
-                                        <td class="project-color-1">$35,3</td>
-                                        <td>$35,3</td>
+                                        <td class="project-color-1">{{ $recordLimits['max_h_value'] }}</td>
+                                        <td>{{ $recordLimits['max_h_count'] }}</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -170,8 +174,40 @@
                 </div>
             </div>
 
-            <div class="row record-table-box">
-                <div class="col-sm-12 m-t-20 m-b-20">todo record table</div>
+            <hr/>
+
+            <div class="row record-data-table-box">
+                <div class="col-sm-12 m-t-20 m-b-20">
+
+                    <div class="table-responsive">
+
+                        <table id="recordsDataListTable" data-classes="table table-borderless table-striped table-earning"
+                               data-toggle="table" data-sortable="true" data-sort-class="table-active" data-pagination="true">
+
+                            <thead>
+                            <tr>
+                                <th data-field="timestamp" data-sortable="true">Timestamp</th>
+                                <th data-field="temperature" data-sortable="true">Temperature</th>
+                                <th data-field="humidity" data-sortable="true">Humidity</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            @foreach ($recordData as $data)
+
+                            <tr id="recordsDataRow-{{ $data->id }}">
+                                <td data-field="timestamp">{{ $data->timestamp }}</td>
+                                <td data-field="temperature">{{ $data->temperature }}</td>
+                                <td data-field="humidity">{{ $data->humidity }}</td>
+                            </tr>
+
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
             </div>
 
             <hr/>
@@ -183,6 +219,10 @@
             <hr/>
 
             <div class="row">
+                <div class="col-sm-12">
+                    <h4 class="m-t-40 m-b-20">record</h4>
+                    {{ $record }}
+                </div>
                 <div class="col-sm-12">
                     <h4 class="m-t-40 m-b-20">record data</h4>
 

@@ -11,15 +11,22 @@ class Records extends Model
                         'delay_time', 'intervals', 'slr', 'limits', 'errors',
                         'alarms', 'comments', 'status', 'user_id', 'start_date', 'end_date', 'file_name'];
 
-    public function record_data(){
+    public function recordsdata(){
         return $this->hasMany(RecordsData::class);
     }
 
     public function product(){
-        return $this->hasOne(Product::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function location(){
-        return $this->hasMany(Location::class);
+        return $this->belongsTo(Location::class);
+    }
+
+    public function device(){
+        return $this->belongsTo(Device::class);
+    }
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

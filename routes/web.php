@@ -16,7 +16,7 @@ Route::get('/', 'HomeController@index')->name('home');
 Auth::routes();
 
 Route::get('import', 'ImportController@getImport')->name('import')->middleware('auth');
-Route::get('records', 'RecordsController@getRecords')->name('records')->middleware('auth');
+Route::get('records', 'RecordsController@index')->name('records')->middleware('auth');
 Route::get('/records/{id}', 'RecordController@getRecord')->name('record')->middleware('auth');
 
 Route::get('settings', 'SettingsController@index')->name('settings')->middleware('auth');

@@ -91,4 +91,7 @@ class User extends Authenticatable
     {
         return $this->id;
     }
+    public function records(){
+        return $this->hasMany(Records::class);
+    }
 }

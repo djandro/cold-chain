@@ -8,12 +8,12 @@ class Device extends Model
 {
     public $fillable = ['name'];
 
-    public function record_data(){
-        return $this->hasOne(Records::class);
+    public function records(){
+        return $this->hasMany(Records::class);
     }
 
     public function getCountRecords(){
-        //todo getGountRecords
+        //todo getCountRecords
         return 0;
     }
 }
