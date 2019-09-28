@@ -238,3 +238,22 @@
 
     .nav-pills > .nav-item + .nav-item{ margin-left: 7px; }
 }
+
+.records .table-responsive{
+    .fixed-table-toolbar{
+        position: relative;
+
+        .bs-bars.float-left{ float: none!important; }
+        .search-form-group{ margin-bottom: 50px; }
+        .search.btn-group.float-right{
+            position: absolute;
+            left: 15px; top: 50px;
+            width: 50%;
+            margin: 0;
+        }
+    }
+}
+
+@media (max-width: 576px) {
+    .records .table-responsive .search.btn-group.float-right{ width:90%!important; }
+}

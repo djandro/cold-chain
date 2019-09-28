@@ -7,26 +7,26 @@
         <div class="container-fluid">
             <h3 class="mb-3">Records</h3>
             <div class="row">
-                <div class="col-sm-10">
+                <div class="col-sm-12">
 
                     <h5 class="mt-4 mb-2">Filters:</h5>
                     <div class="jumbotron filter-box">
                         <div class="row">
                             <div class="col-sm-6">
 
-                                <div class="form-group">
-                                    <label for="recordSearch" class=" form-control-label">Keywords</label>
-                                    <input type="text" id="recordSearch" placeholder="Insert search keyword" class="form-control">
+                                <div class="form-group search-form-group">
+                                    <label for="recordSearch" class="form-control-label">Keywords</label>
+                                    <input name="search" type="hidden" id="recordSearch" placeholder="Insert search keyword" class="form-control">
                                 </div>
 
                                 <p class="form-control-label">Devices</p>
                                 <ul class="nav nav-pills" id="filter-device-tab" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link btn btn-sm btn-outline-secondary active show" id="device-all-tab" data-toggle="pill" href="#device-all-tab" role="tab" aria-controls="device-all-tab" aria-selected="true">All</a>
+                                        <a class="nav-link btn btn-sm btn-outline-secondary active show" id="device-all-tab" data-toggle="pill" href="#device-all-tab"  onclick="onDropDownFilter(this, 'device')" role="tab" aria-controls="device-all-tab" aria-selected="true">All</a>
                                     </li>
                                     @foreach ($devices as $device)
                                     <li class="nav-item">
-                                        <a class="nav-link btn btn-sm btn-outline-secondary" id="device-{{$device->id}}-tab" data-toggle="pill" href="#device-{{$device->id}}-tab" role="tab" aria-controls="device-{{$device->id}}-tab" aria-selected="false">{{ $device->name }}</a>
+                                        <a class="nav-link btn btn-sm btn-outline-secondary" id="device-{{$device->id}}-tab" data-toggle="pill" href="#device-{{$device->id}}-tab" onclick="onDropDownFilter(this, 'device')" role="tab" aria-controls="device-{{$device->id}}-tab" aria-selected="false">{{ $device->name }}</a>
                                     </li>
                                     @endforeach
                                 </ul>
@@ -35,8 +35,8 @@
                             <div class="col-sm-3 offset-sm-1">
                                 <div class="form-group">
                                     <label for="productFilterSelect" class="form-control-label">Product</label>
-                                    <select name="productFilterSelect" id="productFilterSelect" class="form-control-sm form-control">
-                                        <option value="0">Please select</option>
+                                    <select name="productFilterSelect" id="productFilterSelect" class="form-control-sm form-control" onchange="onDropDownFilter(this, 'product');">
+                                        <option value="0">All</option>
                                         @foreach ($products as $product)
                                         <option value="{{ $product->id }}">{{ $product->name }}</option>
                                         @endforeach
@@ -44,8 +44,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="locationFilterSelect" class="form-control-label">Location</label>
-                                    <select name="locationFilterSelect" id="locationFilterSelect" class="form-control-sm form-control">
-                                        <option value="0">Please select</option>
+                                    <select name="locationFilterSelect" id="locationFilterSelect" class="form-control-sm form-control" onchange="onDropDownFilter(this, 'location');">
+                                        <option value="0">All</option>
                                         @foreach ($locations as $location)
                                         <option value="{{ $location->id }}">{{ $location->name }}</option>
                                         @endforeach
@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-12">
-                                <button type="button" class="btn btn-outline-link btn-sm text-secondary float-right">
+                                <button type="button" id="filterClearBtn" class="btn btn-outline-link btn-sm text-secondary float-right">
                                     <i class="zmdi zmdi-delete"></i> Clear filters
                                 </button>
                             </div>
@@ -71,8 +71,8 @@
                     <div class="table-responsive">
 
                         <table id="recordListTable" data-classes="table table-borderless table-striped table-earning"
-                               data-toggle="table" data-sortable="true" data-sort-class="table-active" data-pagination="true" data-search="true"
-                               data-filter-control="true" data-show-search-clear-button="true">
+                               data-toggle="table" data-sortable="true" data-sort-class="table-active" data-pagination="true"
+                               data-search="true" data-filter-control="true" data-toolbar=".filter-box">
 
                             <thead>
                             <tr>
@@ -138,6 +138,8 @@
 <script src="https://unpkg.com/bootstrap-table@1.15.4/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
 <script>
     jQuery( document ).ready( function( jQuery ) {
+        var $table = jQuery('#recordListTable');
+
         jQuery('#deleteRecordModal').on('show.bs.modal', function (event) {
             var button = jQuery(event.relatedTarget);
             var recordId = button.data('recordid');
@@ -179,6 +181,37 @@
             };
             doAjax(params);
         });
+
+        // filter reset btn
+        jQuery("#filterClearBtn").click(function () {
+            jQuery('#recordSearch').val('');
+            jQuery('.table-responsive .search-input').val('');
+            jQuery("#device-all-tab").trigger('click');
+            jQuery("#productFilterSelect").val(0).attr("selected","selected");
+            jQuery("#locationFilterSelect").val(0).attr("selected","selected");
+            $table.bootstrapTable('resetSearch');
+        });
+
     });
+
+    // filter function for device, product and location
+    function onDropDownFilter(element, selectObj){
+        var $table = jQuery('#recordListTable');
+        var $el = jQuery(element).find(':selected').text();
+        var filter = 'and';
+        var obj = { product: [$el] };
+
+        if(selectObj == 'device') { $el = jQuery(element).text(); obj = { type: [$el] } }
+        if(selectObj == 'location') { obj = { location: [$el] }; }
+        if($el == 'All') { filter = function(){ return true; } }
+
+        $table.bootstrapTable('refreshOptions', {
+            filterOptions: {
+                filterAlgorithm: filter
+            }
+        });
+        $table.bootstrapTable('filterBy', obj);
+    }
+
 </script>
 @endsection
