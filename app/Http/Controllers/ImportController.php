@@ -48,6 +48,16 @@ class ImportController extends Controller
         return $html;
     }
 
+    public function removeWhiteString($data){
+        $temp_data = [];
+        foreach($data as $row){
+            $lastEl = key(array_slice($row, -1, 1, true));
+            $row[$lastEl] = explode(';;', $row[$lastEl])[0];
+            $temp_data[] = $row;
+        }
+        return $temp_data;
+    }
+
     public function getProducts($selected = null){
         return response()->json(
             Product::get(['id', 'name'])->toArray()
@@ -65,10 +75,16 @@ class ImportController extends Controller
         $file_name = $request->file('csv_file')->getClientOriginalName();
         $data = array_map('str_getcsv', file($path));
 
-        //dump($data);
+        dump($data);
 
         $nr_rows = 0; $title = ''; $description = ''; $location = '';
         $start_date = ''; $end_date = ''; $interval = 0; $samples = 0;
+
+        // check if string ;; exist and remove this
+        $lastEl = key(array_slice($data[0], -1, 1, true));
+        if(array_key_exists(0, $data) && strpos($data[0][$lastEl], ';;') !== false){
+            $data = $this->removeWhiteString($data);
+        }
 
         // parse headers data
         foreach($data as $key => $row){
@@ -81,7 +97,7 @@ class ImportController extends Controller
                 if($row[1] == 'LogInterval(s)') $interval = $row[2];
                 if($row[1] == 'Measurements') $samples = $row[2];
             }
-            if($row[0] != '#'){
+            if($row[0]  != '#' ){
                 $nr_rows = $key;
                 break;
             }
@@ -91,7 +107,7 @@ class ImportController extends Controller
         $csv_data = array_slice($data, $nr_rows, 3);
         $headers_data = $this->getHtmlForCsvHeaderData($csv_data);
 
-        //dump($csv_data[0]);
+        dump($csv_data[0]);
 
         // save data to temporary table
         $temp_data = TemporaryData::create([
@@ -120,7 +136,7 @@ class ImportController extends Controller
     }
 
     public function saveImport(Request $request){
-        dump($request->all());
+        //dump($request->all());
 
         // save record in db
         $record = Records::create([

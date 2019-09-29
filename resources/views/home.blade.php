@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-md-6 col-lg-3">
                     <div class="statistic__item">
-                        <h2 class="number">56</h2>
+                        <h2 class="number">{{ $records_count }}</h2>
                         <span class="desc">records in database</span>
                         <div class="icon">
                             <i class="zmdi zmdi-chart"></i>
@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="statistic__item">
-                        <h2 class="number">6</h2>
+                        <h2 class="number">{{ $products_count }}</h2>
                         <span class="desc">products</span>
                         <div class="icon">
                             <i class="zmdi zmdi-collection-text"></i>
@@ -26,7 +26,7 @@
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="statistic__item">
-                        <h2 class="number">8</h2>
+                        <h2 class="number">{{ $locations_count }}</h2>
                         <span class="desc">locations</span>
                         <div class="icon">
                             <i class="zmdi zmdi-pin"></i>
@@ -35,7 +35,7 @@
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="statistic__item">
-                        <h2 class="number">3</h2>
+                        <h2 class="number">{{ $devices_count }}</h2>
                         <span class="desc">devices</span>
                         <div class="icon">
                             <i class="zmdi zmdi-smartphone"></i>
