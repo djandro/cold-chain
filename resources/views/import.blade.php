@@ -284,6 +284,7 @@
                 comment: jQuery('#comment-input').val(),
                 file_name: jQuery('#file-name-data').text(),
 
+                device: jQuery('#device-data').text(),
                 product: jQuery('#product-select').val(),
                 location: jQuery('#location-select').val(),
 

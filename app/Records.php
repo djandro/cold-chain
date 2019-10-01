@@ -9,7 +9,7 @@ class Records extends Model
     protected $table = 'records';
     public $fillable = ['device_id', 'product_id', 'location_id', 'samples',
                         'delay_time', 'intervals', 'slr', 'limits', 'errors',
-                        'alarms', 'comments', 'status', 'user_id', 'start_date', 'end_date', 'file_name'];
+                        'alarms', 'comments', 'status', 'user_id', 'start_date', 'end_date', 'file_name', 'title', 'nr_header_rows'];
 
     public function recordsdata(){
         return $this->hasMany(RecordsData::class);

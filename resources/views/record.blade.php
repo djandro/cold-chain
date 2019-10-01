@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <h3 class="mb-5">
-                        <span>Record {{ $record->id }}</span>
+                        <span>Record {{ $record->id }} {!! !empty($record->title) ? " - " . $record->title : '' !!}</span>
                         <span class="btn-records-box float-right">
                             <a href="#" onclick="return;" class="btn btn-sm btn-outline-link"><i class="zmdi zmdi-edit"></i></a>
                             <a href="#" onclick="return;" class="btn btn-sm btn-outline-link"><i class="zmdi zmdi-delete"></i></a>

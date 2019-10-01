@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Device;
 use App\Http\Requests\CsvImportRequest;
+use App\Device;
 use App\Location;
 use App\Product;
 use App\Records;
 use App\RecordsData;
 use App\TemporaryData;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class ImportController extends Controller
@@ -70,41 +69,41 @@ class ImportController extends Controller
         );
     }
 
+    public function getDeviceId($deviceName){
+        return Device::where('name', $deviceName)->first()->id;
+    }
+
     public function parseImport(CsvImportRequest $request) {
+        $record = new Records();
         $path = $request->file('csv_file')->getRealPath();
-        $file_name = $request->file('csv_file')->getClientOriginalName();
-        $data = array_map('str_getcsv', file($path));
+        $record->file_name = $request->file('csv_file')->getClientOriginalName();
+        $ext = $request->file('csv_file')->getClientOriginalExtension();
+
+        $data = file($path, FILE_IGNORE_NEW_LINES);
 
         dump($data);
+        dump($ext);
 
-        $nr_rows = 0; $title = ''; $description = ''; $location = '';
-        $start_date = ''; $end_date = ''; $interval = 0; $samples = 0;
-
-        // check if string ;; exist and remove this
-        $lastEl = key(array_slice($data[0], -1, 1, true));
-        if(array_key_exists(0, $data) && strpos($data[0][$lastEl], ';;') !== false){
-            $data = $this->removeWhiteString($data);
+        // check if file is type TIDA
+        if( $ext === 'csv' && substr( $data[0], 0, 1 ) === "#" ) {
+            $data = array_map('str_getcsv', file($path));
+            $record = $this->parseTIDAFiles($data, $record);
         }
-
-        // parse headers data
-        foreach($data as $key => $row){
-            if(array_key_exists(1, $row)){
-                if($row[1] == 'Title') $title = $row[2];
-                if($row[1] == 'Description') $description = $row[2];
-                if($row[1] == 'Location') $location = $row[2];
-                if($row[1] == 'StartDate') $start_date = $row[2] . ', ' . $row[3];
-                if($row[1] == 'EndDate') $end_date = $row[2] . ', ' . $row[3];
-                if($row[1] == 'LogInterval(s)') $interval = $row[2];
-                if($row[1] == 'Measurements') $samples = $row[2];
-            }
-            if($row[0]  != '#' ){
-                $nr_rows = $key;
-                break;
-            }
+        // check if file is type RHT10
+        else if( substr( $data[0], 0, 2 ) === ">>" ){
+            // todo parse RHT10 files
+            $record = $this->parseRHT10Files($data, $record);
+        }
+        // otherwise return response not supported file
+        else{
+            return response()->json([
+                'status' => '500',
+                'details' => 'File is not in proper format.'
+            ])->setStatusCode(500);
         }
 
         // headers data
-        $csv_data = array_slice($data, $nr_rows, 3);
+        $csv_data = array_slice($data, $record->nr_header_rows, 3);
         $headers_data = $this->getHtmlForCsvHeaderData($csv_data);
 
         dump($csv_data[0]);
@@ -119,28 +118,30 @@ class ImportController extends Controller
         return response()->json(
             array(
                 'headers_data' => $headers_data,
-                'product' => $this->getProducts(),
-                'location' => $this->getLocations( $location ),
-                'device' => 'TIDA',
+                'product' => $this->getProducts( $record->product_id  ),
+                'location' => $this->getLocations( $record->location_id ),
+                'device' => $record->device_id,
                 'temporary_table_id' => $temp_data->id,
-                'samples' => $samples,
-                'start_date' => $start_date,
-                'end_date' => $end_date,
+                'samples' => $record->samples,
+                'start_date' => $record->start_date,
+                'end_date' => $record->end_date,
                 'delay' => 0,
-                'interval' => $interval,
-                'title' => $title,
-                'file_name' => $file_name,
-                'comment' => $description
+                'interval' => $record->intervals,
+                'title' => $record->title,
+                'file_name' => $record->file_name,
+                'comment' => $record->comments
             )
         );
     }
 
+    // S A V E
+    // parsed data from font-end to database
     public function saveImport(Request $request){
         //dump($request->all());
 
         // save record in db
         $record = Records::create([
-            'device_id' => 1, // manual added ID of TIDA
+            'device_id' => $this->getDeviceId( $request->input('device') ),
             'product_id' => $request->input('product'),
             'location_id' => $request->input('location'),
             'samples' => $request->input('samples'),
@@ -150,6 +151,7 @@ class ImportController extends Controller
             'limits' => '',
             'errors' => '',
             'alarms' => '',
+            'title' => $request->input('title'),
             'comments' => $request->input('comment'),
             'user_id' => $request->input('user_id'), // todo change to read user-id from backend
             'start_date' => Carbon::parse($request->input('start_date')),
@@ -195,5 +197,51 @@ class ImportController extends Controller
             'status' => '200',
             'details' => $record
         ]);
+    }
+
+
+    // P A R S E   T I D A   files
+    // input - data of file, object record
+    // output - object record
+    private function parseTIDAFiles($data, $record){
+        $record->device_id = 'TIDA';
+
+        dump($data);
+
+        // check if string ;; exist and remove this
+        $lastEl = key(array_slice($data[0], -1, 1, true));
+        if(array_key_exists(0, $data) && strpos($data[0][$lastEl], ';;') !== false){
+            $data = $this->removeWhiteString($data);
+        }
+
+        // parse headers data
+        foreach($data as $key => $row){
+            if(array_key_exists(1, $row)){
+                if($row[1] == 'Title') $record->title = $row[2];
+                if($row[1] == 'Description') $record->comments = $row[2];
+                if($row[1] == 'Location') $record->location_id = $row[2];
+                if($row[1] == 'StartDate') $record->start_date = $row[2] . ', ' . $row[3];
+                if($row[1] == 'EndDate') $record->end_date = $row[2] . ', ' . $row[3];
+                if($row[1] == 'LogInterval(s)') $record->intervals = $row[2];
+                if($row[1] == 'Measurements') $record->samples = $row[2];
+            }
+            if($row[0]  != '#' ){
+                $record->nr_header_rows = $key;
+                break;
+            }
+        }
+
+        return $record;
+    }
+
+    // P A R S E   R H T 1 0   files
+    // input - data of file, object record
+    // output - object record
+    private function parseRHT10Files($data, $record){
+        $record->device_id = 'RHT10';
+
+        // todo parse tht10
+
+        return $record;
     }
 }
