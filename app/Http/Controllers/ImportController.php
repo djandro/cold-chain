@@ -33,6 +33,7 @@ class ImportController extends Controller
         $html .= "<tr>";
         // table body
         foreach($csv_data[0] as $key => $row){
+            $row = strtolower($row);
             $html .= "<td>" . "<select name='fields-" . $key  .  "' class='form-control'>";
             if(!in_array($row, config('app.record_data'))) $row = '--ignore--';
 
@@ -79,19 +80,19 @@ class ImportController extends Controller
         $record->file_name = $request->file('csv_file')->getClientOriginalName();
         $ext = $request->file('csv_file')->getClientOriginalExtension();
 
-        $data = file($path, FILE_IGNORE_NEW_LINES);
-
+        //$data = file($path, FILE_IGNORE_NEW_LINES);
+        $data = array_map(function($v){return str_getcsv($v, "\t");}, file($path));
         dump($data);
-        dump($ext);
 
         // check if file is type TIDA
-        if( $ext === 'csv' && substr( $data[0], 0, 1 ) === "#" ) {
+        if( $ext === 'csv' && substr( $data[0][0], 0, 1 ) === "#" ) {
+
             $data = array_map('str_getcsv', file($path));
             $record = $this->parseTIDAFiles($data, $record);
         }
         // check if file is type RHT10
-        else if( substr( $data[0], 0, 2 ) === ">>" ){
-            // todo parse RHT10 files
+        else if( substr( $data[0][0], 0, 2 ) === ">>" ){
+
             $record = $this->parseRHT10Files($data, $record);
         }
         // otherwise return response not supported file
@@ -118,6 +119,7 @@ class ImportController extends Controller
         return response()->json(
             array(
                 'headers_data' => $headers_data,
+                'headers_nr_rows' => $record->nr_header_rows,
                 'product' => $this->getProducts( $record->product_id  ),
                 'location' => $this->getLocations( $record->location_id ),
                 'device' => $record->device_id,
@@ -139,6 +141,15 @@ class ImportController extends Controller
     public function saveImport(Request $request){
         //dump($request->all());
 
+        // check and prepare datetime format from different files
+        if($request->input('device') === 'RHT10'){
+            $start_date = Carbon::createFromFormat('m-d-Y H:i:s', $request->input('start_date'))->format('Y-m-d H:i:s');
+            $end_date = Carbon::createFromFormat('m-d-Y H:i:s', $request->input('end_date'))->format('Y-m-d H:i:s');
+        } else{
+            $start_date = Carbon::parse($request->input('start_date'));
+            $end_date = Carbon::parse($request->input('end_date'));
+        }
+
         // save record in db
         $record = Records::create([
             'device_id' => $this->getDeviceId( $request->input('device') ),
@@ -154,8 +165,8 @@ class ImportController extends Controller
             'title' => $request->input('title'),
             'comments' => $request->input('comment'),
             'user_id' => $request->input('user_id'), // todo change to read user-id from backend
-            'start_date' => Carbon::parse($request->input('start_date')),
-            'end_date' => Carbon::parse($request->input('end_date')),
+            'start_date' => $start_date,
+            'end_date' => $end_date,
             'file_name' => $request->input('file_name')
         ]);
 
@@ -167,8 +178,7 @@ class ImportController extends Controller
         foreach($temp_data as $nrRow => $row){
 
             // skip first static headers rows
-            if($row[0] === '#') continue;
-            if(in_array($row[0], config('app.record_data'))) continue;
+            if($nrRow <= $request->input('headers_nr_rows')) continue;
 
             $recordData = new RecordsData();
 
@@ -183,6 +193,7 @@ class ImportController extends Controller
 
             // prepare required timestamp fileds
             if(is_null($recordData->timestamp)){
+                if($request->input('device') === 'RHT10') $recordData->date = Carbon::createFromFormat('m-d-Y', $recordData->date)->format('Y-m-d');
                 $recordData->timestamp = Carbon::parse( $recordData->date . ' ' . $recordData->time );
             }
 
@@ -220,8 +231,8 @@ class ImportController extends Controller
                 if($row[1] == 'Title') $record->title = $row[2];
                 if($row[1] == 'Description') $record->comments = $row[2];
                 if($row[1] == 'Location') $record->location_id = $row[2];
-                if($row[1] == 'StartDate') $record->start_date = $row[2] . ', ' . $row[3];
-                if($row[1] == 'EndDate') $record->end_date = $row[2] . ', ' . $row[3];
+                if($row[1] == 'StartDate') $record->start_date = $row[2] . ' ' . $row[3];
+                if($row[1] == 'EndDate') $record->end_date = $row[2] . ' ' . $row[3];
                 if($row[1] == 'LogInterval(s)') $record->intervals = $row[2];
                 if($row[1] == 'Measurements') $record->samples = $row[2];
             }
@@ -239,8 +250,33 @@ class ImportController extends Controller
     // output - object record
     private function parseRHT10Files($data, $record){
         $record->device_id = 'RHT10';
+        $record->product_id = '';
+        $record->location_id = '';
+        $record->comments = '';
 
-        // todo parse tht10
+        // parse headers data
+        foreach($data as $key => $row){
+            $hdrDtrTemp = explode(">>", $row[0]);
+
+            if(array_key_exists(1, $hdrDtrTemp)) $hdrDtr = explode(":", $hdrDtrTemp[1]);
+
+            dump($hdrDtr);
+
+            if(array_key_exists(1, $hdrDtr)){
+                if($hdrDtr[0] == 'Logging Name') $record->title = $hdrDtr[1];
+                if($hdrDtr[0] == 'Sample Rate') $record->intervals = explode(' ', $hdrDtr[1])[0];
+                if($hdrDtr[0] == 'Sample Points') $record->samples = $hdrDtr[1];
+                if($hdrDtr[0] == 'FROM') {
+                    $hdrDtrTime = explode("TO:", $hdrDtrTemp[1]);
+                    $record->start_date = $hdrDtr[1] . ':' . $hdrDtr[2] . ':' . substr( $hdrDtr[3], 0, 2 );
+                    $record->end_date = $hdrDtrTime[1];
+                }
+            }
+            if(substr($row[0], 0, 3 ) === "---"){
+                $record->nr_header_rows = $key + 1;
+                break;
+            }
+        }
 
         return $record;
     }

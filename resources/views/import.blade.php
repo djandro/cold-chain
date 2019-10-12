@@ -86,6 +86,7 @@
                                         <div class="row form-group">
                                             <div class="col col-md-3 m-b-10">
                                                 <input type="hidden" id="temporary-table-id" name="temporary-table-id" />
+                                                <input type="hidden" id="headers_nr_rows" name="headers_nr_rows" />
                                                 <input type="hidden" id="user-id" name="user-id" value="{{ Auth::user()->id }}" />
                                                 <label class="form-control-label">File name:</label>
                                             </div>
@@ -251,6 +252,7 @@
                     jQuery('#location-data').html(getProductSelectList('location-select', data.location.original));
 
                     jQuery('#temporary-table-id').val(data.temporary_table_id);
+                    jQuery('#headers_nr_rows').val(data.headers_nr_rows);
                     jQuery('#samples-data').html(data.samples);
                     jQuery('#start-date-data').html(data.start_date);
                     jQuery('#end-date-data').html(data.end_date);
@@ -289,6 +291,8 @@
                 location: jQuery('#location-select').val(),
 
                 temporary_table_id: jQuery('#temporary-table-id').val(),
+                headers_nr_rows: jQuery('#headers_nr_rows').val(),
+
                 user_id: jQuery('#user-id').val(),
                 samples: jQuery('#samples-data').text(),
                 start_date: jQuery('#start-date-data').text(),
