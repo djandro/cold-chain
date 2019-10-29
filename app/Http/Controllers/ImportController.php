@@ -22,6 +22,9 @@ class ImportController extends Controller
 
     public function getHtmlForCsvHeaderData($csv_data){
         $html = "<table class='table' id='csvDataTable'>";
+
+        if(empty($csv_data[0][0])) $csv_data[0] = array_fill(0, count($csv_data[1]), '-');
+
         // table header
         foreach($csv_data as $row){
             $html .= "<tr>";
@@ -107,7 +110,7 @@ class ImportController extends Controller
         $csv_data = array_slice($data, $record->nr_header_rows, 3);
         $headers_data = $this->getHtmlForCsvHeaderData($csv_data);
 
-        dump($csv_data[0]);
+        dump($csv_data);
 
         // save data to temporary table
         $temp_data = TemporaryData::create([
