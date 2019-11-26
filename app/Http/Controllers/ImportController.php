@@ -17,7 +17,10 @@ class ImportController extends Controller
 
     public function getImport()
     {
-        return view('import');
+        return view('import', [
+            'products' => Product::get(['id', 'name']),
+            'locations' => Location::get(['id', 'name']),
+        ]);
     }
 
     public function getHtmlForCsvHeaderData($csv_data){
@@ -77,6 +80,7 @@ class ImportController extends Controller
         return Device::where('name', $deviceName)->first()->id;
     }
 
+    // M A I N  function for detect type of files
     public function parseImport(CsvImportRequest $request) {
         $record = new Records();
         $path = $request->file('csv_file')->getRealPath();
@@ -213,6 +217,104 @@ class ImportController extends Controller
         ]);
     }
 
+    // G E N E R A T E   D A T A
+    // input - generated input fileds
+    // output - saved generated data in db and returned json response
+    public function generateData(Request $request){
+        dump($request->all());
+
+        // validate request
+        $this->validate(request(),[
+            'title-input'                   =>'required',
+            'timestamp-input-gen-data'      =>'required|date',
+            'interval-input-gen-data'       =>'required|numeric',
+            'rec-gen-data_1'                =>'required|integer|min:1',
+            'temp-gen-data_1'               =>'required|numeric',
+            'hum-gen-data_1'                =>'required|numeric'
+        ]);
+
+        // intervals
+        $interval = $request->input('interval-input-gen-data');
+        // check and save datetime format
+        $start_timestamp = Carbon::createFromFormat('Y-m-d H:i:s', $request->input('timestamp-input-gen-data'));
+
+        // save record in db
+        $record = Records::create([
+            'device_id' => $this->getDeviceId( 'Generated' ),
+            'product_id' => $request->input('product-select-gen-data'),
+            //'location_id' => 0, // because one-to-many relationsip
+            'samples' => 0, // just for temporary time
+            'delay_time' => 0,
+            'intervals' => $interval,
+            'slr' => 0,
+            'limits' => '',
+            'errors' => '',
+            'alarms' => '',
+            'title' => $request->input('title-input'),
+            'comments' => $request->input('comment-input'),
+            'user_id' => $request->input('user-id-gen-data'),
+            'start_date' => $start_timestamp,
+            'end_date' => $start_timestamp, // just for temporary time
+            'file_name' => 'Generated file'
+        ]);
+
+        $calcTimestamp = $start_timestamp;
+        $objRecordData = []; $rowNr = 0;
+
+        // parsing generated records fileds in array
+        foreach($request->all() as $fieldName => $fieldData){
+
+            if(count(explode('_', $fieldName)) > 1) $rowNr = intval(explode('_', $fieldName)[1]);
+
+            if(strpos($fieldName, "rec-gen-data") !== false){
+                $objRecordData[$rowNr][0] = $fieldData;
+            }
+            if(strpos($fieldName, "temp-gen-data") !== false){
+                $objRecordData[$rowNr][1] = $fieldData;
+            }
+            if(strpos($fieldName, "hum-gen-data") !== false){
+                $objRecordData[$rowNr][2] = $fieldData;
+            }
+            if(strpos($fieldName, "location-select-gen-data") !== false){
+                $objRecordData[$rowNr][3] = $fieldData;
+            }
+        }
+
+        //dump($objRecordData);
+
+        // for each records filed -> generating recordData and saving in db
+        for($j = 1; $j <= $rowNr; $j++){
+
+            for($i=0; $i < $objRecordData[$j][0]; $i++) {
+                $recordData = new RecordsData();
+
+                $recordData->temperature = $objRecordData[$j][1];
+                $recordData->humidity = $objRecordData[$j][2];
+                $recordData->location_id = $objRecordData[$j][3];
+
+                $recordData->timestamp = $calcTimestamp;
+                $recordData->date = $calcTimestamp->toDate();
+                $recordData->time = Carbon::createFromFormat('H:i:s', explode(" ",$calcTimestamp)[1]);
+                $calcTimestamp = $calcTimestamp->addMinutes($interval);
+
+                //save recordsData to database
+                $recordData->records_id = $record->id;
+                $recordData->save();
+            }
+        }
+
+        // update calculated record data
+        $samples = RecordsData::where('records_id', $record->id)->count();
+        $end_date = $calcTimestamp->subMinutes($interval);
+
+        Records::where('id', $record->id)->update(['samples' => $samples, 'end_date' => $end_date]);
+        $record = Records::where('id', $record->id)->first();
+
+        return response()->json([
+            'status' => '200',
+            'details' => $record
+        ]);
+    }
 
     // P A R S E   T I D A   files
     // input - data of file, object record

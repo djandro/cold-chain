@@ -11000,6 +11000,22 @@ a.text-dark:focus {
   margin: 0;
 }
 
+.otherDataBox .determiniter {
+  margin: 0 20px;
+}
+
+.otherDataBox .btn-gen-box i {
+  font-size: 20px;
+}
+
+.otherDataBox .generateDataBox input {
+  max-width: 90px;
+}
+
+.otherDataBox .generateDataBox select {
+  min-width: 220px;
+}
+
 @media (max-width: 576px) {
   .records .table-responsive .search.btn-group.float-right {
     width: 90% !important;

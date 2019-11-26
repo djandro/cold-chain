@@ -8,7 +8,7 @@ class RecordsData extends Model
 {
     protected $table = 'records_data';
     public $timestamps = false;
-    public $fillable = ['timestamp', 'date', 'time', 'records_id', 'temperature', 'humidity', 'dew_points', 'battery_voltage', 'is_calculated'];
+    public $fillable = ['timestamp', 'date', 'time', 'records_id', 'temperature', 'humidity', 'dew_points', 'battery_voltage', 'is_calculated', 'location_id'];
 
     protected $attributes = [
       'is_calculated' => 0

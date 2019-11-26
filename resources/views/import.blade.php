@@ -158,7 +158,6 @@
             doAjax(params);
         });
 
-
         jQuery('#submitRecordForm').on('submit', function(e) {
             e.preventDefault();
 
@@ -218,6 +217,87 @@
             jQuery('#submitRecordForm .alert').addClass('d-none');
             setTimeout(function(){
                 jQuery('.importBox2').addClass('d-none');
+            }, 600);
+        });
+
+        jQuery('#generateRecordBtn').on('click', function(e) {
+            e.preventDefault();
+
+            jQuery("#successBoxAlert").addClass('d-none');
+            jQuery('.importBox1').addClass('disableBox');
+            jQuery('.importBox3').removeClass('d-none').removeClass('no-opacity');
+        });
+
+        jQuery('.btn-automated-action.add-action').click(function(e){
+            e.preventDefault();
+            // Selecting last id
+            var lastname_id = jQuery('.generateDataBox input[type=number]').last().attr('name');
+            var split_id = lastname_id.split('_');
+
+            // New index
+            var index = Number(split_id[1]) + 1;
+
+            // Create clone
+            var newel = jQuery('.generateDataBox:last').clone(true);
+
+            // Set id of new element
+            jQuery(newel).find('input[type=number]').eq(0).attr({"id":"rec-gen-data_"+index, "name":"rec-gen-data_"+index});
+            jQuery(newel).find('input[type=number]').eq(1).attr({"id":"temp-gen-data_"+index, "name":"temp-gen-data_"+index});
+            jQuery(newel).find('input[type=number]').eq(2).attr({"id":"hum-gen-data_"+index, "name":"hum-gen-data_"+index});
+            jQuery(newel).find('select').attr({"id":"location-select-gen-data_"+index, "name":"location-select-gen-data_"+index});
+
+            if(!jQuery(newel).find('.btn-gen-box .btn-automated-action.remove-action').length){
+                jQuery(newel).find('.btn-gen-box').append('<a href class="btn-automated-action remove-action text-secondary"><i class="fas fa-times-circle"></i></a>');
+            }
+
+            // Insert element
+            jQuery(newel).insertAfter(".generateDataBox:last");
+        });
+
+        jQuery('.generateDataBox').on('click', '.btn-automated-action.remove-action', function(e) {
+            e.preventDefault();
+            jQuery(this).closest('.generateDataBox').remove();
+        });
+
+        jQuery('#generateRecordForm').on('submit', function(e) {
+            e.preventDefault();
+
+            jQuery('.progress.header-progress .progress-bar').removeAttr('style');
+            var params = jQuery.extend({}, doAjax_params_default);
+            params['url'] = "{{ route('generate_data') }}";
+            params['contentType'] = false;
+            params['data'] = new FormData(this);
+            params['successCallbackFunction'] = function( data ) {
+                if (data.fail) {
+                    // todo print failed data
+                    console.log(data.fail);
+                }
+                else if(data.status == '200'){
+                    // print success
+                    jQuery('#successBoxAlert').html(jQuery('#successBoxAlert').html().replace(/{ID}/g, data.details.id));
+                    jQuery("#successBoxAlert").removeClass('d-none').addClass('show');
+                    jQuery("#generateRecordForm").trigger('reset');
+                    console.log(data);
+                }
+            };
+            params['errorCallBackFunction'] = function( jqXHR ){
+                // todo error print
+                jQuery('#generateRecordForm .alert').text(jqXHR.responseText);
+                jQuery('#generateRecordForm .alert').removeClass('d-none');
+                console.log(jqXHR);
+            };
+            doAjax(params);
+
+        });
+
+        jQuery('#generateRecordForm').on('reset', function(e) {
+            e.preventDefault();
+
+            jQuery('.importBox1').removeClass('disableBox');
+            jQuery('.importBox3').addClass('no-opacity');
+            jQuery('.progress.header-progress .progress-bar').removeAttr('style');
+            setTimeout(function(){
+                jQuery('.importBox3').addClass('d-none');
             }, 600);
         });
 

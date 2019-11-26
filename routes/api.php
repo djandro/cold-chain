@@ -19,6 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('import_parse', 'ImportController@parseImport')->name('import_parse');
 Route::post('save_import', 'ImportController@saveImport')->name('save_import');
+Route::post('generate_data', 'ImportController@generateData')->name('generate_data');
 
 Route::get('record/edit/{id}', 'RecordController@edit')->name('record.edit');
 Route::delete('record/delete/{id}', 'RecordController@destroy')->name('record.destroy');
