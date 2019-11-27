@@ -161,7 +161,7 @@ class ImportController extends Controller
         $record = Records::create([
             'device_id' => $this->getDeviceId( $request->input('device') ),
             'product_id' => $request->input('product'),
-            'location_id' => $request->input('location'),
+            //'location_id' => $request->input('location'),
             'samples' => $request->input('samples'),
             'delay_time' => $request->input('delay'),
             'intervals' => $request->input('interval'),
@@ -203,6 +203,9 @@ class ImportController extends Controller
                 if($request->input('device') === 'RHT10') $recordData->date = Carbon::createFromFormat('m-d-Y', $recordData->date)->format('Y-m-d');
                 $recordData->timestamp = Carbon::parse( $recordData->date . ' ' . $recordData->time );
             }
+
+            // set location
+            $recordData->location_id = $request->input('location');
 
             //save recordsData to database
             $recordData->records_id = $record->id;

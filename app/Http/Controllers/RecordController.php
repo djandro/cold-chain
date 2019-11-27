@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Records;
 use App\RecordsData;
+use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class RecordController extends Controller
 {
@@ -29,6 +31,20 @@ class RecordController extends Controller
             //$recordDataBatteryVoltage[] = $rec->battery_voltage; -> zaenkrat ne izpisujemo
         }
 
+        // calculate time per location
+        $locationsArray = DB::table('records_data')
+                            ->select('location_id', DB::raw('COUNT(location_id) as count'))
+                            ->where('records_id', $id)
+                            ->groupBy('location_id')
+                            ->get();
+
+        foreach($locationsArray as $location){
+            $locations[] = $location->location_id;
+
+            $sec = CarbonInterval::seconds( intval($location->count) * intval($record->intervals) )->cascade()->forHumans();
+            $locationsPerTime[] = array( $location->location_id, $sec );
+        }
+
         // calculating limits
         $temperatureColumn = array_column($recordDataTemperature, 1);
         $humidityColumn = array_column($recordDataHumidity, 1);
@@ -44,6 +60,9 @@ class RecordController extends Controller
             'recordDataTemperature' => json_encode($recordDataTemperature),
             'recordDataHumidity' => json_encode($recordDataHumidity),
             'recordDataLight' => json_encode($recordDataLight),
+
+            'locations' => json_encode($locations),
+            'locationsPerTime' => json_encode($locationsPerTime),
 
             'recordLimits' => array(
                 'max_t_value' => $max_t_value,

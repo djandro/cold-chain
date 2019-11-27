@@ -29,10 +29,10 @@
                             </div>
 
                             <div class="col col-md-3 m-b-10">
-                                <label class="form-control-label" for="interval-input-gen-data">Interval (min):</label>
+                                <label class="form-control-label" for="interval-input-gen-data">Interval (s):</label>
                             </div>
                             <div class="col-12 col-md-9 m-b-10">
-                                <input type="number" id="interval-input-gen-data" name="interval-input-gen-data" placeholder="5" min="1" step="1" class="form-control" aria-required="true" required>
+                                <input type="number" id="interval-input-gen-data" name="interval-input-gen-data" placeholder="60" min="1" step="1" class="form-control" aria-required="true" required>
                             </div>
                         </div>
                     </div>

@@ -33,7 +33,8 @@
                         <h4 class="alert-heading">Well done!</h4>
                         <p class="card-text"></p>
                         <hr>
-                        <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+                        <p class="mb-0">{{ $locationsPerTime }}</p>
+                        <p class="mb-0">Locations: {{ $locations }}</p>
                     </div>
 
                     <div class="alert alert-danger" role="alert">
@@ -111,7 +112,7 @@
                             <hr/>
                             <div class="row form-group">
                                 <div class="col col-md-3">
-                                    <label class="form-control-label">Delay time:</label>
+                                    <label class="form-control-label">Delay time (s):</label>
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <p id="delay_time-data" class="form-control-static badge badge-light">{{$record->delay_time}}</p>
@@ -119,7 +120,7 @@
                             </div>
                             <div class="row form-group">
                                 <div class="col col-md-3">
-                                    <label class="form-control-label">Interval:</label>
+                                    <label class="form-control-label">Interval (s):</label>
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <p id="intervals-data" class="form-control-static badge badge-light">{{$record->intervals}}</p>
@@ -281,6 +282,7 @@
                         //tickInterval: 1000 * 10
                     },
                     yAxis: [{
+                        opposite:true,
                         title: {
                             text: 'Humidity',
                             style: {
