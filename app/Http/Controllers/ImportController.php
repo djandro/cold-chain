@@ -298,7 +298,7 @@ class ImportController extends Controller
                 $recordData->timestamp = $calcTimestamp;
                 $recordData->date = $calcTimestamp->toDate();
                 $recordData->time = Carbon::createFromFormat('H:i:s', explode(" ",$calcTimestamp)[1]);
-                $calcTimestamp = $calcTimestamp->addMinutes($interval);
+                $calcTimestamp = $calcTimestamp->addSeconds($interval);
 
                 //save recordsData to database
                 $recordData->records_id = $record->id;
@@ -308,7 +308,7 @@ class ImportController extends Controller
 
         // update calculated record data
         $samples = RecordsData::where('records_id', $record->id)->count();
-        $end_date = $calcTimestamp->subMinutes($interval);
+        $end_date = $calcTimestamp;
 
         Records::where('id', $record->id)->update(['samples' => $samples, 'end_date' => $end_date]);
         $record = Records::where('id', $record->id)->first();

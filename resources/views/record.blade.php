@@ -73,7 +73,7 @@
                                     <label class="form-control-label">Location:</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <p id="location-data" class="form-control-static badge badge-light">{{$record->location['name']}}</p>
+                                    <p id="location-data" class="form-control-static badge badge-light">{{$locations}}</p>
                                 </div>
                             </div>
                             <div class="row form-group">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Location;
 use App\Records;
 use App\RecordsData;
 use Carbon\CarbonInterval;
@@ -33,16 +34,17 @@ class RecordController extends Controller
 
         // calculate time per location
         $locationsArray = DB::table('records_data')
-                            ->select('location_id', DB::raw('COUNT(location_id) as count'))
+                            ->join('locations', 'records_data.location_id', '=', 'locations.id')
+                            ->select('locations.name as name', DB::raw('COUNT(location_id) as count'))
                             ->where('records_id', $id)
-                            ->groupBy('location_id')
+                            ->groupBy('locations.name')
                             ->get();
 
         foreach($locationsArray as $location){
-            $locations[] = $location->location_id;
+            $locations[] = $location->name;
 
             $sec = CarbonInterval::seconds( intval($location->count) * intval($record->intervals) )->cascade()->forHumans();
-            $locationsPerTime[] = array( $location->location_id, $sec );
+            $locationsPerTime[] = array( $location->name, $sec );
         }
 
         // calculating limits
@@ -61,7 +63,7 @@ class RecordController extends Controller
             'recordDataHumidity' => json_encode($recordDataHumidity),
             'recordDataLight' => json_encode($recordDataLight),
 
-            'locations' => json_encode($locations),
+            'locations' => implode(', ', $locations),
             'locationsPerTime' => json_encode($locationsPerTime),
 
             'recordLimits' => array(
