@@ -224,7 +224,7 @@
                                 <div class="col-sm-6">
                                     <div class="row form-group">
                                         <div class="col col-md-4">
-                                            <label class="form-control-label">Storage T:</label>
+                                            <label class="form-control-label">Storage T (interval):</label>
                                         </div>
                                         <div class="col-12 col-md-8">
                                             <p id="sl-storage-data" class="form-control-static badge badge-light">{{ $record->product['storage_t'] }}C</p>
@@ -256,8 +256,8 @@
                             <hr>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <p class="d-block text-right">Remain Shelf Life - SLR (CSIRO): <span class="role member">5 days</span></p>
-                                    <p class="d-block text-right m-t-10">Remain Shelf Life - SLR (SAL): <span class="role user">5 days</span></p>
+                                    <p class="d-block text-right">Remain Shelf Life - SLR (CSIRO): <span class="role member">{{ $slrCSIRO_value }} days</span></p>
+                                    <p class="d-block text-right m-t-10">Remain Shelf Life - SLR (SAL): <span class="role user">{{ $slrSAL_value }} days</span></p>
                                 </div>
                             </div>
 
@@ -283,8 +283,12 @@
                     {{ $record }}
                 </div>
                 <div class="col-sm-12">
-                    <h4 class="m-t-40 m-b-20">record SL</h4>
-                    {{ $recordDataSL }}
+                    <h4 class="m-t-40 m-b-20">record SLR (CSIRO)</h4>
+                    {{ $slrCSIRO_data }}
+
+                    <h4 class="m-t-40 m-b-20">record SLR (SAL)</h4>
+
+                    {{ $slrSAL_data }}
 
                 </div>
                 <div class="col-sm-12">
@@ -292,14 +296,9 @@
 
                     {{ $recordData }}
 
-                    <hr/>
+                    <h4 class="m-t-40 m-b-20">timestamps</h4>
 
                     {{ $recordDataTimestamp }}
-
-                    <br/>
-
-                    {{ $timestamp = strtotime( $recordDataTimestamp[0] ) }}
-                    {{ date('Y-m-d H-i-s', $timestamp ) }}
 
                 </div>
             </div>
@@ -460,14 +459,15 @@
                         format: '{value} C',
                         style: { color: Highcharts.getOptions().colors[0] }
                     }
-                }],
+                }, {}],
                 plotOptions: {
                     area: {
                         fillColor: {
                             linearGradient: { x1: 0, y1: 0,x2: 0, y2: 1 },
                             stops: [
                                 [0, Highcharts.getOptions().colors[0]],
-                                [1, Highcharts.getOptions().colors[3]]
+                                [1, Highcharts.getOptions().colors[3]],
+                                [2, Highcharts.getOptions().colors[4]]
                             ]
                         },
                         marker: { radius: 2 },
@@ -479,7 +479,7 @@
                 series: [{
                             type: 'spline',
                             name: 'Temp',
-                            yAxis: 1,
+                            yAxis: 0,
                             tooltip: { valueSuffix: ' C' },
                             marker: { enabled: false },
                             data: {!! $recordDataTemperature !!},
@@ -487,10 +487,18 @@
                             pointInterval: {!! $record->intervals !!}
                         },{
                             type: 'spline',
-                            name: 'Days',
-                            yAxis: 0,
+                            name: 'SL (CSIRO)',
+                            yAxis: 1,
                             marker: { enabled: false },
-                            data: {!! $recordDataSL !!},
+                            data: {!! $slrCSIRO_data !!},
+                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
+                            pointInterval: {!! $record->intervals !!}
+                        },{
+                            type: 'spline',
+                            name: 'SL (SAL)',
+                            yAxis: 2,
+                            marker: { enabled: false },
+                            data: {!! $slrSAL_data !!},
                             pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
                             pointInterval: {!! $record->intervals !!}
                         }]

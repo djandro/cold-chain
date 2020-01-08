@@ -21,7 +21,17 @@ class RecordController extends Controller
 
         return $recordDataStartDate;
     }
-    
+
+    public function getT_SALfromTable($temperature){
+
+        if($temperature > 30) $temperature = 30;
+        if($temperature < 0) $temperature = 0;
+
+        $t_sal = DB::table('sal_data')->where('temperature', $temperature)->first();
+
+        return floatval($t_sal->sl);
+    }
+
     public function getRecord($id) {
 
         $record = Records::find( $id );
@@ -44,11 +54,14 @@ class RecordController extends Controller
             $k = pow(0.1 * round($rec->temperature) + 1, 2); // koeficient
             $t = round(floatval($record->intervals / 86400), 5) * $slt_index++; // v èasu t
 
-            $recordDataSL[] = round($slt - $k * $t, 2);
+            $slrCSIRO[] = round($slt - $k * $t, 2);
 
+            // izracun za model SAL
+            $t_sal = $this->getT_SALfromTable( round($rec->temperature) ); // t-sal za doloceno temperaturo
+            $k_sal = round($slt / $t_sal, 2); // koeficient
 
-            //$recordDataDewPoints[] = $rec->dew_points; --> zaenkrat ne izpisujemo
-            //$recordDataBatteryVoltage[] = $rec->battery_voltage; -> zaenkrat ne izpisujemo
+            $slrSAL[] = round($slt - $k_sal * $t, 2);
+
         }
 
         // calculate time per location
@@ -79,8 +92,13 @@ class RecordController extends Controller
             'recordDataHumidity' => json_encode($recordDataHumidity),
             'recordDataLight' => json_encode($recordDataLight),
 
-            'recordDataSL' => json_encode($recordDataSL),
             'recordDataStartDate' => $this->convertTimestampToArray($record->start_date),
+
+            'slrCSIRO_value' => end($slrCSIRO),
+            'slrCSIRO_data' => json_encode($slrCSIRO),
+
+            'slrSAL_value' => end($slrSAL),
+            'slrSAL_data' => json_encode($slrSAL),
 
             'locations' => implode(', ', $locations),
             'locationsPerTime' => $locationsPerTime,
