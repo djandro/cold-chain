@@ -22,7 +22,7 @@
                 <div class="col-sm-6">
 
                     <div class="jumbotron record-comment-box">
-                        <p><small><i>Uploaded {{$record->user['name']}} at {{$record->created_at}}.</i></small></p>
+                        <p><small><i>Uploaded {{$record->user['name']}} {{ $record->created_at->diffForHumans()}}.</i></small></p>
                         <p>Comments: {{$record->comments}}</p>
                     </div>
 
@@ -30,11 +30,13 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="alert-heading">Well done!</h4>
+                        <h4 class="alert-heading">Findings!</h4>
                         <p class="card-text"></p>
                         <hr>
-                        <p class="mb-0">{{ $locationsPerTime }}</p>
-                        <p class="mb-0">Locations: {{ $locations }}</p>
+                        <p class="mb-0"><b>Location per time:</b></p>
+                        @foreach($locationsPerTime as $loc)
+                        <p class="mb-0">{{ $loc[0] }}: {{ $loc[1] }}</p>
+                        @endforeach
                     </div>
 
                     <div class="alert alert-danger" role="alert">
@@ -42,8 +44,8 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                         <h4 class="alert-heading">Warnings!</h4>
-                        <p>Alarms: {{ $record->alarms }}</p>
                         <hr>
+                        <p>Alarms: {{ $record->alarms }}</p>
                         <p class="mb-0">Errors: {{ $record->errors }}</p>
                     </div>
 
@@ -207,14 +209,70 @@
                         </table>
                     </div>
 
-
                 </div>
             </div>
 
             <hr/>
 
             <div class="row shelf-life-box">
-                <div class="col-sm-12 m-t-20 m-b-20">todo Shelf Life Box</div>
+                <div class="col-sm-12 m-t-20 m-b-20">
+                    <h4>Shelf Life (SL) for product {{ $record->product['name'] }}</h4>
+                    <div class="card border border-primary sl-details-box m-t-20">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            <label class="form-control-label">Storage T:</label>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <p id="sl-storage-data" class="form-control-static badge badge-light">{{ $record->product['storage_t'] }}C</p>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            <label class="form-control-label">SL-Ref:</label>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <p id="sl-slt-data" class="form-control-static badge badge-light">{{ $record->product['slt'] }} day(s)</p>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-4">
+                                            <label for="select" class=" form-control-label">Shelf Life</label>
+                                        </div>
+                                        <div class="col-12 col-md-8">
+                                            <select name="sl-temp" id="sl-temp" class="form-control">
+                                                <option value="0">0 days</option>
+                                                <option value="1">3 days</option>
+                                                <option value="2">5 days</option>
+                                                <option value="3">10 days</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p class="d-block text-right">Remain Shelf Life - SLR (CSIRO): <span class="role member">5 days</span></p>
+                                    <p class="d-block text-right m-t-10">Remain Shelf Life - SLR (SAL): <span class="role user">5 days</span></p>
+                                </div>
+                            </div>
+
+                            <hr/>
+
+                            <div class="row record-graph-box">
+                                <div class="col-sm-12 m-t-40">
+                                    <div id="shelfLifeChart" style="height: 500px;"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
             <hr/>
@@ -225,13 +283,21 @@
                     {{ $record }}
                 </div>
                 <div class="col-sm-12">
+                    <h4 class="m-t-40 m-b-20">record SL</h4>
+                    {{ $recordDataSL }}
+
+                </div>
+                <div class="col-sm-12">
                     <h4 class="m-t-40 m-b-20">record data</h4>
 
                     {{ $recordData }}
 
                     <hr/>
 
-                    {{ $recordDataTimestamp[1] }}
+                    {{ $recordDataTimestamp }}
+
+                    <br/>
+
                     {{ $timestamp = strtotime( $recordDataTimestamp[0] ) }}
                     {{ date('Y-m-d H-i-s', $timestamp ) }}
 
@@ -256,120 +322,184 @@
 
                 Highcharts.setOptions({
                     global: {
-                        useUTC: false
+                        useUTC: true
                     }
                 });
 
                 Highcharts.chart('lineChart', {
-                    chart: {
-                        zoomType: 'x'
-                    },
-                    title: {
-                        text: 'Recorded data'
-                    },
-                    tooltip: {
-                        shared: true
-                    },
+                    chart: { zoomType: 'x' },
+                    title: { text: 'Recorded data' },
+                    tooltip: { shared: true },
                     xAxis: {
                         type: 'datetime',
-                        labels: {
-                            format: '{value:%Y-%b-%e. %H:%M:%S}',
-                            align: 'right',
-                            rotation: -30
-                        },
-                        categories: {!! $recordDataTimestamp !!}
-                        //min: {!! strtotime($recordDataTimestamp[0]) !!},
-                        //tickInterval: 1000 * 10
+                        dateTimeLabelFormats: {
+                            second: '%Y-%m-%d<br/>%H:%M:%S',
+                            minute: '%Y-%m-%d<br/>%H:%M',
+                            hour: '%Y-%m-%d<br/>%H:%M',
+                            day: '%Y<br/>%m-%d',
+                            week: '%Y<br/>%m-%d',
+                            month: '%Y-%m',
+                            year: '%Y'
+                        }
                     },
-                    yAxis: [{
+                    yAxis: [
+                    {
+                    // first line
                         opposite:true,
                         title: {
                             text: 'Humidity',
-                            style: {
-                                color: Highcharts.getOptions().colors[1]
-                            }
+                            style: { color: Highcharts.getOptions().colors[1] }
                         },
                         tooltip: {
                             valueSuffix: ' %'
                         },
                         labels: {
                             format: '{value} %',
-                            style: {
-                                color: Highcharts.getOptions().colors[1]
-                            }
+                            style: { color: Highcharts.getOptions().colors[1] }
                         }
-                    }, {
+                    },{
+                    // second line
                         title: {
                             text: 'Temperature',
-                            style: {
-                                color: Highcharts.getOptions().colors[0]
-                            }
+                            style: { color: Highcharts.getOptions().colors[0] }
                         },
-                        tooltip: {
-                            valueSuffix: ' C'
-                        },
+                        tooltip: { valueSuffix: ' C' },
                         labels: {
                             format: '{value} C',
-                            style: {
-                                color: Highcharts.getOptions().colors[0]
-                            }
+                            style: { color: Highcharts.getOptions().colors[0] }
                         }
                     }],
                     plotOptions: {
                         area: {
                             fillColor: {
-                                linearGradient: {
-                                    x1: 0,
-                                    y1: 0,
-                                    x2: 0,
-                                    y2: 1
-                                },
+                                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
                                 stops: [
-                                    [0, Highcharts.getOptions().colors[0]],
-                                    [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                                ]
-                            },
-                            marker: {
-                                radius: 2
-                            },
+                                        [0, Highcharts.getOptions().colors[0]],
+                                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                            ]},
+                            marker: { radius: 2 },
                             lineWidth: 1,
-                                states: {
-                                hover: {
-                                    lineWidth: 1
-                                }
-                            },
+                            states: { hover: { lineWidth: 1 }},
                             threshold: null
                         }
                     },
-                    series: [{
-                        type: 'spline',
-                        name: 'Temp',
-                        yAxis: 1,
-                        tooltip: {
-                            valueSuffix: ' C'
-                        },
-                        marker: {
-                            enabled: false
-                        },
-                        data: {!! $recordDataTemperature !!}
-                    },{
-                        type: 'spline',
-                        name: 'Humiditee',
-                        yAxis: 0,
-                        tooltip: {
-                            valueSuffix: ' %'
-                        },
-                        marker: {
-                            enabled: false
-                        },
-                        data: {!! $recordDataHumidity !!}
-                    }]
-                });
-            }
+                    series:[
+                        {
+                            type: 'spline',
+                            name: 'Temp',
+                            yAxis: 1,
+                            tooltip: { valueSuffix: ' C' },
+                            marker: { enabled: false },
+                            data: {!! $recordDataTemperature !!},
+                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
+                            pointInterval: {!! $record->intervals !!}
+                        },{
+                            type: 'spline',
+                            name: 'Humiditee',
+                            yAxis: 0,
+                            tooltip: { valueSuffix: ' %' },
+                            marker: { enabled: false },
+                            data: {!! $recordDataHumidity !!},
+                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
+                            pointInterval: {!! $record->intervals !!}
+                        }]
+                    });
+    }
 
-        } catch (err) {
-            console.log(err);
+    } catch (err) {
+        console.log(err);
+    }
+    })(jQuery);
+</script>
+<script>
+    (function ($) {
+        // Use Strict
+        "use strict";
+    try {
+        var graph_self = document.getElementById("shelfLifeChart");
+        if (graph_self) {
+
+            Highcharts.setOptions({
+                global: {
+                    useUTC: true
+                }
+            });
+
+            Highcharts.chart('shelfLifeChart', {
+                chart: { zoomType: 'x' },
+                title: { text: 'Shelf Life Graph'  },
+                tooltip: {  shared: true },
+                xAxis: {
+                    type: 'datetime',
+                    dateTimeLabelFormats: {
+                        second: '%Y-%m-%d<br/>%H:%M:%S',
+                        minute: '%Y-%m-%d<br/>%H:%M',
+                        hour: '%Y-%m-%d<br/>%H:%M',
+                        day: '%Y<br/>%m-%d',
+                        week: '%Y<br/>%m-%d',
+                        month: '%Y-%m',
+                        year: '%Y'
+                    }
+                },
+                yAxis: [{
+                    opposite:true,
+                    title: {
+                        text: 'Days',
+                        style: { color: Highcharts.getOptions().colors[3] }
+                    },
+                    labels: {
+                        style: { color: Highcharts.getOptions().colors[3] }
+                    }
+                }, {
+                    title: {
+                        text: 'Temperature',
+                        style: { color: Highcharts.getOptions().colors[0] }
+                    },
+                    tooltip: { valueSuffix: ' C' },
+                    labels: {
+                        format: '{value} C',
+                        style: { color: Highcharts.getOptions().colors[0] }
+                    }
+                }],
+                plotOptions: {
+                    area: {
+                        fillColor: {
+                            linearGradient: { x1: 0, y1: 0,x2: 0, y2: 1 },
+                            stops: [
+                                [0, Highcharts.getOptions().colors[0]],
+                                [1, Highcharts.getOptions().colors[3]]
+                            ]
+                        },
+                        marker: { radius: 2 },
+                        lineWidth: 1,
+                            states: { hover: { lineWidth: 1  } },
+                        threshold: null
+                    }
+                },
+                series: [{
+                            type: 'spline',
+                            name: 'Temp',
+                            yAxis: 1,
+                            tooltip: { valueSuffix: ' C' },
+                            marker: { enabled: false },
+                            data: {!! $recordDataTemperature !!},
+                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
+                            pointInterval: {!! $record->intervals !!}
+                        },{
+                            type: 'spline',
+                            name: 'Days',
+                            yAxis: 0,
+                            marker: { enabled: false },
+                            data: {!! $recordDataSL !!},
+                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
+                            pointInterval: {!! $record->intervals !!}
+                        }]
+            });
         }
+
+    } catch (err) {
+        console.log(err);
+    }
     })(jQuery);
 </script>
 @endsection

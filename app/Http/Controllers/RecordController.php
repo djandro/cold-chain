@@ -2,31 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Location;
 use App\Records;
 use App\RecordsData;
 use Carbon\CarbonInterval;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class RecordController extends Controller
 {
+
+    public function convertTimestampToArray($timestamp){
+        $recordDataStartDateTemp1 = explode(" ",$timestamp);
+        $recordDataStartDate2 = array_merge(explode("-",$recordDataStartDateTemp1[0]), explode(":",$recordDataStartDateTemp1[1]));
+
+        for ($i = 0; $i < count($recordDataStartDate2); $i++) {
+            $recordDataStartDate[] = (int) $recordDataStartDate2[$i];
+        }
+
+        return $recordDataStartDate;
+    }
     
     public function getRecord($id) {
 
         $record = Records::find( $id );
         $recordData =  RecordsData::where('records_id', $id)->get();
 
+        $slt = intval($record->product['slt']);
+        $slt_index = 1;
+
         foreach($recordData as $rec){
             $dt = Carbon::parse($rec->timestamp);
 
             $recordDataTimestamp[] = $rec->timestamp;
-            $recordDataTemperature[] = array($dt->timestamp, $rec->temperature);
-            $recordDataHumidity[] = array($dt->timestamp, $rec->humidity);
+            $recordDataTemperature[] = $rec->temperature;
+            $recordDataHumidity[] = $rec->humidity;
             $recordDataLight[] = $rec->light;
 
             $recordDataLimits[] = array((string) $rec->temperature, (string) $rec->humidity); // for comparing limits
+
+            // izracun za model CISRO
+            $k = pow(0.1 * round($rec->temperature) + 1, 2); // koeficient
+            $t = round(floatval($record->intervals / 86400), 5) * $slt_index++; // v èasu t
+
+            $recordDataSL[] = round($slt - $k * $t, 2);
+
 
             //$recordDataDewPoints[] = $rec->dew_points; --> zaenkrat ne izpisujemo
             //$recordDataBatteryVoltage[] = $rec->battery_voltage; -> zaenkrat ne izpisujemo
@@ -44,15 +63,12 @@ class RecordController extends Controller
             $locations[] = $location->name;
 
             $sec = CarbonInterval::seconds( intval($location->count) * intval($record->intervals) )->cascade()->forHumans();
-            $locationsPerTime[] = array( $location->name, $sec );
+            $locationsPerTime[] = array($location->name, $sec );
         }
 
         // calculating limits
-        $temperatureColumn = array_column($recordDataTemperature, 1);
-        $humidityColumn = array_column($recordDataHumidity, 1);
-
-        $max_t_value = max($temperatureColumn); $min_t_value = min($temperatureColumn);
-        $max_h_value = max($humidityColumn); $min_h_value = min($humidityColumn);
+        $max_t_value = max($recordDataTemperature); $min_t_value = min($recordDataTemperature);
+        $max_h_value = max($recordDataHumidity); $min_h_value = min($recordDataHumidity);
 
         return view('record', [
             'record' => $record,
@@ -63,8 +79,11 @@ class RecordController extends Controller
             'recordDataHumidity' => json_encode($recordDataHumidity),
             'recordDataLight' => json_encode($recordDataLight),
 
+            'recordDataSL' => json_encode($recordDataSL),
+            'recordDataStartDate' => $this->convertTimestampToArray($record->start_date),
+
             'locations' => implode(', ', $locations),
-            'locationsPerTime' => json_encode($locationsPerTime),
+            'locationsPerTime' => $locationsPerTime,
 
             'recordLimits' => array(
                 'max_t_value' => $max_t_value,
@@ -77,6 +96,7 @@ class RecordController extends Controller
                 'max_h_count' => array_count_values(array_column($recordDataLimits, 1))[(string) $max_h_value],
                 'min_h_count' => array_count_values(array_column($recordDataLimits, 1))[(string) $min_h_value]
             ),
+
         ]);
     }
 
