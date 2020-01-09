@@ -23,6 +23,7 @@ Route::post('generate_data', 'ImportController@generateData')->name('generate_da
 
 Route::get('record/edit/{id}', 'RecordController@edit')->name('record.edit');
 Route::delete('record/delete/{id}', 'RecordController@destroy')->name('record.destroy');
+Route::get('record/{recordId}/update_sldata/{slDay}', 'RecordController@updateShelfLifeData')->name('record.updateShelfLifeData');
 
 Route::get('products', 'ProductController@index')->name('products');
 Route::get('products/edit/{id}', 'ProductController@edit')->name('products.edit');

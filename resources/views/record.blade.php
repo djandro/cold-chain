@@ -256,8 +256,8 @@
                             <hr>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <p class="d-block text-right">Remain Shelf Life - SLR (CSIRO): <span class="role member">{{ $slrCSIRO_value }} days</span></p>
-                                    <p class="d-block text-right m-t-10">Remain Shelf Life - SLR (SAL): <span class="role user">{{ $slrSAL_value }} days</span></p>
+                                    <p class="d-block text-right">Remain Shelf Life - SLR (CSIRO): <span class="role admin">{{ $slrCSIRO_value }} days</span></p>
+                                    <p class="d-block text-right m-t-10">Remain Shelf Life - SLR (SAL): <span class="role member">{{ $slrSAL_value }} days</span></p>
                                 </div>
                             </div>
 
@@ -370,12 +370,6 @@
                     }],
                     plotOptions: {
                         area: {
-                            fillColor: {
-                                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-                                stops: [
-                                        [0, Highcharts.getOptions().colors[0]],
-                                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                            ]},
                             marker: { radius: 2 },
                             lineWidth: 1,
                             states: { hover: { lineWidth: 1 }},
@@ -441,14 +435,7 @@
                     }
                 },
                 yAxis: [{
-                    opposite:true,
-                    title: {
-                        text: 'Days',
-                        style: { color: Highcharts.getOptions().colors[3] }
-                    },
-                    labels: {
-                        style: { color: Highcharts.getOptions().colors[3] }
-                    }
+                    visible: false
                 }, {
                     title: {
                         text: 'Temperature',
@@ -459,27 +446,30 @@
                         format: '{value} C',
                         style: { color: Highcharts.getOptions().colors[0] }
                     }
-                }, {}],
+                }, {
+                    opposite:true,
+                    title: {
+                        text: 'Days',
+                        style: { color: '#e14f5d' }
+                    },
+                    labels: {
+                        style: { color: '#e14f5d' }
+                    }
+                }],
                 plotOptions: {
                     area: {
-                        fillColor: {
-                            linearGradient: { x1: 0, y1: 0,x2: 0, y2: 1 },
-                            stops: [
-                                [0, Highcharts.getOptions().colors[0]],
-                                [1, Highcharts.getOptions().colors[3]],
-                                [2, Highcharts.getOptions().colors[4]]
-                            ]
-                        },
                         marker: { radius: 2 },
                         lineWidth: 1,
                             states: { hover: { lineWidth: 1  } },
                         threshold: null
-                    }
+                    },
+                    series: { fillOpacity: 0.2 }
                 },
                 series: [{
-                            type: 'spline',
+                            type: 'area',
                             name: 'Temp',
                             yAxis: 0,
+                            color: '#7cb5ec',
                             tooltip: { valueSuffix: ' C' },
                             marker: { enabled: false },
                             data: {!! $recordDataTemperature !!},
@@ -489,6 +479,7 @@
                             type: 'spline',
                             name: 'SL (CSIRO)',
                             yAxis: 1,
+                            color: '#e14f5d',
                             marker: { enabled: false },
                             data: {!! $slrCSIRO_data !!},
                             pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
@@ -497,6 +488,7 @@
                             type: 'spline',
                             name: 'SL (SAL)',
                             yAxis: 2,
+                            color: '#36ac51',
                             marker: { enabled: false },
                             data: {!! $slrSAL_data !!},
                             pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),

@@ -41,7 +41,6 @@ class RecordController extends Controller
         $slt_index = 1;
 
         foreach($recordData as $rec){
-            $dt = Carbon::parse($rec->timestamp);
 
             $recordDataTimestamp[] = $rec->timestamp;
             $recordDataTemperature[] = $rec->temperature;
@@ -140,4 +139,37 @@ class RecordController extends Controller
         ]);
     }
 
+    public function updateShelfLifeData($recordId, $slDay){
+
+        $record = Records::find( $recordId );
+        $recordData =  RecordsData::where('records_id', $recordId)->get('temperature');
+
+        $slt = intval($record->product['slt']) - $slDay;
+        $slt_index = 1;
+
+        foreach($recordData as $rec){
+
+            // izracun za model CISRO
+            $k = pow(0.1 * round($rec->temperature) + 1, 2); // koeficient
+            $t = round(floatval($record->intervals / 86400), 5) * $slt_index++; // v èasu t
+
+            $slrCSIRO[] = round($slt - $k * $t, 2);
+
+            // izracun za model SAL
+            $t_sal = $this->getT_SALfromTable( round($rec->temperature) ); // t-sal za doloceno temperaturo
+            $k_sal = round($slt / $t_sal, 2); // koeficient
+
+            $slrSAL[] = round($slt - $k_sal * $t, 2);
+        }
+
+        return response()->json([
+            'status' => '200',
+
+            'slrCSIRO_value' => end($slrCSIRO),
+            'slrCSIRO_data' => $slrCSIRO,
+
+            'slrSAL_value' => end($slrSAL),
+            'slrSAL_data' => $slrSAL
+        ]);
+    }
 }
