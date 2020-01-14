@@ -82,6 +82,9 @@ class RecordController extends Controller
         $max_t_value = max($recordDataTemperature); $min_t_value = min($recordDataTemperature);
         $max_h_value = max($recordDataHumidity); $min_h_value = min($recordDataHumidity);
 
+        // dropdown vaules for shelf life previusly used
+        $prev_sl_range = [0, round($slt / 2), $slt, ($slt + 1)];
+
         return view('record', [
             'record' => $record,
             'recordData' => $recordData,
@@ -92,6 +95,7 @@ class RecordController extends Controller
             'recordDataLight' => json_encode($recordDataLight),
 
             'recordDataStartDate' => $this->convertTimestampToArray($record->start_date),
+            'prev_sl_range' => $prev_sl_range,
 
             'slrCSIRO_value' => end($slrCSIRO),
             'slrCSIRO_data' => json_encode($slrCSIRO),

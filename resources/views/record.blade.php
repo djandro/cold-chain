@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <h3 class="mb-5">
-                        <span>Record {{ $record->id }} {!! !empty($record->title) ? " - " . $record->title : '' !!}</span>
+                        <span id="recordTitle" data-id="{{ $record->id }}">Record {{ $record->id }} {!! !empty($record->title) ? " - " . $record->title : '' !!}</span>
                         <span class="btn-records-box float-right">
                             <a href="#" onclick="return;" class="btn btn-sm btn-outline-link"><i class="zmdi zmdi-edit"></i></a>
                             <a href="#" onclick="return;" class="btn btn-sm btn-outline-link"><i class="zmdi zmdi-delete"></i></a>
@@ -224,30 +224,29 @@
                                 <div class="col-sm-6">
                                     <div class="row form-group">
                                         <div class="col col-md-4">
-                                            <label class="form-control-label">Storage T (interval):</label>
+                                            <label class="form-control-label" title="Recommended Storage temperature">Storage T (interval):</label>
                                         </div>
                                         <div class="col-12 col-md-8">
-                                            <p id="sl-storage-data" class="form-control-static badge badge-light">{{ $record->product['storage_t'] }}C</p>
+                                            <p id="sl-storage-data" class="form-control-static badge badge-light" title="Recommended Storage temperature">{{ $record->product['storage_t'] }}C</p>
                                         </div>
                                     </div>
                                     <div class="row form-group">
                                         <div class="col col-md-4">
-                                            <label class="form-control-label">SL-Ref:</label>
+                                            <label class="form-control-label" title="Shelf Life at recommended temperature in days">SL-Ref:</label>
                                         </div>
                                         <div class="col-12 col-md-8">
-                                            <p id="sl-slt-data" class="form-control-static badge badge-light">{{ $record->product['slt'] }} day(s)</p>
+                                            <p id="sl-slt-data" class="form-control-static badge badge-light" title="Shelf Life at recommended temperature in days">{{ $record->product['slt'] }} day(s)</p>
                                         </div>
                                     </div>
                                     <div class="row form-group">
                                         <div class="col col-md-4">
-                                            <label for="select" class=" form-control-label">Shelf Life</label>
+                                            <label for="select" class=" form-control-label" title="Previously used Shelf Life in days">Shelf Life</label>
                                         </div>
                                         <div class="col-12 col-md-8">
                                             <select name="sl-temp" id="sl-temp" class="form-control">
-                                                <option value="0">0 days</option>
-                                                <option value="1">3 days</option>
-                                                <option value="2">5 days</option>
-                                                <option value="3">10 days</option>
+                                                @for ($i = 0; $i < count($prev_sl_range); $i++)
+                                                    <option value="{{ $prev_sl_range[$i] }}">{{ $prev_sl_range[$i] }} days</option>
+                                                @endfor
                                             </select>
                                         </div>
                                     </div>
@@ -256,8 +255,8 @@
                             <hr>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <p class="d-block text-right">Remain Shelf Life - SLR (CSIRO): <span class="role admin">{{ $slrCSIRO_value }} days</span></p>
-                                    <p class="d-block text-right m-t-10">Remain Shelf Life - SLR (SAL): <span class="role member">{{ $slrSAL_value }} days</span></p>
+                                    <p class="d-block text-right">Remain Shelf Life - SLR (CSIRO): <span class="role admin" id="slrCsiroValue">{{ $slrCSIRO_value }} days</span></p>
+                                    <p class="d-block text-right m-t-10">Remain Shelf Life - SLR (SAL): <span class="role member" id="slrSalValue">{{ $slrSAL_value }} days</span></p>
                                 </div>
                             </div>
 
@@ -318,13 +317,6 @@
 
             var graph = document.getElementById("lineChart");
             if (graph) {
-
-                Highcharts.setOptions({
-                    global: {
-                        useUTC: true
-                    }
-                });
-
                 Highcharts.chart('lineChart', {
                     chart: { zoomType: 'x' },
                     title: { text: 'Recorded data' },
@@ -384,8 +376,8 @@
                             tooltip: { valueSuffix: ' C' },
                             marker: { enabled: false },
                             data: {!! $recordDataTemperature !!},
-                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
-                            pointInterval: {!! $record->intervals !!}
+                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!} -1, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}), // -1 in month because js start month with 0
+                            pointInterval: {!! $record->intervals !!} * 1000 // miliseconds
                         },{
                             type: 'spline',
                             name: 'Humiditee',
@@ -393,8 +385,8 @@
                             tooltip: { valueSuffix: ' %' },
                             marker: { enabled: false },
                             data: {!! $recordDataHumidity !!},
-                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
-                            pointInterval: {!! $record->intervals !!}
+                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!} -1, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
+                            pointInterval: {!! $record->intervals !!} * 1000
                         }]
                     });
     }
@@ -411,13 +403,6 @@
     try {
         var graph_self = document.getElementById("shelfLifeChart");
         if (graph_self) {
-
-            Highcharts.setOptions({
-                global: {
-                    useUTC: true
-                }
-            });
-
             Highcharts.chart('shelfLifeChart', {
                 chart: { zoomType: 'x' },
                 title: { text: 'Shelf Life Graph'  },
@@ -468,22 +453,22 @@
                 series: [{
                             type: 'area',
                             name: 'Temp',
-                            yAxis: 0,
+                            yAxis: 1,
                             color: '#7cb5ec',
                             tooltip: { valueSuffix: ' C' },
                             marker: { enabled: false },
                             data: {!! $recordDataTemperature !!},
-                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
-                            pointInterval: {!! $record->intervals !!}
+                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!} -1, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
+                            pointInterval: {!! $record->intervals !!} * 1000
                         },{
                             type: 'spline',
                             name: 'SL (CSIRO)',
-                            yAxis: 1,
+                            yAxis: 2,
                             color: '#e14f5d',
                             marker: { enabled: false },
                             data: {!! $slrCSIRO_data !!},
-                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
-                            pointInterval: {!! $record->intervals !!}
+                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!} -1, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
+                            pointInterval: {!! $record->intervals !!} * 1000
                         },{
                             type: 'spline',
                             name: 'SL (SAL)',
@@ -491,8 +476,8 @@
                             color: '#36ac51',
                             marker: { enabled: false },
                             data: {!! $slrSAL_data !!},
-                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!}, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
-                            pointInterval: {!! $record->intervals !!}
+                            pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!} -1, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
+                            pointInterval: {!! $record->intervals !!} * 1000
                         }]
             });
         }
@@ -501,5 +486,54 @@
         console.log(err);
     }
     })(jQuery);
+</script>
+<script>
+    jQuery( document ).ready( function( jQuery ) {
+
+        // ON CHANGE SL DROPDOWN
+        jQuery('#sl-temp').on('change', function(e) {
+
+            jQuery('.progress.header-progress .progress-bar').removeAttr('style');
+            var days = this.value;
+            var recordId = jQuery("#recordTitle").data('id');
+            var params = jQuery.extend({}, doAjax_params_default);
+
+            params['url'] = "/api/record/update_sldata/" + recordId + "/" + days;
+            params['requestType'] = "GET";
+
+            params['successCallbackFunction'] = function( data ) {
+                if (data.fail) {
+                    // todo print failed data
+                    console.log(data.fail);
+                }
+                else if(data.status == '200'){
+                    // print success
+
+                    jQuery("#slrCsiroValue").text(data.slrCSIRO_value + " Days");
+                    jQuery("#slrSalValue").text(data.slrSAL_value + " Days");
+
+                    var chart = jQuery('#shelfLifeChart').highcharts();
+
+                    chart.series[1].update({
+                        data: data.slrCSIRO_data
+                    }, false);
+
+                    chart.series[2].update({
+                        data: data.slrSAL_data
+                    }, false);
+
+                    chart.redraw();
+                    console.log(data);
+                }
+            };
+            params['errorCallBackFunction'] = function( jqXHR ){
+                // todo error print
+                console.log(jqXHR);
+            };
+            doAjax(params);
+
+        });
+
+    });
 </script>
 @endsection
