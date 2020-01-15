@@ -10,13 +10,15 @@
                     <h3 class="mb-5">
                         <span id="recordTitle" data-id="{{ $record->id }}">Record {{ $record->id }} {!! !empty($record->title) ? " - " . $record->title : '' !!}</span>
                         <span class="btn-records-box float-right">
-                            <a href="#" onclick="return;" class="btn btn-sm btn-outline-link"><i class="zmdi zmdi-edit"></i></a>
-                            <a href="#" onclick="return;" class="btn btn-sm btn-outline-link"><i class="zmdi zmdi-delete"></i></a>
-                            <a href="#" onclick="return;" class="btn btn-sm btn-outline-link"><i class="zmdi zmdi-download"></i></a>
+                            <button type="button" class="btn btn-sm btn-outline-link" data-toggle="modal" data-target="#editRecordModal" data-backdrop="false"><i class="zmdi zmdi-edit"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-link" data-toggle="modal" data-target="#deleteRecordModal" data-backdrop="false"><i class="zmdi zmdi-delete"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-link"><i class="zmdi zmdi-download"></i></button>
                         </span>
                     </h3>
                 </div>
             </div>
+
+            @include('partials.alertbox')
 
             <div class="row">
                 <div class="col-sm-6">
@@ -274,6 +276,82 @@
                 </div>
             </div>
 
+            <!-- modal edit record -->
+            <div class="modal fade" id="editRecordModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
+                <form id="editRecordForm" action="#" method="post" enctype="multipart/form-data" class="form-horizontal" _lpchecked="1">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="mediumModalLabel">Edit record {{ $record->id }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row form-group">
+                                    <div class="col col-md-3 text-right">
+                                        <label for="location-input-name" class="form-control-label">Name *</label>
+                                    </div>
+                                    <div class="col-12 col-md-9">
+                                        <input type="text" id="location-input-name" name="location-input-name" placeholder="Refrigerator" class="form-control" required>
+                                        <input type="hidden" id="location-input-id" name="location-input-id">
+                                        @csrf
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-3 text-right">
+                                        <label for="select" class="form-control-label">Product</label>
+                                    </div>
+                                    <div class="col-12 col-md-9">
+                                        <select name="location-input-color" id="location-input-color" class="form-control">
+                                            <option value="yellow">Yellow</option>
+                                            <option value="red">Red</option>
+                                            <option value="blue">Blue</option>
+                                            <option value="green">Green</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-3 text-right">
+                                        <label for="location-input-desc" class="form-control-label">Comments</label>
+                                    </div>
+                                    <div class="col-12 col-md-9">
+                                        <textarea name="location-input-desc" id="location-input-desc" rows="4" placeholder="Content..." class="form-control"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row form-group">
+                                    <div class="col col-md-12">
+                                        <div class="alert alert-danger m-b-0 d-none" role="alert"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="btnCancelLocationFrom" type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-ban"></i> Cancel</button>
+                                <button id="btnSaveLocationForm" type="submit" class="btn btn-success"><i class="fa fa-dot-circle-o"></i> Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- end modal edit record -->
+
+            <!-- modal delete record -->
+            <div class="modal fade" id="deleteRecordModal" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body"><p>Are you sure you want to delete record {{ $record->id }} ?</p></div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary btn-delete-record">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end modal delete record -->
+
+            @if(Auth::user()->hasRole('admin'))
+
             <hr/>
 
             <div class="row">
@@ -301,6 +379,8 @@
 
                 </div>
             </div>
+
+            @endif
 
         </div>
     </div>
@@ -532,6 +612,42 @@
             };
             doAjax(params);
 
+        });
+
+        // DELETE RECORD
+        jQuery("#deleteRecordModal").on('click', "button.btn-delete-record", function(){
+            var $modal = jQuery("#deleteRecordModal");
+            var id = jQuery("#recordTitle").data('id');
+            var params = jQuery.extend({}, doAjax_params_default);
+            params['url'] = "/api/record/delete/"+id;
+            params['requestType'] = 'DELETE';
+            params['data'] = JSON.stringify({
+                "id": id
+            });
+            params['successCallbackFunction'] = function( data ) {
+                if (data.fail) {
+                    // todo print failed data
+                    console.log(data.fail);
+                }
+                else if(data.status == '200'){
+                    // print success
+                    // todo redirect on backend site
+                    jQuery('#successBoxAlert .successText').text("You successfully delete data with ID " + data.id);
+                    jQuery("#successBoxAlert").removeClass('d-none').addClass('show');
+                    jQuery("html, body").animate({ scrollTop: 0 }, "slow");
+                    jQuery('#recordRow-' + id).remove();
+                    console.log(data);
+                }
+                $modal.modal('hide');
+            };
+            params['errorCallBackFunction'] = function( jqXHR ){
+                // todo error print
+                jQuery('#errorAlertBox').text(jqXHR.responseText);
+                jQuery('#errorAlertBox').removeClass('d-none');
+                $modal.modal('hide');
+                console.log(jqXHR);
+            };
+            doAjax(params);
         });
 
     });

@@ -37,6 +37,8 @@ class RecordController extends Controller
         $record = Records::find( $id );
         $recordData =  RecordsData::where('records_id', $id)->get();
 
+        if($record == null or $recordData == null) return abort(404);
+
         $slt = intval($record->product['slt']);
         $slt_index = 1;
 
@@ -147,6 +149,13 @@ class RecordController extends Controller
 
         $record = Records::find( $recordId );
         $recordData =  RecordsData::where('records_id', $recordId)->get('temperature');
+
+        if($record == null or $recordData == null){
+            return response()->json([
+                'status' => '500',
+                'details' => 'Record or record data not exist.'
+            ])->setStatusCode(500);
+        }
 
         $slt = intval($record->product['slt']) - $slDay;
         $slt_index = 1;
