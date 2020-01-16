@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Records;
 use App\RecordsData;
+use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\CarbonInterval;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class RecordController extends Controller
@@ -87,7 +87,7 @@ class RecordController extends Controller
         // dropdown vaules for shelf life previusly used
         $prev_sl_range = [0, round($slt / 2), $slt, ($slt + 1)];
 
-        return view('record', [
+        $returnArray = [
             'record' => $record,
             'recordData' => $recordData,
 
@@ -120,7 +120,15 @@ class RecordController extends Controller
                 'min_h_count' => array_count_values(array_column($recordDataLimits, 1))[(string) $min_h_value]
             ),
 
-        ]);
+        ];
+
+        return $returnArray;
+    }
+
+    public function index($id){
+
+        return view('record', $this->getRecord($id));
+
     }
 
     public function edit($id)
@@ -184,5 +192,12 @@ class RecordController extends Controller
             'slrSAL_value' => end($slrSAL),
             'slrSAL_data' => $slrSAL
         ]);
+    }
+
+    public function getPDFexport($id){
+        $show = $this->getRecord($id);
+        $pdf = PDF::loadView('record'); // todo fix this
+
+        return $pdf->download('Record-' . $id . '.pdf');
     }
 }

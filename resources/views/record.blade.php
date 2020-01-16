@@ -12,7 +12,7 @@
                         <span class="btn-records-box float-right">
                             <button type="button" class="btn btn-sm btn-outline-link" data-toggle="modal" data-target="#editRecordModal" data-backdrop="false"><i class="zmdi zmdi-edit"></i></button>
                             <button type="button" class="btn btn-sm btn-outline-link" data-toggle="modal" data-target="#deleteRecordModal" data-backdrop="false"><i class="zmdi zmdi-delete"></i></button>
-                            <button type="button" class="btn btn-sm btn-outline-link"><i class="zmdi zmdi-download"></i></button>
+                            <a href="/records/download_pdf/{{ $record->id }}" target="_blank" class="btn btn-sm btn-outline-link"><i class="zmdi zmdi-download"></i></a>
                         </span>
                     </h3>
                 </div>
@@ -631,12 +631,10 @@
                 }
                 else if(data.status == '200'){
                     // print success
-                    // todo redirect on backend site
-                    jQuery('#successBoxAlert .successText').text("You successfully delete data with ID " + data.id);
+                    jQuery('#successBoxAlert .successText').text("You successfully delete data with ID " + data.id + ". Redirecting to Records...");
                     jQuery("#successBoxAlert").removeClass('d-none').addClass('show');
                     jQuery("html, body").animate({ scrollTop: 0 }, "slow");
-                    jQuery('#recordRow-' + id).remove();
-                    console.log(data);
+                    window.location = "/records";
                 }
                 $modal.modal('hide');
             };
