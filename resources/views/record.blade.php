@@ -12,7 +12,7 @@
                         <span class="btn-records-box float-right">
                             <button type="button" class="btn btn-sm btn-outline-link" data-toggle="modal" data-target="#editRecordModal" data-backdrop="false"><i class="zmdi zmdi-edit"></i></button>
                             <button type="button" class="btn btn-sm btn-outline-link" data-toggle="modal" data-target="#deleteRecordModal" data-backdrop="false"><i class="zmdi zmdi-delete"></i></button>
-                            <a href="/records/download_pdf/{{ $record->id }}" target="_blank" class="btn btn-sm btn-outline-link"><i class="zmdi zmdi-download"></i></a>
+                            <button type="button" class="btn btn-sm btn-outline-link" id="btnDownloadPdf"><i class="zmdi zmdi-download"></i></button>
                         </span>
                     </h3>
                 </div>
@@ -350,6 +350,8 @@
             </div>
             <!-- end modal delete record -->
 
+            <div id="elementH"></div>
+
             @if(Auth::user()->hasRole('admin'))
 
             <hr/>
@@ -389,6 +391,10 @@
 @endsection
 
 @section('scripts')
+<script src="https://code.highcharts.com/highcharts.js" crossorigin="anonymous"></script>
+<script src="http://code.highcharts.com/modules/exporting.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js" integrity="sha256-c3RzsUWg+y2XljunEQS0LqWdQ04X1D3j22fd/8JCAKw=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha256-DupmmuWppxPjtcG83ndhh/32A9xDMRFYkGOVzvpfSIk=" crossorigin="anonymous"></script>
 <script>
     (function ($) {
         // Use Strict
@@ -648,6 +654,17 @@
             doAjax(params);
         });
 
+        // PDF
+        var doc = new jsPDF();
+        //var elementHTML = jQuery('.record').html();
+
+        jQuery('#btnDownloadPdf').click(function () {
+            doc.html(document.body, {
+                callback: function (doc) {
+                    doc.save('Record-{{ $record->id }}.pdf');
+                }
+            });
+        });
     });
 </script>
 @endsection

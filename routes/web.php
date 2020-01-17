@@ -19,7 +19,6 @@ Auth::routes();
 Route::get('import', 'ImportController@getImport')->name('import')->middleware('auth');
 Route::get('records', 'RecordsController@index')->name('records')->middleware('auth');
 Route::get('/records/{id}', 'RecordController@index')->name('record')->middleware('auth');
-Route::get('/records/download_pdf/{id}', 'RecordController@getPDFexport')->name('record')->middleware('auth');
 
 Route::get('settings', 'SettingsController@index')->name('settings')->middleware('auth');
 

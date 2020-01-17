@@ -50,7 +50,7 @@
 
                                 <span class="text-small m-l-10 m-r-10">or</span>
 
-                                <button type="button" class="btn btn-secondary" id="generateRecordBtn">
+                                <button type="button" class="btn btn-secondary" id="generateRecordBtn-12">
                                     <i class="fa fa-circle"></i>
                                     Generate data
                                 </button>
@@ -129,8 +129,8 @@
                     jQuery('.importBox2').removeClass('d-none').removeClass('no-opacity');
                     jQuery('.importBox2 .csvDataBox').html(data.headers_data);
 
-                    jQuery('#title-input').val(data.title);
-                    jQuery('#comment-input').val(data.comment);
+                    jQuery('#title-input-parseForm').val(data.title);
+                    jQuery('#comment-input-parseForm').val(data.comment);
 
                     jQuery('#file-name-data').html(data.file_name);
                     jQuery('#device-data').html(data.device);
@@ -167,8 +167,8 @@
             params['data'] = JSON.stringify({
                 headers_data: getHeaderSelectedData(),
 
-                title: jQuery('#title-input').val(),
-                comment: jQuery('#comment-input').val(),
+                title: jQuery('#title-input-parseForm').val(),
+                comment: jQuery('#comment-input-parseForm').val(),
                 file_name: jQuery('#file-name-data').text(),
 
                 device: jQuery('#device-data').text(),
@@ -220,7 +220,7 @@
             }, 600);
         });
 
-        jQuery('#generateRecordBtn').on('click', function(e) {
+        jQuery('#generateRecordBtn-12').on('click', function(e) {
             e.preventDefault();
 
             jQuery("#successBoxAlert").addClass('d-none');

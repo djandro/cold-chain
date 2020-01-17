@@ -135,7 +135,7 @@
 @endsection
 
 @section('scripts')
-<script src="https://unpkg.com/bootstrap-table@1.15.4/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.15.4/dist/extensions/filter-control/bootstrap-table-filter-control.min.js" crossorigin="anonymous"></script>
 <script>
     jQuery( document ).ready( function( jQuery ) {
         var $table = jQuery('#recordListTable');

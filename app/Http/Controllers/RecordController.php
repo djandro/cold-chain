@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Records;
 use App\RecordsData;
-use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\DB;
 
@@ -192,12 +191,5 @@ class RecordController extends Controller
             'slrSAL_value' => end($slrSAL),
             'slrSAL_data' => $slrSAL
         ]);
-    }
-
-    public function getPDFexport($id){
-        $show = $this->getRecord($id);
-        $pdf = PDF::loadView('record'); // todo fix this
-
-        return $pdf->download('Record-' . $id . '.pdf');
     }
 }

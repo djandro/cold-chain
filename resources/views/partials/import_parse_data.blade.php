@@ -12,11 +12,11 @@
                     <div class="col-sm-6">
                         <h4 class="display-5">Title:</h4>
                         <div class="form-group">
-                            <input type="text" id="title-input" name="title-input" placeholder="Title" class="form-control">
+                            <input type="text" id="title-input-parseForm" name="title-input-parseForm" placeholder="Title" class="form-control">
                         </div>
                         <h4 class="display-5">Comment:</h4>
                         <div class="form-group">
-                            <textarea name="comment-input" id="comment-input" rows="5" placeholder="Comment..." class="form-control"></textarea>
+                            <textarea name="comment-input-parseForm" id="comment-input-parseForm" rows="5" placeholder="Comment..." class="form-control"></textarea>
                         </div>
                     </div>
                     <div class="col-sm-6">
