@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CsvImportRequest;
 use App\Device;
-use App\Location;
-use App\Product;
 use App\Records;
 use App\RecordsData;
 use App\TemporaryData;
@@ -17,10 +15,7 @@ class ImportController extends Controller
 
     public function getImport()
     {
-        return view('import', [
-            'products' => Product::get(['id', 'name']),
-            'locations' => Location::get(['id', 'name']),
-        ]);
+        return view('import');
     }
 
     public function getHtmlForCsvHeaderData($csv_data){
@@ -62,18 +57,6 @@ class ImportController extends Controller
             $temp_data[] = $row;
         }
         return $temp_data;
-    }
-
-    public function getProducts($selected = null){
-        return response()->json(
-            Product::get(['id', 'name'])->toArray()
-        );
-    }
-
-    public function getLocations($selected = null){
-        return response()->json(
-            Location::get(['id', 'name'])->toArray()
-        );
     }
 
     public function getDeviceId($deviceName){
@@ -127,8 +110,6 @@ class ImportController extends Controller
             array(
                 'headers_data' => $headers_data,
                 'headers_nr_rows' => $record->nr_header_rows,
-                'product' => $this->getProducts( $record->product_id  ),
-                'location' => $this->getLocations( $record->location_id ),
                 'device' => $record->device_id,
                 'temporary_table_id' => $temp_data->id,
                 'samples' => $record->samples,

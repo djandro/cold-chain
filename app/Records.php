@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Records extends Model
 {
     protected $table = 'records';
-    public $fillable = ['device_id', 'product_id', 'location_id', 'samples',
+    public $fillable = ['device_id', 'product_id', 'samples',
                         'delay_time', 'intervals', 'slr', 'limits', 'errors',
                         'alarms', 'comments', 'status', 'user_id', 'start_date', 'end_date', 'file_name', 'title', 'nr_header_rows'];
 
@@ -17,10 +17,6 @@ class Records extends Model
 
     public function product(){
         return $this->belongsTo(Product::class);
-    }
-
-    public function location(){
-        return $this->belongsTo(Location::class);
     }
 
     public function device(){

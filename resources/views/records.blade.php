@@ -24,7 +24,7 @@
                                     <li class="nav-item">
                                         <a class="nav-link btn btn-sm btn-outline-secondary active show" id="device-all-tab" data-toggle="pill" href="#device-all-tab"  onclick="onDropDownFilter(this, 'device')" role="tab" aria-controls="device-all-tab" aria-selected="true">All</a>
                                     </li>
-                                    @foreach ($devices as $device)
+                                    @foreach (getDevices() as $device)
                                     <li class="nav-item">
                                         <a class="nav-link btn btn-sm btn-outline-secondary" id="device-{{$device->id}}-tab" data-toggle="pill" href="#device-{{$device->id}}-tab" onclick="onDropDownFilter(this, 'device')" role="tab" aria-controls="device-{{$device->id}}-tab" aria-selected="false">{{ $device->name }}</a>
                                     </li>
@@ -37,7 +37,7 @@
                                     <label for="productFilterSelect" class="form-control-label">Product</label>
                                     <select name="productFilterSelect" id="productFilterSelect" class="form-control-sm form-control" onchange="onDropDownFilter(this, 'product');">
                                         <option value="0">All</option>
-                                        @foreach ($products as $product)
+                                        @foreach (getProducts() as $product)
                                         <option value="{{ $product->id }}">{{ $product->name }}</option>
                                         @endforeach
                                     </select>
@@ -46,7 +46,7 @@
                                     <label for="locationFilterSelect" class="form-control-label">Location</label>
                                     <select name="locationFilterSelect" id="locationFilterSelect" class="form-control-sm form-control" onchange="onDropDownFilter(this, 'location');">
                                         <option value="0">All</option>
-                                        @foreach ($locations as $location)
+                                        @foreach (getLocations() as $location)
                                         <option value="{{ $location->id }}">{{ $location->name }}</option>
                                         @endforeach
                                     </select>
@@ -86,7 +86,7 @@
                             </thead>
 
                             <tbody>
-                            @foreach ($records as $record)
+                            @foreach (getRecords() as $record)
 
                                 <tr id="recordRow-{{ $record->id }}">
                                     <td data-field="id">{{ $record->id }}</td>
@@ -112,7 +112,7 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    {{ $records->links() }}
+                    {{ getRecords()->links() }}
                 </div>
             </div>
 

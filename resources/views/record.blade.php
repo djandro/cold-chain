@@ -278,7 +278,7 @@
 
             <!-- modal edit record -->
             <div class="modal fade" id="editRecordModal" tabindex="-1" role="dialog" aria-labelledby="mediumModalLabel" aria-hidden="true">
-                <form id="editRecordForm" action="#" method="post" enctype="multipart/form-data" class="form-horizontal" _lpchecked="1">
+                <form id="editRecordForm" action="{{ route('record.edit', $record->id) }}" method="post" enctype="multipart/form-data" class="form-horizontal" _lpchecked="1">
                     <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -293,8 +293,8 @@
                                         <label for="location-input-name" class="form-control-label">Name *</label>
                                     </div>
                                     <div class="col-12 col-md-9">
-                                        <input type="text" id="location-input-name" name="location-input-name" placeholder="Refrigerator" class="form-control" required>
-                                        <input type="hidden" id="location-input-id" name="location-input-id">
+                                        <input type="text" id="edit-location-input-name" name="edit-location-input-name" placeholder="Insert name of record" class="form-control" value="{{ $record->title }}" required>
+                                        <input type="hidden" id="edit-location-input-id" name="edit-location-input-id" value="{{ $record->id }}">
                                         @csrf
                                     </div>
                                 </div>
@@ -303,20 +303,23 @@
                                         <label for="select" class="form-control-label">Product</label>
                                     </div>
                                     <div class="col-12 col-md-9">
-                                        <select name="location-input-color" id="location-input-color" class="form-control">
-                                            <option value="yellow">Yellow</option>
-                                            <option value="red">Red</option>
-                                            <option value="blue">Blue</option>
-                                            <option value="green">Green</option>
+                                        <select name="edit-record-input-product" id="edit-record-input-product" class="form-control">
+                                            @foreach (getProducts() as $product)
+                                                @if($product->id == $record->product['id'])
+                                                <option value="{{ $product->id }}" selected>{{ $product->name }}</option>
+                                                @else
+                                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                                @endif
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3 text-right">
-                                        <label for="location-input-desc" class="form-control-label">Comments</label>
+                                        <label for="edit-comment-input" class="form-control-label">Comments</label>
                                     </div>
                                     <div class="col-12 col-md-9">
-                                        <textarea name="location-input-desc" id="location-input-desc" rows="4" placeholder="Content..." class="form-control"></textarea>
+                                        <textarea name="edit-comment-input" id="edit-comment-input" rows="4" placeholder="Insert comment" class="form-control">{{ $record->comments }}</textarea>
                                     </div>
                                 </div>
 
@@ -327,8 +330,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button id="btnCancelLocationFrom" type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-ban"></i> Cancel</button>
-                                <button id="btnSaveLocationForm" type="submit" class="btn btn-success"><i class="fa fa-dot-circle-o"></i> Save</button>
+                                <button id="btnCancelEditRecordFrom" type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-ban"></i> Cancel</button>
+                                <button id="btnSaveEditRecordForm" type="submit" class="btn btn-success"><i class="fa fa-dot-circle-o"></i> Save</button>
                             </div>
                         </div>
                     </div>
@@ -654,12 +657,55 @@
             doAjax(params);
         });
 
-        // PDF
-        var doc = new jsPDF();
-        //var elementHTML = jQuery('.record').html();
+        // EDIT RECORD
+        jQuery("#editRecordForm").on('submit', function(e){
+            e.preventDefault();
+            jQuery('.progress.header-progress .progress-bar').removeAttr('style');
+            var id = jQuery('#edit-location-input-id').val();
+            var params = jQuery.extend({}, doAjax_params_default);
 
+            var tempData = {
+                id: id,
+                title: jQuery('#edit-location-input-name').val(),
+                product_id: jQuery('#edit-record-input-product').val(),
+                comments: jQuery('#edit-comment-input').val()
+            };
+
+            params['url'] = "/api/record/edit/"+id;
+            params['data'] = JSON.stringify(tempData);
+
+            params['successCallbackFunction'] = function( data ) {
+                if (data.fail) {
+                    // todo print failed data
+                    console.log(data.fail);
+                }
+                else if(data.status == '200'){
+                    // print success
+                    jQuery("#btnCancelEditRecordFrom").trigger('click');
+                    jQuery("#editRecordForm").trigger('reset');
+                    // print success
+                    jQuery('#successBoxAlert .successText').text("You successfully edit record with ID " + id + ". Refreshing...");
+                    jQuery("#successBoxAlert").removeClass('d-none').addClass('show');
+                    jQuery("html, body").animate({ scrollTop: 0 }, "slow");
+                    window.location = "/records/"+id;
+
+                    console.log(data);
+                }
+            };
+            params['errorCallBackFunction'] = function( jqXHR ){
+                // todo error print
+                jQuery('#editRecordForm .alert').text(jqXHR.responseText);
+                jQuery('#editRecordForm .alert').removeClass('d-none');
+                console.log(jqXHR);
+            };
+            doAjax(params);
+        });
+
+        // PDF EXPORT
+        var doc = new jsPDF('p','pt','a4');
         jQuery('#btnDownloadPdf').click(function () {
-            doc.html(document.body, {
+
+            doc.html(jQuery('.record').html(), {
                 callback: function (doc) {
                     doc.save('Record-{{ $record->id }}.pdf');
                 }

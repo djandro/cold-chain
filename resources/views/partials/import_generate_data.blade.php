@@ -15,7 +15,7 @@
                             </div>
                             <div class="col-12 col-md-9 m-b-10">
                                 <select name="product-select-gen-data" id="product-select-gen-data" class="form-control" required>
-                                    @foreach($products as $product)
+                                    @foreach(getProducts() as $product)
                                     <option value="{{ $product->id }}">{{ $product->name }}</option>
                                     @endforeach
                                 </select>
@@ -74,7 +74,7 @@
                         <div class="form-group">
                             <label class="sr-only" for="location-select-gen-data_1">Locations:</label>
                             <select name="location-select-gen-data_1" id="location-select-gen-data_1" class="form-control my-1 mr-2 ml-2">
-                                @foreach($locations as $location)
+                                @foreach(getLocations() as $location)
                                     <option value="{{ $location->id }}">{{ $location->name }}</option>
                                 @endforeach
                             </select>

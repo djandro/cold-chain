@@ -5,30 +5,16 @@ namespace App\Http\Controllers;
 use App\Records;
 use App\RecordsData;
 use Carbon\CarbonInterval;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class RecordController extends Controller
 {
+    public function index($id){
 
-    public function convertTimestampToArray($timestamp){
-        $recordDataStartDateTemp1 = explode(" ",$timestamp);
-        $recordDataStartDate2 = array_merge(explode("-",$recordDataStartDateTemp1[0]), explode(":",$recordDataStartDateTemp1[1]));
+        return view('record', $this->getRecord($id));
 
-        for ($i = 0; $i < count($recordDataStartDate2); $i++) {
-            $recordDataStartDate[] = (int) $recordDataStartDate2[$i];
-        }
-
-        return $recordDataStartDate;
-    }
-
-    public function getT_SALfromTable($temperature){
-
-        if($temperature > 30) $temperature = 30;
-        if($temperature < 0) $temperature = 0;
-
-        $t_sal = DB::table('sal_data')->where('temperature', $temperature)->first();
-
-        return floatval($t_sal->sl);
     }
 
     public function getRecord($id) {
@@ -66,11 +52,11 @@ class RecordController extends Controller
 
         // calculate time per location
         $locationsArray = DB::table('records_data')
-                            ->join('locations', 'records_data.location_id', '=', 'locations.id')
-                            ->select('locations.name as name', DB::raw('COUNT(location_id) as count'))
-                            ->where('records_id', $id)
-                            ->groupBy('locations.name')
-                            ->get();
+        ->join('locations', 'records_data.location_id', '=', 'locations.id')
+        ->select('locations.name as name', DB::raw('COUNT(location_id) as count'))
+        ->where('records_id', $id)
+        ->groupBy('locations.name')
+        ->get();
 
         foreach($locationsArray as $location){
             $locations[] = $location->name;
@@ -124,21 +110,38 @@ class RecordController extends Controller
         return $returnArray;
     }
 
-    public function index($id){
-
-        return view('record', $this->getRecord($id));
-
-    }
-
-    public function edit($id)
+    public function edit(Request $request)
     {
-        $where = array('id' => $id);
-        $record = Records::where($where)->first();
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+            'title' => 'required|max:125',
+            'product_id' => 'required',
+            'comments' => 'max:2000'
+        ]);
+
+        if ($validator->fails()) {
+            return response()
+                        ->json(['status' => '500'])
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        $id = $request->input('id');
+
+        // save record in db
+        Records::where('id', $id)->update([
+            'title' => $request->input('title'),
+            'product_id' => $request->input('product_id'),
+            'comments' => $request->input('comments')
+        ]);
+
 
         return response()->json([
             'status' => '200',
-            'details' => $record
+            'id' => $id
         ]);
+
+        //return redirect()->route('record', ['id' => $id])->with('status', 'You successfully edit record with ID ' . $id . '.')->header('ResponseUri', 'records/'.$id);
     }
 
     public function destroy($id)
@@ -191,5 +194,26 @@ class RecordController extends Controller
             'slrSAL_value' => end($slrSAL),
             'slrSAL_data' => $slrSAL
         ]);
+    }
+
+    public function convertTimestampToArray($timestamp){
+        $recordDataStartDateTemp1 = explode(" ",$timestamp);
+        $recordDataStartDate2 = array_merge(explode("-",$recordDataStartDateTemp1[0]), explode(":",$recordDataStartDateTemp1[1]));
+
+        for ($i = 0; $i < count($recordDataStartDate2); $i++) {
+            $recordDataStartDate[] = (int) $recordDataStartDate2[$i];
+        }
+
+        return $recordDataStartDate;
+    }
+
+    public function getT_SALfromTable($temperature){
+
+        if($temperature > 30) $temperature = 30;
+        if($temperature < 0) $temperature = 0;
+
+        $t_sal = DB::table('sal_data')->where('temperature', $temperature)->first();
+
+        return floatval($t_sal->sl);
     }
 }
