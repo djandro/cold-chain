@@ -22,7 +22,7 @@ class RecordController extends Controller
         $record = Records::find( $id );
         $recordData =  RecordsData::where('records_id', $id)->get();
 
-        if($record == null or $recordData == null) return abort(404);
+        if($record == null or $recordData == null or $recordData == null or $recordData->count() == 0 or $record->count() == 0) return abort(404);
 
         $slt = intval($record->product['slt']);
         $slt_index = 1;
@@ -51,14 +51,9 @@ class RecordController extends Controller
         }
 
         // calculate time per location
-        $locationsArray = DB::table('records_data')
-        ->join('locations', 'records_data.location_id', '=', 'locations.id')
-        ->select('locations.name as name', DB::raw('COUNT(location_id) as count'))
-        ->where('records_id', $id)
-        ->groupBy('locations.name')
-        ->get();
+        $locations = []; $locationsPerTime = [];
 
-        foreach($locationsArray as $location){
+        foreach(getLocationsPerRecord($id) as $location){
             $locations[] = $location->name;
 
             $sec = CarbonInterval::seconds( intval($location->count) * intval($record->intervals) )->cascade()->forHumans();

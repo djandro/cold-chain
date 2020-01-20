@@ -13,4 +13,14 @@ class RecordsController extends Controller
 
         return view('records');
     }
+
+    public static function getLocationsPerRecordView($recordId){
+        $locations = [];
+
+        foreach(getLocationsPerRecord($recordId) as $location){
+            $locations[] = $location->name;
+        }
+
+        return implode(', ', $locations);
+    }
 }

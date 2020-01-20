@@ -86,13 +86,14 @@
                             </thead>
 
                             <tbody>
+                            @inject('RecordsController', 'App\Http\Controllers\RecordsController')
                             @foreach (getRecords() as $record)
 
                                 <tr id="recordRow-{{ $record->id }}">
                                     <td data-field="id">{{ $record->id }}</td>
                                     <td data-field="type">{{ $record->device['name'] }}</td>
                                     <td data-field="start_date">{{ $record->start_date }}</td>
-                                    <td data-field="location">{{ $record->location['name'] }}</td>
+                                    <td data-field="location">{{ $RecordsController::getLocationsPerRecordView($record->id) }}</td>
                                     <td data-field="product">{{ $record->product['name'] }}</td>
                                     <td>
                                         <a class="btn btn-sm btn-outline-primary" href="/records/{{ $record->id }}" role="button"><b>Details</b></a>

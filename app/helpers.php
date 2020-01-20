@@ -59,3 +59,17 @@ if (! function_exists('getRecords')) {
         return $records;
     }
 }
+
+if(! function_exists('getLocationsPerRecord')){
+    function getLocationsPerRecord($recordId)
+    {
+        $locationsArray = \Illuminate\Support\Facades\DB::table('records_data')
+        ->join('locations', 'records_data.location_id', '=', 'locations.id')
+        ->select('locations.name as name', DB::raw('COUNT(location_id) as count'))
+        ->where('records_id', $recordId)
+        ->groupBy('locations.name')
+        ->get();
+
+        return $locationsArray;
+    }
+}
