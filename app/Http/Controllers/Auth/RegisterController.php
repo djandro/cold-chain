@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Notifications\NewUser;
 use App\User;
 use App\Http\Controllers\Controller;
 use App\Role;
@@ -72,6 +73,14 @@ class RegisterController extends Controller
         $user
             ->roles()
             ->attach(Role::where('name', 'manager')->first());
+
+        $admins = User::getAdmins();
+
+        if($admins){
+            foreach($admins as $admin){
+                $admin->notify(new NewUser($user));
+            }
+        }
 
         return $user;
     }

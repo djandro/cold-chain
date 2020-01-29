@@ -94,4 +94,14 @@ class User extends Authenticatable
     public function records(){
         return $this->hasMany(Records::class);
     }
+
+    public static function getAdmins(){
+        $admins = User::where('roles.name' , '=', 'admin')
+                        ->join('role_user', 'users.id', '=', 'role_user.user_id')
+                        ->join('roles', 'roles.id', '=', 'role_user.role_id')
+                        ->whereNotNull ('users.approved_at')
+                        ->distinct()->get();
+
+        return $admins;
+    }
 }
