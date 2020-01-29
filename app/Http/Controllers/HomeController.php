@@ -6,6 +6,7 @@ use App\Device;
 use App\Location;
 use App\Product;
 use App\Records;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -19,6 +20,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('approved')->except('approval');
     }
 
     /**
@@ -35,8 +37,14 @@ class HomeController extends Controller
             'records_count' => $this->getRecordsCount(),
             'products_count' => $this->getProductsCount(),
             'locations_count' => $this->getLocationsCount(),
-            'devices_count' => $this->getDevicesCount()
+            'devices_count' => $this->getDevicesCount(),
+            'users_for_approve' => $this->getUsersForApprove()
         ]);
+    }
+
+    public function approval()
+    {
+        return view('auth/approval');
     }
 
     public function getProductsCount(){
@@ -57,6 +65,11 @@ class HomeController extends Controller
     public function getRecordsCount() {
         $records = Records::where('status', '=', 1)->count();
         return $records;
+    }
+
+    public function getUsersForApprove(){
+        $users = User::whereNull('approved_at')->count();
+        return $users;
     }
 
     /*

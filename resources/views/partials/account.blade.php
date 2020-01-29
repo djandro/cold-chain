@@ -13,7 +13,11 @@
                     <tr>
                         <th class="table-data__info" data-field="name" data-formatter="settingsUserName">Name</th>
                         <th data-field="roles" data-formatter="settingsUserRoles">Role</th>
-                        <th></th>
+                        @if(Auth::user()->hasRole('admin'))
+                            <th data-field="approved_at" data-formatter="settingsUserApproved">Approved</th>
+                        @else
+                            <th></th>
+                        @endif
                     </tr>
                     </thead>
                 </table>

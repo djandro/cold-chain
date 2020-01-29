@@ -44,6 +44,17 @@
                 </div>
             </div>
 
+            <div class="row">
+                @if(Auth::user()->hasRole('admin'))
+                <div class="col-md-6 col-lg-3">
+                    <div class="statistic__item">
+                        <h2 class="number">{{ $users_for_approve }}</h2>
+                        <span class="desc">users for approve</span>
+                    </div>
+                </div>
+                @endif
+            </div>
+
 
             <div class="row">
                 <div class="col-sm-12">
@@ -53,6 +64,12 @@
                         {{ session('status') }}
                     </div>
                     @endif
+
+                    TODO: <br/>
+                    - count records in Alarms <br/>
+                    - count records in Error <br/>
+
+                    <br/>
 
                     You are logged in!
                 </div>

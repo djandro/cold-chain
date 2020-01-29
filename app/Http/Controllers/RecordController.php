@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Records;
 use App\RecordsData;
+use PDF;
 use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -210,5 +211,10 @@ class RecordController extends Controller
         $t_sal = DB::table('sal_data')->where('temperature', $temperature)->first();
 
         return floatval($t_sal->sl);
+    }
+
+    public function getPdfExport($id){
+        $pdf = PDF::loadView('record', $this->getRecord($id));
+        return $pdf->stream('pdfview.pdf');
     }
 }

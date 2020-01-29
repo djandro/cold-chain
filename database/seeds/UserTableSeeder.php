@@ -20,6 +20,7 @@ class UserTableSeeder extends Seeder
         $manager->name = "Manager Name";
         $manager->email = "manager@example.com";
         $manager->password = bcrypt("secret");
+        $manager->approved_at = now();
         $manager->save();
         $manager->roles()->attach($role_manager);
 
@@ -27,6 +28,7 @@ class UserTableSeeder extends Seeder
         $admin->name = "Andraz Hostnik";
         $admin->email = "djandro90@gmail.com";
         $admin->password = bcrypt("secret");
+        $admin->approved_at = now();
         $admin->save();
         $admin->roles()->attach($role_admin);
     }

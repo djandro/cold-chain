@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 
 class ImportController extends Controller
 {
-
     public function getImport()
     {
         return view('import');
@@ -72,7 +71,7 @@ class ImportController extends Controller
 
         //$data = file($path, FILE_IGNORE_NEW_LINES);
         $data = array_map(function($v){return str_getcsv($v, "\t");}, file($path));
-        dump($data);
+        //dump($data);
 
         // check if file is type TIDA
         if( $ext === 'csv' && substr( $data[0][0], 0, 1 ) === "#" ) {
@@ -97,7 +96,7 @@ class ImportController extends Controller
         $csv_data = array_slice($data, $record->nr_header_rows, 3);
         $headers_data = $this->getHtmlForCsvHeaderData($csv_data);
 
-        dump($csv_data);
+        //dump($csv_data);
 
         // save data to temporary table
         $temp_data = TemporaryData::create([
@@ -205,7 +204,7 @@ class ImportController extends Controller
     // input - generated input fileds
     // output - saved generated data in db and returned json response
     public function generateData(Request $request){
-        dump($request->all());
+        //dump($request->all());
 
         // validate request
         $this->validate(request(),[
@@ -306,7 +305,7 @@ class ImportController extends Controller
     private function parseTIDAFiles($data, $record){
         $record->device_id = 'TIDA';
 
-        dump($data);
+        //dump($data);
 
         // check if string ;; exist and remove this
         $lastEl = key(array_slice($data[0], -1, 1, true));
@@ -349,7 +348,7 @@ class ImportController extends Controller
 
             if(array_key_exists(1, $hdrDtrTemp)) $hdrDtr = explode(":", $hdrDtrTemp[1]);
 
-            dump($hdrDtr);
+            //dump($hdrDtr);
 
             if(array_key_exists(1, $hdrDtr)){
                 if($hdrDtr[0] == 'Logging Name') $record->title = $hdrDtr[1];

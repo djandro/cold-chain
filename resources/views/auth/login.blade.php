@@ -45,6 +45,12 @@
                         @endif
                     </div>
 
+                    @if (session('status'))
+                    <div class="alert alert-danger">
+                        {{ session('status') }}
+                    </div>
+                    @endif
+
                     <button type="submit" class="au-btn au-btn--block au-btn--green m-b-20">
                         {{ __('Login') }}
                     </button>

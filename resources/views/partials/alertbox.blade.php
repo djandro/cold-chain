@@ -19,4 +19,16 @@
             </button>
         </div>
     </div>
+
+    @if (session('status'))
+    <div class="col-sm-12">
+        <div class="sufee-alert alert with-close alert-success alert-dismissible m-t-10 m-b-30" role="alert">
+            <span class="successText">{{ session('status') }}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">x</span>
+            </button>
+        </div>
+    </div>
+    @endif
+
 </div>

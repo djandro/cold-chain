@@ -360,3 +360,10 @@ function settingsUserRoles(index, value, row){
   });
   return $html;
 }
+
+function settingsUserApproved(index, row){
+  $html = '';
+  if(!row.approved_at) $html += '<a class="btn btn-warning" href="/settings/approve/'+ row.id +'"><i class="fa fa-map-marker"></i> Approve</a>';
+  else $html += row.approved_at;
+  return $html;
+}

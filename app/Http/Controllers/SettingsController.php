@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
+
     public function index(Request $request)
     {
         $request->user()->authorizeRoles(['manager', 'admin']);
@@ -29,7 +30,18 @@ class SettingsController extends Controller
         return Response::json( $users );
     }
 
-    public function getDevices(){
+    public function approveUser(Request $request, $user_id)
+    {
+        $request->user()->authorizeRoles(['admin']);
+
+        $user = User::findOrFail($user_id);
+        $user->update(['approved_at' => now()]);
+
+        return redirect()->route('settings')->with('status', 'User ' . $user->name . ' approved successfully!');
+    }
+
+    public function getDevices()
+    {
         $devices = Device::orderBy('id', 'asc')->get();
         return Response::json( $devices );
     }
