@@ -12,6 +12,10 @@ class Location extends Model
         return $this->hasMany(Records::class);
     }
 
+    public function recordsData(){
+        return $this->hasMany(RecordsData::class);
+    }
+
     public function getAlertMin(){
         return explode(";", $this->attributes['storage_t'])[0];
     }

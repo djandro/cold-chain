@@ -21,31 +21,25 @@ function getCurrentPage()
 }
 
 if (! function_exists('getProducts')) {
-    function getProducts($json = false)
+    function getProducts()
     {
         $products = \App\Product::orderBy('id', 'desc')->get(['id', 'name']);
-
-        if ($json) Response::json($products);
         return $products;
     }
 }
 
 if (! function_exists('getLocations')) {
-    function getLocations($json = false)
+    function getLocations()
     {
         $locations = \App\Location::orderBy('id', 'desc')->get(['id', 'name']);
-
-        if ($json) Response::json($locations);
         return $locations;
     }
 }
 
 if (! function_exists('getDevices')) {
-    function getDevices($json = false)
+    function getDevices()
     {
         $devices = \App\Device::get(['id', 'name']);
-
-        if ($json) Response::json($devices);
         return $devices;
     }
 }
@@ -55,7 +49,7 @@ if (! function_exists('getRecords')) {
     {
         $records = \App\Records::orderBy('id', 'desc')->paginate(10);
 
-        if ($json) Response::json($records);
+        if ($json) return Response::json($records);
         return $records;
     }
 }

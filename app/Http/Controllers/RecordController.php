@@ -68,6 +68,7 @@ class RecordController extends Controller
         // dropdown vaules for shelf life previusly used
         $prev_sl_range = [0, round($slt / 2), $slt, ($slt + 1)];
 
+
         $returnArray = [
             'record' => $record,
             'recordData' => $recordData,
@@ -88,6 +89,8 @@ class RecordController extends Controller
 
             'locations' => implode(', ', $locations),
             'locationsPerTime' => $locationsPerTime,
+
+            'alarms' => RecordStatisticController::getRecordStatistic($record),
 
             'recordLimits' => array(
                 'max_t_value' => $max_t_value,

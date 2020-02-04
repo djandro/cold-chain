@@ -194,6 +194,9 @@ class ImportController extends Controller
             //dump($recordData);
         };
 
+        // TODO call RecordStatistic and update data
+
+
         return response()->json([
             'status' => '200',
             'details' => $record

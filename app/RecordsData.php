@@ -18,4 +18,7 @@ class RecordsData extends Model
         return $this->hasOne(Records::class);
     }
 
+    public function location(){
+        return $this->belongsTo(Location::class);
+    }
 }

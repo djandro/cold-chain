@@ -47,7 +47,11 @@
                 @else
                 <div class="account2">
                     <div class="image img-cir img-120">
-                        <img src="/images/icon/avatar-big-01.jpg" alt="{{ Auth::user()->name }}" />
+                        @if(Auth::user()->hasRole('admin'))
+                            <img src="/images/icon/avatar-big-01.jpg" alt="{{ Auth::user()->name }}" />
+                        @else
+                            <img src="/images/icon/avatar-big-03.jpg" alt="{{ Auth::user()->name }}" />
+                        @endif
                     </div>
                     <h4 class="name">{{ Auth::user()->name }}</h4>
                     <a class="text-center" href="{{ route('logout') }}"

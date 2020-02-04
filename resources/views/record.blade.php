@@ -49,6 +49,7 @@
                         <hr>
                         <p>Alarms: {{ $record->alarms }}</p>
                         <p class="mb-0">Errors: {{ $record->errors }}</p>
+                        <p>{{ print_r($alarms) }}</p>
                     </div>
 
                 </div>

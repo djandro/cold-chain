@@ -134,8 +134,8 @@
 
                     jQuery('#file-name-data').html(data.file_name);
                     jQuery('#device-data').html(data.device);
-                    jQuery('#product-data').html(getProductSelectList('product-select', []));
-                    jQuery('#location-data').html(getProductSelectList('location-select', []));
+                    jQuery('#product-data').html(getProductSelectList('product-select', {!! getProducts() !!}));
+                    jQuery('#location-data').html(getProductSelectList('location-select', {!! getLocations() !!}));
 
                     jQuery('#temporary-table-id').val(data.temporary_table_id);
                     jQuery('#headers_nr_rows').val(data.headers_nr_rows);
