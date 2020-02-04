@@ -26,10 +26,20 @@ class RecordStatisticController extends Controller
         $productStorageMax = explode(';', $record->product['storage_t'])[1];
         $locationStorage = explode(';', $recordData[0]->location['storage_t']);
 
-        $productStorageMaxSamples = RecordsData::where('temperature', '>', $productStorageMax)->count();
+        // isset for examples of record that do not have product
+        if( !isset($productStorageMax[1]) ) $productStorageMaxSamples = 0;
+        else $productStorageMaxSamples = RecordsData::where('temperature', '>', $productStorageMax)->count();
 
-        $locationStorageMinSamples = RecordsData::where('temperature', '<', $locationStorage[0])->count();
-        $locationStorageMaxSamples = RecordsData::where('temperature', '>', $locationStorage[1])->count();
+        // isset for examples of record that do not have location
+        if( !isset($locationStorage[1]) ){
+            $locationStorageMinSamples = 0;
+            $locationStorageMaxSamples = 0;
+        }
+        else{
+            $locationStorageMinSamples = RecordsData::where('temperature', '<', $locationStorage[0])->count();
+            $locationStorageMaxSamples = RecordsData::where('temperature', '>', $locationStorage[1])->count();
+        }
+
 
         if($record->device_id == 3){
 
