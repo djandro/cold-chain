@@ -10,7 +10,7 @@
 
                 <div class="otherDataBox row m-b-10">
                     <div class="col-sm-6">
-                        <h4 class="display-5">Title:</h4>
+                        <h4 class="display-5">Title: *</h4>
                         <div class="form-group">
                             <input type="text" id="title-input-parseForm" name="title-input-parseForm" placeholder="Title" class="form-control">
                         </div>

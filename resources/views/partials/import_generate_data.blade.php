@@ -22,14 +22,14 @@
                             </div>
 
                             <div class="col col-md-3 m-b-10">
-                                <label class="form-control-label" for="timestamp-input-gen-data">Start timestamp:</label>
+                                <label class="form-control-label" for="timestamp-input-gen-data">Start timestamp *:</label>
                             </div>
                             <div class="col-12 col-md-9 m-b-10">
                                 <input type="datetime" id="timestamp-input-gen-data" name="timestamp-input-gen-data" value="{{ Carbon\Carbon::now()->toDateTimeString() }}" class="form-control" aria-required="true" required>
                             </div>
 
                             <div class="col col-md-3 m-b-10">
-                                <label class="form-control-label" for="interval-input-gen-data">Interval (s):</label>
+                                <label class="form-control-label" for="interval-input-gen-data">Interval (s) *:</label>
                             </div>
                             <div class="col-12 col-md-9 m-b-10">
                                 <input type="number" id="interval-input-gen-data" name="interval-input-gen-data" placeholder="60" min="1" step="1" class="form-control" aria-required="true" required>
@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <h4 class="display-5">Title:</h4>
+                        <h4 class="display-5">Title *:</h4>
                         <div class="form-group">
                             <input type="text" id="title-input" name="title-input" placeholder="Title" class="form-control" required>
                         </div>
@@ -55,19 +55,19 @@
                     <div class="col-sm-12 generateDataBox form-inline">
 
                         <div class="form-group">
-                            <label class="form-control-label" for="rec-gen-data_1">Records: </label>
+                            <label class="form-control-label" for="rec-gen-data_1">Records *: </label>
                             <input type="number" class="form-control my-1 mr-2 ml-2" name="rec-gen-data_1" id="rec-gen-data_1" placeholder="100" min="1" step="1" aria-required="true" required>
                         </div>
 
                         <span class="determiniter">-</span>
 
                         <div class="form-group">
-                            <label class="form-control-label" for="temp-gen-data_1">Temp: </label>
+                            <label class="form-control-label" for="temp-gen-data_1">Temp *: </label>
                             <input type="number" class="form-control my-1 mr-2 ml-2" name="temp-gen-data_1" id="temp-gen-data_1" placeholder="10 C" step="0.01" aria-required="true" required>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-control-label" for="hum-gen-data_1">Hum: </label>
+                            <label class="form-control-label" for="hum-gen-data_1">Hum *: </label>
                             <input type="number" class="form-control my-1 mr-2 ml-2" name="hum-gen-data_1" id="hum-gen-data_1" placeholder="30 H" step="0.01" aria-required="true" required>
                         </div>
 
