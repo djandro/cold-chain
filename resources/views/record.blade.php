@@ -243,7 +243,7 @@
                                     </div>
                                     <div class="row form-group">
                                         <div class="col col-md-4">
-                                            <label for="select" class=" form-control-label" title="Previously used Shelf Life in days">Shelf Life</label>
+                                            <label for="select" class=" form-control-label" title="Previously used Shelf Life in days">SL-Use:</label>
                                         </div>
                                         <div class="col-12 col-md-8">
                                             <select name="sl-temp" id="sl-temp" class="form-control">

@@ -66,7 +66,7 @@ class RecordController extends Controller
         $max_h_value = max($recordDataHumidity); $min_h_value = min($recordDataHumidity);
 
         // dropdown vaules for shelf life previusly used
-        $prev_sl_range = [0, round($slt / 2), $slt, ($slt + 1)];
+        $prev_sl_range = [0, 1, round($slt / 2), $slt, ($slt + 1)];
 
 
         $returnArray = [
