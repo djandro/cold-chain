@@ -26,7 +26,6 @@ class RecordController extends Controller
         if($record == null or $recordData == null or $recordData == null or $recordData->count() == 0 or $record->count() == 0) return abort(404);
 
         $slt = intval($record->product['slt']);
-        $slt_index = 1;
 
         foreach($recordData as $rec){
 
@@ -38,14 +37,15 @@ class RecordController extends Controller
             $recordDataLimits[] = array((string) $rec->temperature, (string) $rec->humidity); // for comparing limits
 
             // izracun za model CISRO
-            $k = pow(0.1 * round($rec->temperature) + 1, 2); // koeficient
-            $t = round(floatval($record->intervals / 86400), 5) * $slt_index++; // v èasu t
+            $t = floatval($record->intervals) / 86400; // v èasu t
+            $k = pow(1 + round($rec->temperature) * 0.1, 2); // koeficient
+            $slt -= ($t * $k);
 
-            $slrCSIRO[] = round($slt - $k * $t, 2);
+            $slrCSIRO[] = round($slt, 2);
 
             // izracun za model SAL
             $t_sal = $this->getT_SALfromTable( round($rec->temperature) ); // t-sal za doloceno temperaturo
-            $k_sal = round($slt / $t_sal, 2); // koeficient
+            $k_sal = ($slt / $t_sal); // koeficient
 
             $slrSAL[] = round($slt - $k_sal * $t, 2);
 
@@ -66,6 +66,7 @@ class RecordController extends Controller
         $max_h_value = max($recordDataHumidity); $min_h_value = min($recordDataHumidity);
 
         // dropdown vaules for shelf life previusly used
+        $slt = intval($record->product['slt']);
         $prev_sl_range = [0, 1, round($slt / 2), $slt, ($slt + 1)];
 
 
@@ -167,19 +168,19 @@ class RecordController extends Controller
         }
 
         $slt = intval($record->product['slt']) - $slDay;
-        $slt_index = 1;
 
         foreach($recordData as $rec){
 
             // izracun za model CISRO
-            $k = pow(0.1 * round($rec->temperature) + 1, 2); // koeficient
-            $t = round(floatval($record->intervals / 86400), 5) * $slt_index++; // v èasu t
+            $t = floatval($record->intervals) / 86400; // v èasu t
+            $k = pow(1 + round($rec->temperature) * 0.1, 2); // koeficient
+            $slt -= ($t * $k);
 
-            $slrCSIRO[] = round($slt - $k * $t, 2);
+            $slrCSIRO[] = round($slt, 2);
 
             // izracun za model SAL
             $t_sal = $this->getT_SALfromTable( round($rec->temperature) ); // t-sal za doloceno temperaturo
-            $k_sal = round($slt / $t_sal, 2); // koeficient
+            $k_sal = ($slt / $t_sal); // koeficient
 
             $slrSAL[] = round($slt - $k_sal * $t, 2);
         }

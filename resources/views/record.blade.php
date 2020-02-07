@@ -258,8 +258,8 @@
                             <hr>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <p class="d-block text-right">Remain Shelf Life - SLR (CSIRO): <span class="role admin" id="slrCsiroValue">{{ $slrCSIRO_value }} days</span></p>
-                                    <p class="d-block text-right m-t-10">Remain Shelf Life - SLR (SAL): <span class="role member" id="slrSalValue">{{ $slrSAL_value }} days</span></p>
+                                    <p class="d-block text-right">SL-Remain (CSIRO): <span class="role admin" id="slrCsiroValue">{{ $slrCSIRO_value }} days</span></p>
+                                    <p class="d-block text-right m-t-10">SL-Remain (SAL): <span class="role member" id="slrSalValue">{{ $slrSAL_value }} days</span></p>
                                 </div>
                             </div>
 

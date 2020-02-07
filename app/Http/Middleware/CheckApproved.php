@@ -18,7 +18,6 @@ class CheckApproved
         if (!auth()->user()->approved_at) {
             return redirect()->route('approval');
         }
-
         return $next($request);
     }
 }
