@@ -45,7 +45,7 @@
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary" id="parseRecordBtn">
                                     <i class="fa fa-dot-circle-o"></i>
-                                    Parse CSV
+                                    Parse file
                                 </button>
 
                                 <span class="text-small m-l-10 m-r-10">or</span>

@@ -181,7 +181,7 @@ class ImportController extends Controller
             };
 
             // prepare required timestamp fileds
-            if(is_null($recordData->timestamp)){
+            if(is_null($recordData->timestamp) && isset($recordData->date) && isset($recordData->time)){
                 if($request->input('device') === 'RHT10') $recordData->date = Carbon::createFromFormat('m-d-Y', $recordData->date)->format('Y-m-d');
                 $recordData->timestamp = Carbon::parse( $recordData->date . ' ' . $recordData->time );
             }
@@ -190,8 +190,18 @@ class ImportController extends Controller
             $recordData->location_id = $request->input('location');
 
             //save recordsData to database
-            $recordData->records_id = $record->id;
-            $recordData->save();
+            try{
+                $recordData->records_id = $record->id;
+                $recordData->saveOrFail();
+
+            } catch (\Exception $e){
+                Records::find($record->id)->delete();
+
+                return response()->json([
+                    'status' => '500',
+                    'details' => $e->getMessage()
+                ])->setStatusCode(500);
+            }
 
             //dump($recordData);
         };
