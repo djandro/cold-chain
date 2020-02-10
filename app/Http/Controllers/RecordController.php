@@ -26,29 +26,24 @@ class RecordController extends Controller
         if($record == null or $recordData == null or $recordData == null or $recordData->count() == 0 or $record->count() == 0) return abort(404);
 
         $slt = intval($record->product['slt']);
+        $slt_csiro = $slt; $slt_sal = $slt;
 
-        foreach($recordData as $rec){
+        foreach($recordData as $data){
 
-            $recordDataTimestamp[] = $rec->timestamp;
-            $recordDataTemperature[] = $rec->temperature;
-            $recordDataHumidity[] = $rec->humidity;
-            $recordDataLight[] = $rec->light;
+            $recordDataTimestamp[] = $data->timestamp;
+            $recordDataTemperature[] = $data->temperature;
+            $recordDataHumidity[] = $data->humidity;
+            $recordDataLight[] = $data->light;
 
-            $recordDataLimits[] = array((string) $rec->temperature, (string) $rec->humidity); // for comparing limits
+            $recordDataLimits[] = array((string) $data->temperature, (string) $data->humidity); // for comparing limits
 
-            // izracun za model CISRO
-            $t = floatval($record->intervals) / 86400; // v èasu t
-            $k = pow(1 + round($rec->temperature) * 0.1, 2); // koeficient
-            $slt -= ($t * $k);
+            // izraèun SL po CSIRO
+            $slt_csiro = $this->getSl_CSIRO($slt_csiro, $record->intervals, $data->temperature);
+            $slCSIRO[] = $slt_csiro;
 
-            $slrCSIRO[] = round($slt, 2);
-
-            // izracun za model SAL
-            $t_sal = $this->getT_SALfromTable( round($rec->temperature) ); // t-sal za doloceno temperaturo
-            $k_sal = ($slt / $t_sal); // koeficient
-
-            $slrSAL[] = round($slt - $k_sal * $t, 2);
-
+            // izraèun SL po SAL
+            $slt_sal = $this->getSl_SAL($slt_sal, $slt, $record->intervals, $data->temperature);
+            $slSAL[] = $slt_sal;
         }
 
         // calculate time per location
@@ -66,7 +61,6 @@ class RecordController extends Controller
         $max_h_value = max($recordDataHumidity); $min_h_value = min($recordDataHumidity);
 
         // dropdown vaules for shelf life previusly used
-        $slt = intval($record->product['slt']);
         $prev_sl_range = [0, 1, round($slt / 2), $slt, ($slt + 1)];
 
 
@@ -82,11 +76,11 @@ class RecordController extends Controller
             'recordDataStartDate' => $this->convertTimestampToArray($record->start_date),
             'prev_sl_range' => $prev_sl_range,
 
-            'slrCSIRO_value' => end($slrCSIRO),
-            'slrCSIRO_data' => json_encode($slrCSIRO),
+            'slrCSIRO_value' => end($slCSIRO),
+            'slrCSIRO_data' => json_encode($slCSIRO),
 
-            'slrSAL_value' => end($slrSAL),
-            'slrSAL_data' => json_encode($slrSAL),
+            'slrSAL_value' => end($slSAL),
+            'slrSAL_data' => json_encode($slSAL),
 
             'locations' => implode(', ', $locations),
             'locationsPerTime' => $locationsPerTime,
@@ -167,22 +161,26 @@ class RecordController extends Controller
             ])->setStatusCode(500);
         }
 
-        $slt = intval($record->product['slt']) - $slDay;
+        $slt = intval($record->product['slt']);
+        $slt_csiro = $slt - $slDay;
+        $slt_sal = $slt - $slDay;
 
         foreach($recordData as $rec){
 
             // izracun za model CISRO
-            $t = floatval($record->intervals) / 86400; // v èasu t
-            $k = pow(1 + round($rec->temperature) * 0.1, 2); // koeficient
-            $slt -= ($t * $k);
+            //$t = floatval($record->intervals) / 86400; // v èasu t
+            //$k = pow(1 + round($rec->temperature) * 0.1, 2); // koeficient
+            //$slt -= ($t * $k);
 
-            $slrCSIRO[] = round($slt, 2);
+            $slt_csiro = $this->getSl_CSIRO($slt_csiro, $record->intervals, $rec->temperature);
+            $slrCSIRO[] = $slt_csiro;
 
             // izracun za model SAL
-            $t_sal = $this->getT_SALfromTable( round($rec->temperature) ); // t-sal za doloceno temperaturo
-            $k_sal = ($slt / $t_sal); // koeficient
+            //$t_sal = $this->getT_SALfromTable( round($rec->temperature) ); // t-sal za doloceno temperaturo
+            //$k_sal = ($slt / $t_sal); // koeficient
 
-            $slrSAL[] = round($slt - $k_sal * $t, 2);
+            $slt_sal = $this->getSl_SAL($slt_sal, $slt, $record->intervals, $rec->temperature);
+            $slrSAL[] = $slt_sal;
         }
 
         return response()->json([
@@ -215,6 +213,23 @@ class RecordController extends Controller
         $t_sal = DB::table('sal_data')->where('temperature', $temperature)->first();
 
         return floatval($t_sal->sl);
+    }
+
+    // izracun za model CISRO
+    public function getSl_CSIRO($slt, $interval, $temperature){
+
+        $t = floatval($interval) / 86400; // v èasu t
+        $k = pow(1 + round($temperature) * 0.1, 2); // koeficient
+        return round($slt - $t * $k, 2); // preostala doba
+    }
+
+    // izracun za model SAL
+    public function getSl_SAL($slt, $slt_ref, $interval, $temperature){
+
+        $t = floatval($interval) / 86400; // v èasu t
+        $t_sal = $this->getT_SALfromTable( round($temperature) ); // doba uporabnosti pri temperaturi T
+        $k = intval($slt_ref / $t_sal); // koeficient iz referencne dobe uporabnosti deljeno z $t_sal
+        return round($slt - $t * $k, 2); // preostala doba
     }
 
     public function getPdfExport($id){
