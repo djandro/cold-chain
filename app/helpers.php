@@ -23,7 +23,7 @@ function getCurrentPage()
 if (! function_exists('getProducts')) {
     function getProducts()
     {
-        $products = \App\Product::orderBy('id', 'desc')->get(['id', 'name']);
+        $products = \App\Product::orderBy('name', 'desc')->get(['id', 'name']);
         return $products;
     }
 }
