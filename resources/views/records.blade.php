@@ -97,9 +97,11 @@
                                     <td data-field="product">{{ $record->product['name'] }}</td>
                                     <td>
                                         <a class="btn btn-sm btn-outline-primary" href="/records/{{ $record->id }}" role="button"><b>Details</b></a>
+                                        @if(Auth::user()->hasAnyRole(['admin', 'editor']))
                                         <button type="button" class="btn btn-sm btn-outline-link text-secondary" data-toggle="modal" data-target="#deleteRecordModal" data-backdrop="false" data-recordid="{{ $record->id }}">
                                             Delete
                                         </button>
+                                        @endif
                                     </td>
                                 </tr>
 

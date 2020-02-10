@@ -15,7 +15,7 @@ class SettingsController extends Controller
 
     public function index(Request $request)
     {
-        $request->user()->authorizeRoles(['manager', 'admin']);
+        $request->user()->authorizeRoles(['editor', 'admin']);
         return view('settings');
     }
 

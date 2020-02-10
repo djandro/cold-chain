@@ -10,8 +10,10 @@
                     <h3 class="mb-5">
                         <span id="recordTitle" data-id="{{ $record->id }}">Record {{ $record->id }} {!! !empty($record->title) ? " - " . $record->title : '' !!}</span>
                         <span class="btn-records-box float-right">
+                            @if(Auth::user()->hasAnyRole(['admin', 'editor']))
                             <button type="button" class="btn btn-sm btn-outline-link" data-toggle="modal" data-target="#editRecordModal" data-backdrop="false"><i class="zmdi zmdi-edit"></i></button>
                             <button type="button" class="btn btn-sm btn-outline-link" data-toggle="modal" data-target="#deleteRecordModal" data-backdrop="false"><i class="zmdi zmdi-delete"></i></button>
+                            @endif
                             <button type="button" class="btn btn-sm btn-outline-link" id="btnDownloadPdf"><i class="zmdi zmdi-download"></i></button>
                         </span>
                     </h3>

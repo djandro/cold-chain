@@ -2188,11 +2188,6 @@ section {
 
 .account2 > a {
     font-size: 14px;
-    color: #999;
-}
-
-.account2 > a:hover {
-    color: #666;
 }
 
 .menu-sidebar2__content {
@@ -14633,4 +14628,8 @@ section {
 
 .vue-lists ul, .vue-lists ol {
     padding-left: 30px;
+}
+
+.img-avatar{
+    background-color: #e9ecef;
 }

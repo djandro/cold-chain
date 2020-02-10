@@ -46,15 +46,17 @@
                     @endif
                 @else
                 <div class="account2">
-                    <div class="image img-cir img-120">
+                    <div class="image img-cir img-120 img-avatar">
                         @if(Auth::user()->hasRole('admin'))
-                            <img src="/images/icon/avatar-big-01.jpg" alt="{{ Auth::user()->name }}" />
+                            <img src="/images/icon/avatar-admin.png" alt="{{ Auth::user()->name }}" />
+                        @elseif(Auth::user()->hasRole('editor'))
+                            <img src="/images/icon/avatar-editor.png" alt="{{ Auth::user()->name }}" />
                         @else
-                            <img src="/images/icon/avatar-big-03.jpg" alt="{{ Auth::user()->name }}" />
+                            <img src="/images/icon/avatar-viewer.png" alt="{{ Auth::user()->name }}" />
                         @endif
                     </div>
-                    <h4 class="name">{{ Auth::user()->name }}</h4>
-                    <a class="text-center" href="{{ route('logout') }}"
+                    <h4 class="name mb-3">{{ Auth::user()->name }}</h4>
+                    <a class="btn btn-outline-secondary btn-sm text-center" href="{{ route('logout') }}"
                        onclick="event.preventDefault();
                        document.getElementById('logout-form').submit();">
                         {{ __('Logout') }}

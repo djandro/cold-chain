@@ -356,7 +356,8 @@ function settingsUserRoles(index, value, row){
   jQuery.each(value.roles, function (key, role) {
     console.log(role.name);
     if(role.name == 'admin') $html += '<span class="role admin">' + role.name + '</span> ';
-    if(role.name == 'manager') $html += '<span class="role member">' + role.name + '</span> ';
+    if(role.name == 'editor') $html += '<span class="role member">' + role.name + '</span> ';
+    if(role.name == 'viewer') $html += '<span class="role user">' + role.name + '</span> ';
   });
   return $html;
 }

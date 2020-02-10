@@ -30,7 +30,7 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $request->user()->authorizeRoles(['manager', 'admin']);
+        $request->user()->authorizeRoles(['editor', 'admin']);
 
 
         return View::make('home', [
@@ -38,6 +38,7 @@ class HomeController extends Controller
             'products_count' => $this->getProductsCount(),
             'locations_count' => $this->getLocationsCount(),
             'devices_count' => $this->getDevicesCount(),
+            'users_count' => $this->getUsersCount(),
             'users_for_approve' => $this->getUsersForApprove()
         ]);
     }
@@ -65,6 +66,11 @@ class HomeController extends Controller
     public function getRecordsCount() {
         $records = Records::where('status', '=', 1)->count();
         return $records;
+    }
+
+    public function getUsersCount(){
+        $users = User::All()->count();
+        return $users;
     }
 
     public function getUsersForApprove(){

@@ -45,11 +45,24 @@
             </div>
 
             <div class="row">
+                <div class="col-md-6 col-lg-3">
+                    <div class="statistic__item">
+                        <h2 class="number">{{ $users_count }}</h2>
+                        <span class="desc">users</span>
+                        <div class="icon">
+                            <i class="zmdi zmdi-account-o"></i>
+                        </div>
+                    </div>
+                </div>
+
                 @if(Auth::user()->hasRole('admin'))
                 <div class="col-md-6 col-lg-3">
                     <div class="statistic__item">
                         <h2 class="number">{{ $users_for_approve }}</h2>
                         <span class="desc">users for approve</span>
+                        <div class="icon">
+                            <i class="zmdi zmdi-account-o"></i>
+                        </div>
                     </div>
                 </div>
                 @endif

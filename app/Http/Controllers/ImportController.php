@@ -12,8 +12,10 @@ use Illuminate\Http\Request;
 
 class ImportController extends Controller
 {
-    public function getImport()
+
+    public function getImport(Request $request)
     {
+        $request->user()->authorizeRoles(['editor', 'admin']);
         return view('import');
     }
 

@@ -10,8 +10,14 @@ Breadcrumbs::for('import', function ($trail) {
 });
 
 Breadcrumbs::for('records', function ($trail) {
-    $trail->parent('home');
-    $trail->push('Records', route('records'));
+
+    if(Auth::user()->hasRole('viewer')){
+        $trail->push('Records', route('records'));
+    } else{
+        $trail->parent('home');
+        $trail->push('Records', route('records'));
+    }
+
 });
 
 Breadcrumbs::for('record', function ($trail, $recordId) {
