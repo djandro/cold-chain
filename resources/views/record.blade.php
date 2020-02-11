@@ -26,7 +26,7 @@
                 <div class="col-sm-6">
 
                     <div class="jumbotron record-comment-box">
-                        <p><small><i>Uploaded {{$record->user['name']}} {{ $record->created_at->diffForHumans()}}.</i></small></p>
+                        <p><small><i>Upload: {{ $record->created_at->diffForHumans()}}, {{$record->user['name']}}</i></small></p>
                         <p>Comments: {{$record->comments}}</p>
                     </div>
 
@@ -37,9 +37,12 @@
                         <h4 class="alert-heading">Findings!</h4>
                         <p class="card-text"></p>
                         <hr>
-                        <p class="mb-0"><b>Location per time:</b></p>
+                        <p class="mb-0"><b>Measurements</b> (Location, Time)<b>:</b></p>
                         @foreach($locationsPerTime as $loc)
-                        <p class="mb-0">{{ $loc[0] }}: {{ $loc[1] }}</p>
+                        <p class="mb-0">{{ $loc[0] }}, {{ $loc[1] }}</p>
+                        <p class="mt-2"><b>Remained Shelf Life:</b></p>
+                        <p class="mb-0">CSIRO: {{ $slrCSIRO_value }}</p>
+                        <p class="mb-0">SAL: {{ $slrSAL_value }}</p>
                         @endforeach
                     </div>
 
@@ -47,10 +50,12 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="alert-heading">Warnings!</h4>
+                        <h4 class="alert-heading">Alarms!</h4>
                         <hr>
-                        <p>Alarms: {{ $record->alarms }}</p>
-                        <p class="mb-0">Errors: {{ $record->errors }}</p>
+                        <p>{{ $record->alarms }}</p>
+                        <p><b>Temperatura je izven obmocja:</b> Tmin (&#8451;) - Tmax (&#8451;)</p>
+                        <p><b>Relativna vlaga je napacna:</b> < 0(%) ali > 100(%)</p>
+                        <br/>
                         <p>{{ print_r($alarms) }}</p>
                     </div>
 
@@ -146,22 +151,22 @@
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td>Low T</td>
+                                        <td>Low T (&#8451;)</td>
                                         <td class="project-color-1">{{ $recordLimits['min_t_value'] }}</td>
                                         <td>{{ $recordLimits['min_t_count'] }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Hight T</td>
+                                        <td>Hight T (&#8451;)</td>
                                         <td class="project-color-1">{{ $recordLimits['max_t_value'] }}</td>
                                         <td>{{ $recordLimits['max_t_count'] }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Low H</td>
+                                        <td>Low H (%)</td>
                                         <td class="project-color-1">{{ $recordLimits['min_h_value'] }}</td>
                                         <td>{{ $recordLimits['min_h_count'] }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Hight H</td>
+                                        <td>Hight H (%)</td>
                                         <td class="project-color-1">{{ $recordLimits['max_h_value'] }}</td>
                                         <td>{{ $recordLimits['max_h_count'] }}</td>
                                     </tr>
@@ -195,8 +200,8 @@
                             <thead>
                             <tr>
                                 <th data-field="timestamp" data-sortable="true">Timestamp</th>
-                                <th data-field="temperature" data-sortable="true">Temperature</th>
-                                <th data-field="humidity" data-sortable="true">Humidity</th>
+                                <th data-field="temperature" data-sortable="true">Temperature (&#8451;)</th>
+                                <th data-field="humidity" data-sortable="true">Relative Humidity (%)</th>
                             </tr>
                             </thead>
 
@@ -229,28 +234,28 @@
                                 <div class="col-sm-6">
                                     <div class="row form-group">
                                         <div class="col col-md-4">
-                                            <label class="form-control-label" title="Recommended Storage temperature">Storage T (interval):</label>
+                                            <label class="form-control-label" title="Recommended Storage temperature">Storage T (&#8451;):</label>
                                         </div>
                                         <div class="col-12 col-md-8">
-                                            <p id="sl-storage-data" class="form-control-static badge badge-light" title="Recommended Storage temperature">{{ $record->product['storage_t'] }}C</p>
+                                            <p id="sl-storage-data" class="form-control-static badge badge-light" title="Recommended Storage temperature">{{ explode(';', $record->product['storage_t'])[0] }} - {{ explode(';', $record->product['storage_t'])[1] }}</p>
                                         </div>
                                     </div>
                                     <div class="row form-group">
                                         <div class="col col-md-4">
-                                            <label class="form-control-label" title="Shelf Life at recommended temperature in days">SL-Ref:</label>
+                                            <label class="form-control-label" title="Shelf Life at recommended temperature in days">SL-Reference (Days):</label>
                                         </div>
                                         <div class="col-12 col-md-8">
-                                            <p id="sl-slt-data" class="form-control-static badge badge-light" title="Shelf Life at recommended temperature in days">{{ $record->product['slt'] }} day(s)</p>
+                                            <p id="sl-slt-data" class="form-control-static badge badge-light" title="Shelf Life at recommended temperature in days">{{ $record->product['slt'] }}</p>
                                         </div>
                                     </div>
                                     <div class="row form-group">
                                         <div class="col col-md-4">
-                                            <label for="select" class=" form-control-label" title="Previously used Shelf Life in days">SL-Use:</label>
+                                            <label for="select" class=" form-control-label" title="Previously used Shelf Life in days">SL-Used (Days):</label>
                                         </div>
-                                        <div class="col-12 col-md-8">
+                                        <div class="col-12 col-md-5">
                                             <select name="sl-temp" id="sl-temp" class="form-control">
                                                 @for ($i = 0; $i < count($prev_sl_range); $i++)
-                                                    <option value="{{ $prev_sl_range[$i] }}">{{ $prev_sl_range[$i] }} days</option>
+                                                    <option value="{{ $prev_sl_range[$i] }}">{{ $prev_sl_range[$i] }}</option>
                                                 @endfor
                                             </select>
                                         </div>
@@ -260,8 +265,8 @@
                             <hr>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <p class="d-block text-right">SL-Remain (CSIRO): <span class="role admin" id="slrCsiroValue">{{ $slrCSIRO_value }} days</span></p>
-                                    <p class="d-block text-right m-t-10">SL-Remain (SAL): <span class="role member" id="slrSalValue">{{ $slrSAL_value }} days</span></p>
+                                    <p class="d-block text-right">SL-Remain (<span class="badge badge-torkiz">CSIRO</span>): <span class="role font-weight-bold {{ $slrCSIRO_value_css }}" id="slrCsiroValue">{{ $slrCSIRO_value }}</span></p>
+                                    <p class="d-block text-right m-t-10">SL-Remain (<span class="badge badge-pink">SAL</span>): <span class="role font-weight-bold {{ $slrSAL_value_css }}" id="slrSalValue">{{ $slrSAL_value }}</span></p>
                                 </div>
                             </div>
 
@@ -430,7 +435,7 @@
                     // first line
                         opposite:true,
                         title: {
-                            text: 'Humidity',
+                            text: 'Relative Humidity - RH(%)',
                             style: { color: Highcharts.getOptions().colors[1] }
                         },
                         tooltip: {
@@ -443,12 +448,12 @@
                     },{
                     // second line
                         title: {
-                            text: 'Temperature',
+                            text: 'Temperature - T(C)',
                             style: { color: Highcharts.getOptions().colors[0] }
                         },
                         tooltip: { valueSuffix: ' C' },
                         labels: {
-                            format: '{value} C',
+                            format: '{value}',
                             style: { color: Highcharts.getOptions().colors[0] }
                         }
                     }],
@@ -463,7 +468,7 @@
                     series:[
                         {
                             type: 'spline',
-                            name: 'Temp',
+                            name: 'T',
                             yAxis: 1,
                             tooltip: { valueSuffix: ' C' },
                             marker: { enabled: false },
@@ -472,7 +477,7 @@
                             pointInterval: {!! $record->intervals !!} * 1000 // miliseconds
                         },{
                             type: 'spline',
-                            name: 'Humiditee',
+                            name: 'RH',
                             yAxis: 0,
                             tooltip: { valueSuffix: ' %' },
                             marker: { enabled: false },
@@ -497,7 +502,7 @@
         if (graph_self) {
             Highcharts.chart('shelfLifeChart', {
                 chart: { zoomType: 'x' },
-                title: { text: 'Shelf Life Graph'  },
+                title: { text: 'Shelf Life'  },
                 tooltip: {  shared: true },
                 xAxis: {
                     type: 'datetime',
@@ -515,12 +520,12 @@
                     visible: false
                 }, {
                     title: {
-                        text: 'Temperature',
+                        text: 'Temperature - T(C)',
                         style: { color: Highcharts.getOptions().colors[0] }
                     },
                     tooltip: { valueSuffix: ' C' },
                     labels: {
-                        format: '{value} C',
+                        format: '{value}',
                         style: { color: Highcharts.getOptions().colors[0] }
                     }
                 }, {
@@ -544,7 +549,7 @@
                 },
                 series: [{
                             type: 'area',
-                            name: 'Temp',
+                            name: 'T',
                             yAxis: 1,
                             color: '#7cb5ec',
                             tooltip: { valueSuffix: ' C' },
@@ -556,7 +561,7 @@
                             type: 'spline',
                             name: 'SL (CSIRO)',
                             yAxis: 2,
-                            color: '#e14f5d',
+                            color: '#00e7ff',
                             marker: { enabled: false },
                             data: {!! $slrCSIRO_data !!},
                             pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!} -1, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
@@ -565,7 +570,7 @@
                             type: 'spline',
                             name: 'SL (SAL)',
                             yAxis: 2,
-                            color: '#36ac51',
+                            color: '#cc00ff',
                             marker: { enabled: false },
                             data: {!! $slrSAL_data !!},
                             pointStart: Date.UTC({!!$recordDataStartDate[0]!!}, {!!$recordDataStartDate[1]!!} -1, {!!$recordDataStartDate[2]!!}, {!!$recordDataStartDate[3]!!}, {!!$recordDataStartDate[4]!!}, {!!$recordDataStartDate[5]!!}),
@@ -601,8 +606,13 @@
                 else if(data.status == '200'){
                     // print success
 
-                    jQuery("#slrCsiroValue").text(data.slrCSIRO_value + " Days");
-                    jQuery("#slrSalValue").text(data.slrSAL_value + " Days");
+                    jQuery("#slrCsiroValue").text(data.slrCSIRO_value);
+                    jQuery("#slrSalValue").text(data.slrSAL_value);
+
+                    jQuery("#slrCsiroValue, #slrSalValue").removeClass('badge-danger badge-warning badge-success text-white text-dark');
+                    jQuery("#slrCsiroValue").addClass(data.slrCSIRO_value_css);
+                    jQuery("#slrSalValue").addClass(data.slrSAL_value_css);
+
 
                     var chart = jQuery('#shelfLifeChart').highcharts();
 

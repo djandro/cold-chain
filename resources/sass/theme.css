@@ -14633,3 +14633,12 @@ section {
 .img-avatar{
     background-color: #e9ecef;
 }
+
+.badge-pink{
+    color: white;
+    background-color: #cc00ff;
+}
+
+.badge-torkiz{
+    background-color: #00e7ff;
+}

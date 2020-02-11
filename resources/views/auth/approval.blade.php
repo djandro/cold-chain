@@ -13,7 +13,7 @@
                 <hr/>
                 <p class="text-bold">Your account is waiting for our administrator approval.</p>
                 <p class="text-bold">Please check later.</p>
-                <p class="text-bold"><a href="{{ route('login') }}" class="btn btn-link">Sign in</a></p>
+                <p class="text-bold"><a href="{{ route('records') }}" class="btn btn-link">Sign in</a></p>
             </div>
         </div>
     </div>

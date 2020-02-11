@@ -61,7 +61,7 @@ class RecordController extends Controller
         $max_h_value = max($recordDataHumidity); $min_h_value = min($recordDataHumidity);
 
         // dropdown vaules for shelf life previusly used
-        $prev_sl_range = [0, 1, round($slt / 2), $slt, ($slt + 1)];
+        $prev_sl_range = [0, 1, round($slt / 2), $slt];
 
 
         $returnArray = [
@@ -76,10 +76,12 @@ class RecordController extends Controller
             'recordDataStartDate' => $this->convertTimestampToArray($record->start_date),
             'prev_sl_range' => $prev_sl_range,
 
-            'slrCSIRO_value' => end($slCSIRO),
+            'slrCSIRO_value_css' => $this->getSlValueforHumans(end($slCSIRO))[0],
+            'slrCSIRO_value' => $this->getSlValueforHumans(end($slCSIRO))[1],
             'slrCSIRO_data' => json_encode($slCSIRO),
 
-            'slrSAL_value' => end($slSAL),
+            'slrSAL_value_css' => $this->getSlValueforHumans(end($slSAL))[0],
+            'slrSAL_value' => $this->getSlValueforHumans(end($slSAL))[1],
             'slrSAL_data' => json_encode($slSAL),
 
             'locations' => implode(', ', $locations),
@@ -186,10 +188,12 @@ class RecordController extends Controller
         return response()->json([
             'status' => '200',
 
-            'slrCSIRO_value' => end($slrCSIRO),
+            'slrCSIRO_value_css' => $this->getSlValueforHumans(end($slrCSIRO))[0],
+            'slrCSIRO_value' => $this->getSlValueforHumans(end($slrCSIRO))[1],
             'slrCSIRO_data' => $slrCSIRO,
 
-            'slrSAL_value' => end($slrSAL),
+            'slrSAL_value_css' => $this->getSlValueforHumans(end($slrSAL))[0],
+            'slrSAL_value' => $this->getSlValueforHumans(end($slrSAL))[1],
             'slrSAL_data' => $slrSAL
         ]);
     }
@@ -230,6 +234,21 @@ class RecordController extends Controller
         $t_sal = $this->getT_SALfromTable( round($temperature) ); // doba uporabnosti pri temperaturi T
         $k = intval($slt_ref / $t_sal); // koeficient iz referencne dobe uporabnosti deljeno z $t_sal
         return round($slt - $t * $k, 2); // preostala doba
+    }
+
+    // izpisi uporabniku prijazno preostalo dobo zivila
+    public function getSlValueforHumans($value){
+        $sl_temp = ( $value <= 0 ) ? '0.' : explode('.', $value);
+        $sl_value = $sl_temp[0] .' days';
+        $sl_value .= (!isset($sl_temp[1]) or $sl_temp[1] == 0) ? '' : ', ' . round($sl_temp[1] / 100 * 24) . ' hours';
+
+        $sl_css_class = 'text-dark badge-warning';
+        //$value = round($value);
+
+        if($value <= 0) $sl_css_class = 'text-white badge-danger';
+        else if($value >= 2) $sl_css_class = 'text-dark badge-success';
+
+        return [$sl_css_class, $sl_value];
     }
 
     public function getPdfExport($id){

@@ -15,8 +15,8 @@
                     <thead>
                     <tr>
                         <th data-field="name" data-sortable="true">Name</th>
-                        <th data-field="slt" data-sortable="true" data-formatter="nameFormatter">SLT</th>
-                        <th data-field="storage_t" data-sortable="true">Storage T (interval)</th>
+                        <th data-field="slt" data-sortable="true" data-formatter="nameFormatter">SLT (days)</th>
+                        <th data-field="storage_t" data-sortable="true">Storage T (&#8451;)</th>
                         <th data-field="description" data-sortable="true">Description</th>
                         <th data-field="id" data-formatter="btnFormatter"></th>
                     </tr>
@@ -57,7 +57,7 @@
                         </div>
                         <div class="col-12 col-md-9">
                             <input type="number" min="0" step="0.01" id="product-input-slt" name="product-input-slt" placeholder="13.56" class="form-control" required>
-                            <small class="form-text text-muted">Insert a decimal number of product shell lifetime.</small>
+                            <small class="form-text text-muted">Insert a number of product shell lifetime in days.</small>
                         </div>
                     </div>
                     <div class="row form-group">
