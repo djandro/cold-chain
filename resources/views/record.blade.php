@@ -35,15 +35,21 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                         <h4 class="alert-heading">Findings!</h4>
-                        <p class="card-text"></p>
                         <hr>
+
                         <p class="mb-0"><b>Measurements</b> (Location, Time)<b>:</b></p>
                         @foreach($locationsPerTime as $loc)
                         <p class="mb-0">{{ $loc[0] }}, {{ $loc[1] }}</p>
+                        @endforeach
+
                         <p class="mt-2"><b>Remained Shelf Life:</b></p>
                         <p class="mb-0">CSIRO: {{ $slrCSIRO_value }}</p>
                         <p class="mb-0">SAL: {{ $slrSAL_value }}</p>
-                        @endforeach
+
+                        @if(Auth::user()->hasRole('admin'))
+                        <p>Limits: {{ print_r($record->limits) }}</p>
+                        @endif
+
                     </div>
 
                     <div class="alert alert-danger" role="alert">
@@ -53,10 +59,24 @@
                         <h4 class="alert-heading">Alarms!</h4>
                         <hr>
                         <p>{{ $record->alarms }}</p>
-                        <p><b>Temperatura je izven obmocja:</b> Tmin (&#8451;) - Tmax (&#8451;)</p>
-                        <p><b>Relativna vlaga je napacna:</b> < 0(%) ali > 100(%)</p>
+
+                        @if($alarms['product_out_of_storage_samples'] > 0)
+                        <p><b>Temperature is out of range:</b></p>
+                        <p>{{ explode(';', $record->product['storage_t'])[0] }} (&#8451;) - {{ explode(';', $record->product['storage_t'])[1] }} (&#8451;): {{ $alarms['product_out_of_storage_time'] }}</p>
                         <br/>
-                        <p>{{ print_r($alarms) }}</p>
+                        @endif
+
+                        @if($alarms['failed_humidity_samples'] >= 0)
+                        <p><b>Relative humidity is incorrect:</b></p>
+                        <p><span>< 0(%) ali > 100(%): </span> {{ $alarms['failed_humidity_samples'] }} samples</p>
+                        <br/>
+                        @endif
+
+                        @if(Auth::user()->hasRole('admin'))
+                        <p>Alarms: {{ print_r($alarms) }}</p>
+                        <p>Errors: {{ print_r($record->errors) }}</p>
+                        @endif
+
                     </div>
 
                 </div>
@@ -122,14 +142,14 @@
                                 </div>
                             </div>
                             <hr/>
-                            <div class="row form-group">
+                            <!-- <div class="row form-group">
                                 <div class="col col-md-3">
                                     <label class="form-control-label">Delay time (s):</label>
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <p id="delay_time-data" class="form-control-static badge badge-light">{{$record->delay_time}}</p>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="row form-group">
                                 <div class="col col-md-3">
                                     <label class="form-control-label">Interval (s):</label>
