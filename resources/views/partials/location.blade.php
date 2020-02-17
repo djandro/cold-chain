@@ -63,7 +63,7 @@
                             <input type="number" step="0.1" id="location-input-t_alert_max" name="location-input-t_alert_max" placeholder="min" class="form-control" required>
                         </div>
                         <div class="col-12 offset-sm-3 col-sm-12">
-                            <small class="form-text text-muted">Insert a min-max alert temerature of location.</small>
+                            <small class="form-text text-muted">Insert a min-max alert temperature of location in Celzium.</small>
                         </div>
                     </div>
                     <div class="row form-group">

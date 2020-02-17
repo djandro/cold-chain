@@ -15,7 +15,7 @@
                     <thead>
                     <tr>
                         <th data-field="name" data-sortable="true">Name</th>
-                        <th data-field="slt" data-sortable="true" data-formatter="nameFormatter">SLT (days)</th>
+                        <th data-field="slt" data-sortable="true" data-formatter="nameFormatter">SL-Reference (days)</th>
                         <th data-field="storage_t" data-sortable="true">Storage T (&#8451;)</th>
                         <th data-field="description" data-sortable="true">Description</th>
                         <th data-field="id" data-formatter="btnFormatter"></th>
@@ -53,11 +53,11 @@
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3 text-right">
-                            <label for="product-input-slt" class="form-control-label">SLT *</label>
+                            <label for="product-input-slt" class="form-control-label">SL-Reference *</label>
                         </div>
                         <div class="col-12 col-md-9">
                             <input type="number" min="0" step="0.01" id="product-input-slt" name="product-input-slt" placeholder="13.56" class="form-control" required>
-                            <small class="form-text text-muted">Insert a number of product shell lifetime in days.</small>
+                            <small class="form-text text-muted">Insert a number of product shelf life at recommended temperature in days.</small>
                         </div>
                     </div>
                     <div class="row form-group">
