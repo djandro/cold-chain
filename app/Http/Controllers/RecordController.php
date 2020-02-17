@@ -111,7 +111,6 @@ class RecordController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric',
             'title' => 'required|max:125',
-            'product_id' => 'required',
             'comments' => 'max:2000'
         ]);
 
@@ -127,7 +126,6 @@ class RecordController extends Controller
         // save record in db
         Records::where('id', $id)->update([
             'title' => $request->input('title'),
-            'product_id' => $request->input('product_id'),
             'comments' => $request->input('comments')
         ]);
 

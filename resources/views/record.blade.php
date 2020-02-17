@@ -328,22 +328,6 @@
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3 text-right">
-                                        <label for="select" class="form-control-label">Product</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <select name="edit-record-input-product" id="edit-record-input-product" class="form-control">
-                                            @foreach (getProducts() as $product)
-                                                @if($product->id == $record->product['id'])
-                                                <option value="{{ $product->id }}" selected>{{ $product->name }}</option>
-                                                @else
-                                                <option value="{{ $product->id }}">{{ $product->name }}</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3 text-right">
                                         <label for="edit-comment-input" class="form-control-label">Comments</label>
                                     </div>
                                     <div class="col-12 col-md-9">
@@ -700,7 +684,6 @@
             var tempData = {
                 id: id,
                 title: jQuery('#edit-location-input-name').val(),
-                product_id: jQuery('#edit-record-input-product').val(),
                 comments: jQuery('#edit-comment-input').val()
             };
 
