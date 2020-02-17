@@ -30,6 +30,9 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        $viewer = $request->user()->hasRole('viewer');
+        if($viewer) return redirect('records');
+
         $request->user()->authorizeRoles(['editor', 'admin']);
 
 
