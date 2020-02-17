@@ -80,12 +80,12 @@
                                 <p id="samples-data" class="form-control-static badge badge-light"></p>
                             </div>
 
-                            <div class="col col-md-3">
+                            <!-- <div class="col col-md-3">
                                 <label class="form-control-label">Delay time (s):</label>
                             </div>
                             <div class="col-12 col-md-9">
                                 <p id="delay-data" class="form-control-static badge badge-light"></p>
-                            </div>
+                            </div> -->
 
                             <div class="col col-md-3">
                                 <label class="form-control-label">Interval (s):</label>
