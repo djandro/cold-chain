@@ -13,7 +13,13 @@
                 <hr/>
                 <p class="text-bold">Your account is waiting for our administrator approval.</p>
                 <p class="text-bold">Please check later.</p>
-                <p class="text-bold"><a href="{{ route('records') }}" class="btn btn-link">Sign in</a></p>
+                <p class="text-bold"><a
+                                        href="{{ route('logout') }}"
+                                        class="btn btn-link"
+                                        onclick="event.preventDefault();document.getElementById('logout-form').submit();">Sign in</a></p>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
             </div>
         </div>
     </div>

@@ -5,7 +5,7 @@
     <div class="login-wrap" style="max-width:650px;">
         <div class="login-content">
             <div class="login-logo">
-                <a href="#">
+                <a href="{{ route('register') }}">
                     <img src="{{ asset('images/icon/logo-blue.png') }}" alt="{{ config('app.name') }}">
                 </a>
             </div>

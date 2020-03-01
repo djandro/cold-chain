@@ -171,22 +171,22 @@
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td>Low T (&#8451;)</td>
+                                        <td>Min T (&#8451;)</td>
                                         <td class="project-color-1">{{ $recordLimits['min_t_value'] }}</td>
                                         <td>{{ $recordLimits['min_t_count'] }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Hight T (&#8451;)</td>
+                                        <td>Max T (&#8451;)</td>
                                         <td class="project-color-1">{{ $recordLimits['max_t_value'] }}</td>
                                         <td>{{ $recordLimits['max_t_count'] }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Low H (%)</td>
+                                        <td>Min H (%)</td>
                                         <td class="project-color-1">{{ $recordLimits['min_h_value'] }}</td>
                                         <td>{{ $recordLimits['min_h_count'] }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Hight H (%)</td>
+                                        <td>Max H (%)</td>
                                         <td class="project-color-1">{{ $recordLimits['max_h_value'] }}</td>
                                         <td>{{ $recordLimits['max_h_count'] }}</td>
                                     </tr>

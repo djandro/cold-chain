@@ -39,11 +39,11 @@ class RecordController extends Controller
 
             // izraèun SL po CSIRO
             $slt_csiro = $this->getSl_CSIRO($slt_csiro, $record->intervals, $data->temperature);
-            $slCSIRO[] = $slt_csiro;
+            $slCSIRO[] = round($slt_csiro, 2);
 
             // izraèun SL po SAL
             $slt_sal = $this->getSl_SAL($slt_sal, $slt, $record->intervals, $data->temperature);
-            $slSAL[] = $slt_sal;
+            $slSAL[] = round($slt_sal, 2);
         }
 
         // calculate time per location
@@ -173,14 +173,14 @@ class RecordController extends Controller
             //$slt -= ($t * $k);
 
             $slt_csiro = $this->getSl_CSIRO($slt_csiro, $record->intervals, $rec->temperature);
-            $slrCSIRO[] = $slt_csiro;
+            $slrCSIRO[] = round($slt_csiro, 2);
 
             // izracun za model SAL
             //$t_sal = $this->getT_SALfromTable( round($rec->temperature) ); // t-sal za doloceno temperaturo
             //$k_sal = ($slt / $t_sal); // koeficient
 
             $slt_sal = $this->getSl_SAL($slt_sal, $slt, $record->intervals, $rec->temperature);
-            $slrSAL[] = $slt_sal;
+            $slrSAL[] = round($slt_sal, 2);
         }
 
         return response()->json([
@@ -222,7 +222,7 @@ class RecordController extends Controller
 
         $t = floatval($interval) / 86400; // v èasu t
         $k = pow(1 + round($temperature) * 0.1, 2); // koeficient
-        return round($slt - $t * $k, 2); // preostala doba
+        return ($slt - $t * $k); // preostala doba
     }
 
     // izracun za model SAL
@@ -231,7 +231,7 @@ class RecordController extends Controller
         $t = floatval($interval) / 86400; // v èasu t
         $t_sal = $this->getT_SALfromTable( round($temperature) ); // doba uporabnosti pri temperaturi T
         $k = intval($slt_ref / $t_sal); // koeficient iz referencne dobe uporabnosti deljeno z $t_sal
-        return round($slt - $t * $k, 2); // preostala doba
+        return ($slt - $t * $k); // preostala doba
     }
 
     // izpisi uporabniku prijazno preostalo dobo zivila

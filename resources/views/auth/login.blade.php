@@ -5,7 +5,7 @@
     <div class="login-wrap">
         <div class="login-content">
             <div class="login-logo">
-                <a href="#">
+                <a href="{{ route('login') }}">
                     <img src="{{ asset('images/icon/logo-blue.png') }}" alt="{{ config('app.name') }}">
                 </a>
             </div>
@@ -57,8 +57,8 @@
                 </form>
                 <div class="register-link">
                     <p>
-                        Don't you have account?
-                        <a href="{{ route('register') }}">Sign Up Here</a>
+                        Not registered yet.
+                        <a href="{{ route('register') }}">Sign Up</a>
                     </p>
                 </div>
             </div>
