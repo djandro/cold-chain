@@ -18,7 +18,7 @@
                         <th data-field="storage_t" data-formatter="nameFormatter">Storage T (&#8451;)</th>
                         <th data-field="description">Description</th>
                         <th data-field="color" data-formatter="colorFormatter">Color</th>
-                        <th data-field="id" data-formatter="btnFormatter"></th>
+                        <th data-field="id" data-box="locationsBox" data-formatter="btnFormatter"></th>
                     </tr>
                     </thead>
                 </table>

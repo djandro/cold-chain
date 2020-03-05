@@ -28,7 +28,7 @@ class RecordController extends Controller
         $slt = intval($record->product['slt']);
         $slt_csiro = $slt; $slt_sal = $slt;
 
-        foreach($recordData as $data){
+        foreach($recordData as $key=>$data){
 
             $recordDataTimestamp[] = $data->timestamp;
             $recordDataTemperature[] = $data->temperature;
@@ -40,10 +40,12 @@ class RecordController extends Controller
             // izraèun SL po CSIRO
             $slt_csiro = $this->getSl_CSIRO($slt_csiro, $record->intervals, $data->temperature);
             $slCSIRO[] = round($slt_csiro, 2);
+            $slCSIRODebug[] = [$key, round($data->temperature), round($slt_csiro * 24)];
 
             // izraèun SL po SAL
             $slt_sal = $this->getSl_SAL($slt_sal, $slt, $record->intervals, $data->temperature);
             $slSAL[] = round($slt_sal, 2);
+            $slSALDebug[] = [$key, round($data->temperature), round($slt_sal * 24)];
         }
 
         // calculate time per location
@@ -79,10 +81,12 @@ class RecordController extends Controller
             'slrCSIRO_value_css' => $this->getSlValueforHumans(end($slCSIRO))[0],
             'slrCSIRO_value' => $this->getSlValueforHumans(end($slCSIRO))[1],
             'slrCSIRO_data' => json_encode($slCSIRO),
+            'slrCSIRO_data_debug' => json_encode($slCSIRODebug),
 
             'slrSAL_value_css' => $this->getSlValueforHumans(end($slSAL))[0],
             'slrSAL_value' => $this->getSlValueforHumans(end($slSAL))[1],
             'slrSAL_data' => json_encode($slSAL),
+            'slrSAL_data_debug' => json_encode($slSALDebug),
 
             'locations' => implode(', ', $locations),
             'locationsPerTime' => $locationsPerTime,
@@ -220,7 +224,7 @@ class RecordController extends Controller
     // izracun za model CISRO
     public function getSl_CSIRO($slt, $interval, $temperature){
 
-        $t = floatval($interval) / 86400; // v èasu t
+        $t = $interval / 86400; // v èasu t
         $k = pow(1 + round($temperature) * 0.1, 2); // koeficient
         return ($slt - $t * $k); // preostala doba
     }
@@ -228,9 +232,9 @@ class RecordController extends Controller
     // izracun za model SAL
     public function getSl_SAL($slt, $slt_ref, $interval, $temperature){
 
-        $t = floatval($interval) / 86400; // v èasu t
+        $t = $interval / 86400; // v èasu t
         $t_sal = $this->getT_SALfromTable( round($temperature) ); // doba uporabnosti pri temperaturi T
-        $k = intval($slt_ref / $t_sal); // koeficient iz referencne dobe uporabnosti deljeno z $t_sal
+        $k = $slt_ref / $t_sal; // koeficient iz referencne dobe uporabnosti deljeno z $t_sal
         return ($slt - $t * $k); // preostala doba
     }
 

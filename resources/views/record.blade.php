@@ -367,6 +367,27 @@
 
             <div id="elementH"></div>
 
+
+            <hr/>
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <h4 class="m-t-40 m-b-20">DEBUG SLR (CSIRO)</h4>
+                    <p>Nr , T (C) , Sl (h)</p>
+                    @foreach(json_decode($slrCSIRO_data_debug) as $item)
+                    <p>{{ $item[0] }} , {{ $item[1] }} , {{ $item[2] }}</p>
+                    @endforeach
+                </div>
+                <div class="col-sm-2">
+                    <h4 class="m-t-40 m-b-20">DEBUG SLR (SAL)</h4>
+                    <p>Nr , T (C) , Sl (h)</p>
+                    @foreach(json_decode($slrSAL_data_debug) as $item)
+                    <p>{{ $item[0] }} , {{ $item[1] }} , {{ $item[2] }}</p>
+                    @endforeach
+                </div>
+            </div>
+
+
             @if(Auth::user()->hasRole('admin'))
 
             <hr/>
@@ -376,6 +397,7 @@
                     <h4 class="m-t-40 m-b-20">record</h4>
                     {{ $record }}
                 </div>
+
                 <div class="col-sm-12">
                     <h4 class="m-t-40 m-b-20">record SLR (CSIRO)</h4>
                     {{ $slrCSIRO_data }}

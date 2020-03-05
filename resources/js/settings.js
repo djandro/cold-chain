@@ -4,6 +4,54 @@
 
 jQuery( document ).ready( function( jQuery ) {
 
+    // delete warning modul
+    jQuery('#deleteItemModal').on('show.bs.modal', function (event) {
+        var button = jQuery(event.relatedTarget);
+        var itemId = button.data('item-id'); var itemName = button.data('item-name'); var itemBox = button.data('item-box');
+        var modal = jQuery(this);
+        modal.data('itemId', itemId); modal.data('itemName', itemName); modal.data('itemBox', itemBox);
+        modal.find('.modal-body p').html("<b class='text-danger'>WARNING: Records with "+itemName+" will no longer work!</b><br/>Are you sure you want to delete item " + itemName + "?");
+    });
+
+    // DELETE PRODUCT OR LOCATION
+    jQuery("#deleteItemModal").on('click', "button.btn-delete-item", function(){
+        var $modal = jQuery("#deleteItemModal");
+        var id = $modal.data("itemId");
+        var box = $modal.data("itemBox");
+        var params = jQuery.extend({}, doAjax_params_default);
+        var url = "/api/products/delete/"+id;
+        if(box === "locationsBox") url = "/api/locations/delete/"+id;
+        params['url'] = url;
+        params['requestType'] = 'DELETE';
+        params['data'] = JSON.stringify({
+            "id": id
+        });
+        params['successCallbackFunction'] = function( data ) {
+            if (data.fail) {
+                // todo print failed data
+                console.log(data.fail);
+            }
+            else if(data.status == '200'){
+                // print success
+                jQuery('#successBoxAlert .successText').text("You successfully delete data with ID " + data.id);
+                jQuery("#successBoxAlert").removeClass('d-none').addClass('show');
+                jQuery("html, body").animate({ scrollTop: 0 }, "slow");
+                jQuery('#products-table').bootstrapTable('refresh');
+                jQuery('#locations-table').bootstrapTable('refresh');
+                console.log(data);
+            }
+            $modal.modal('hide');
+        };
+        params['errorCallBackFunction'] = function( jqXHR ){
+            // todo error print
+            jQuery('#errorAlertBox').text(jqXHR.responseText);
+            jQuery('#errorAlertBox').removeClass('d-none');
+            $modal.modal('hide');
+            console.log(jqXHR);
+        };
+        doAjax(params);
+    });
+
     // P R O D U C T S
     jQuery('#addProductModal').on('hidden.bs.modal', function (e) {
         jQuery('#addProductModal .modal-title').text('Add new product');
@@ -52,39 +100,6 @@ jQuery( document ).ready( function( jQuery ) {
             // todo error print
             jQuery('#addProductForm .alert').text(jqXHR.responseText);
             jQuery('#addProductForm .alert').removeClass('d-none');
-            console.log(jqXHR);
-        };
-        doAjax(params);
-    });
-
-    // DELETE PRODUCT
-    jQuery("#productsBox").on('click', "button.btnItemDelete", function(){
-        var id = jQuery(this).data("item-id");
-        console.log(jQuery(this));
-        var params = jQuery.extend({}, doAjax_params_default);
-        params['url'] = "/api/products/delete/"+id;
-        params['requestType'] = 'DELETE';
-        params['data'] = JSON.stringify({
-            "id": id
-        });
-        params['successCallbackFunction'] = function( data ) {
-            if (data.fail) {
-                // todo print failed data
-                console.log(data.fail);
-            }
-            else if(data.status == '200'){
-                // print success
-                jQuery('#successBoxAlert .successText').text("You successfully delete data with ID " + data.id);
-                jQuery("#successBoxAlert").removeClass('d-none').addClass('show');
-                jQuery("html, body").animate({ scrollTop: 0 }, "slow");
-                jQuery('#products-table').bootstrapTable('refresh');
-                console.log(data);
-            }
-        };
-        params['errorCallBackFunction'] = function( jqXHR ){
-            // todo error print
-            jQuery('#errorAlertBox').text(jqXHR.responseText);
-            jQuery('#errorAlertBox').removeClass('d-none');
             console.log(jqXHR);
         };
         doAjax(params);
@@ -173,39 +188,6 @@ jQuery( document ).ready( function( jQuery ) {
             // todo error print
             jQuery('#addLocationForm .alert').text(jqXHR.responseText);
             jQuery('#addLocationForm .alert').removeClass('d-none');
-            console.log(jqXHR);
-        };
-        doAjax(params);
-    });
-
-    // DELETE LOCATION
-    jQuery("#locationsBox").on('click', "button.btnItemDelete", function(){
-        var id = jQuery(this).data("item-id");
-        console.log(jQuery(this));
-        var params = jQuery.extend({}, doAjax_params_default);
-        params['url'] = "/api/locations/delete/"+id;
-        params['requestType'] = 'DELETE';
-        params['data'] = JSON.stringify({
-            "id": id
-        });
-        params['successCallbackFunction'] = function( data ) {
-            if (data.fail) {
-                // todo print failed data
-                console.log(data.fail);
-            }
-            else if(data.status == '200'){
-                // print success
-                jQuery('#successBoxAlert .successText').text("You successfully delete data with ID " + data.id);
-                jQuery("#successBoxAlert").removeClass('d-none').addClass('show');
-                jQuery("html, body").animate({ scrollTop: 0 }, "slow");
-                jQuery('#locations-table').bootstrapTable('refresh');
-                console.log(data);
-            }
-        };
-        params['errorCallBackFunction'] = function( jqXHR ){
-            // todo error print
-            jQuery('#errorAlertBox').text(jqXHR.responseText);
-            jQuery('#errorAlertBox').removeClass('d-none');
             console.log(jqXHR);
         };
         doAjax(params);

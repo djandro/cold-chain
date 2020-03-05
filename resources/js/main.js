@@ -332,12 +332,12 @@ function colorFormatter(value) {
   if(value == 'green') return '<span class="badge badge-success">' + value + '</span>';
 }
 
-function btnFormatter(value) {
+function btnFormatter(value, row) {
   $html = '<div class="table-data-feature">';
   $html += '<button class="item btnItemEdit" data-toggle="tooltip" data-placement="top" title="Edit" data-original-title="Edit" data-item-id="' + value + '">';
   $html += '<i class="zmdi zmdi-edit"></i>';
   $html += '</button>';
-  $html += '<button class="item btnItemDelete" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" data-item-id="' + value + '">';
+  $html += '<button class="item btnItemDelete" data-toggle="modal" data-target="#deleteItemModal" data-backdrop="false" title="Delete" data-item-id="' + value + '" data-item-name="'+ row.name +'" data-item-box="' + this.box +'">';
   $html += '<i class="zmdi zmdi-delete"></i>';
   $html += '</button>';
   $html += '</div>';
