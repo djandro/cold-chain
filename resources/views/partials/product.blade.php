@@ -18,7 +18,7 @@
                         <th data-field="slt" data-sortable="true" data-formatter="nameFormatter">SL-Reference (days)</th>
                         <th data-field="storage_t" data-sortable="true">Storage T (&#8451;)</th>
                         <th data-field="description" data-sortable="true">Description</th>
-                        <th data-field="id" data-formatter="btnFormatter"></th>
+                        <th data-field="id" data-box="productsBox" data-formatter="btnFormatter"></th>
                     </tr>
                     </thead>
                 </table>

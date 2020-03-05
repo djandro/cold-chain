@@ -43,6 +43,7 @@ class NewUser extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
+            ->subject('A new user has registered.')
             ->line('New user has registered on ColdChain App with email ' . $this->new_user->email)
             ->action('Approve user', route('settings.approve', ['user_id' => $this->new_user->id]));
     }

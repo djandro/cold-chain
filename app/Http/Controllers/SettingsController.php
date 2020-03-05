@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Device;
+use App\Notifications\NotyAprovedUser;
 use App\User;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
@@ -36,6 +37,10 @@ class SettingsController extends Controller
 
         $user = User::findOrFail($user_id);
         $user->update(['approved_at' => now()]);
+
+        if ($user) {
+            $user->notify(new NotyAprovedUser());
+        }
 
         return redirect()->route('settings')->with('status', 'User ' . $user->name . ' approved successfully!');
     }
